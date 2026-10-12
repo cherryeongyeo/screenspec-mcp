@@ -85,7 +85,19 @@ labels:   C-02          ← lets the Feedback Log find this ticket later
 
 </details>
 
-Both outputs above come from the sample spec in the template, read through the Figma API. Closed feedback (DEMO-119) is left out automatically. The ticket is only a draft. Hand it to a Jira MCP (e.g. Atlassian's) in the same conversation to create the issue.
+Both outputs above come from the sample spec in the template, read through the Figma API. Closed feedback (DEMO-119) is left out automatically. Happy with the draft? Create it for real:
+
+> **You:** Create it in Jira under epic DEMO-1.
+
+```json
+{
+  "created": true,
+  "issue": { "key": "DEMO-128", "url": "https://your-team.atlassian.net/browse/DEMO-128", "summary": "[C-02-1] Item list implementation" },
+  "figma": { "linked": true, "name": "DEMO-128 · [C-02-1] Item list implementation" }
+}
+```
+
+The issue is attached to element 1 in Figma as a **Dev Resource**, so a developer inspecting the element in Dev Mode sees the ticket right there. Ask again for the same element and you get the existing open issue back instead of a duplicate.
 
 ## Tools
 
@@ -96,12 +108,15 @@ Both outputs above come from the sample spec in the template, read through the F
 | `get_element` | Returns one element by its badge number, with related feedback and a rendered image of the element card |
 | `lint_spec` | Reports completeness % for PM and Design, unfilled fields, skipped element numbers, version drift and status chip issues |
 | `draft_jira_ticket` | Drafts a ticket from an element's PM policy. State, Policy and Exception become acceptance criteria |
+| `create_jira_ticket` | Creates the drafted ticket in Jira and links it to the element in Figma Dev Mode. Reuses an open issue with the same `[ref]` instead of duplicating it |
+| `link_jira_issue` | Links an existing Jira issue to an element in Figma Dev Mode |
 
-All tools are read-only. Lint messages and ticket drafts follow the spec's language (Korean or English).
+Only `create_jira_ticket` and `link_jira_issue` write anything: a Jira issue and a Dev Mode link. Everything else is read-only. Lint messages and ticket drafts follow the spec's language (Korean or English).
 
 ## Quick start
 
-1. Create a Figma personal access token with **File content: Read-only** scope.
+1. Create a Figma personal access token with **File content: Read-only**. To link tickets in Dev Mode, also add **Dev resources: Read and write**.
+   For Jira, create an API token at id.atlassian.com → Security → API tokens.
 2. Add the server to your MCP client (Claude Desktop, Cursor, …):
 
 ```json
@@ -112,6 +127,9 @@ All tools are read-only. Lint messages and ticket drafts follow the spec's langu
       "args": ["-y", "screenspec-mcp"],
       "env": {
         "FIGMA_TOKEN": "figd_…",
+        "JIRA_BASE_URL": "https://your-team.atlassian.net",
+        "JIRA_EMAIL": "you@example.com",
+        "JIRA_API_TOKEN": "…",
         "SCREENSPEC_CONFIG": "/path/to/screenspec.config.json"
       }
     }
@@ -181,6 +199,8 @@ Everything team-specific lives in a JSON file outside the repo (`*.private.json`
     "summaryTemplate": "[{ref}] {itemName} {intent}",
     "labels": ["screenspec"]
   },
+  "jira": { "parentKey": "DEMO-1", "dedupe": true },
+  "figma": { "linkDevResources": true },
   "feedback": { "doneStatuses": ["Done", "Closed"] },
   "placeholders": ["extra guide text to treat as empty"]
 }
@@ -204,8 +224,8 @@ flowchart LR
 ## Roadmap
 
 - [x] **v0.1**: read-only parser, 5 tools, KOR/ENG template, offline fixture mode
-- [ ] **v0.2**: badge component on the mockup → element crop images; spec diff between versions
-- [ ] **v0.3**: Jira adapter; link Jira issues to element nodes via Figma Dev Resources (visible in Dev Mode)
+- [x] **v0.2**: create Jira issues from the spec, link them to elements via Figma Dev Resources (visible in Dev Mode), duplicate guard
+- [ ] **v0.3**: element crop images from mockup badges; spec diff between versions
 - [ ] **v0.4**: Figma plugin "Sync" button that refreshes the Feedback Log from Jira (Jira → Figma, one way)
 - [ ] **v1.0**: spec change → Jira sub-task suggestions, Slack notifications
 
@@ -217,6 +237,7 @@ npm run build
 npm test                         # parser, lint and ticket tests (Node 22+)
 node scripts/smoke.mjs           # spawns the server over stdio and calls every tool
 node scripts/live-test.mjs <url> # runs every tool against a real Figma file (FIGMA_TOKEN in .env)
+node scripts/jira-live-test.mjs <url> <item> <project> # creates ONE real Jira issue and links it in Dev Mode
 ```
 
 ---

@@ -8,6 +8,18 @@ export interface FigmaSource {
   getFile(fileKey: string, depth: number): Promise<FigmaNode>;
   /** Rendered PNG URLs for nodes. */
   getImages(fileKey: string, nodeIds: string[], scale?: number): Promise<Record<string, string | null>>;
+  /** Dev Resources (links shown in Dev Mode) attached to nodes. */
+  getDevResources(fileKey: string, nodeIds: string[]): Promise<DevResource[]>;
+  /** Attach a link to a node. Needs the file_dev_resources:write scope. */
+  addDevResource(res: Omit<DevResource, "id">): Promise<DevResource>;
+}
+
+export interface DevResource {
+  id?: string;
+  name: string;
+  url: string;
+  file_key: string;
+  node_id: string;
 }
 
 /** Accepts a Figma URL or a bare key/node pair. */
@@ -22,12 +34,12 @@ export function parseFigmaUrl(url: string): { fileKey: string; nodeId?: string }
 
 export class FigmaRestClient implements FigmaSource {
   private cache = new Map<string, { at: number; data: unknown }>();
-  constructor(private token: string, private ttlMs = 60_000) {}
+  constructor(private token: string, private ttlMs = 60_000, private http: typeof fetch = fetch) {}
 
   private async get<T>(path: string): Promise<T> {
     const hit = this.cache.get(path);
     if (hit && Date.now() - hit.at < this.ttlMs) return hit.data as T;
-    const res = await fetch(`https://api.figma.com${path}`, { headers: { "X-Figma-Token": this.token } });
+    const res = await this.http(`https://api.figma.com${path}`, { headers: { "X-Figma-Token": this.token } });
     if (!res.ok) {
       const body = await res.text();
       throw new Error(`Figma API ${res.status} on ${path}: ${body.slice(0, 300)}`);
@@ -56,6 +68,33 @@ export class FigmaRestClient implements FigmaSource {
       `/v1/images/${fileKey}?ids=${encodeURIComponent(nodeIds.join(","))}&format=png&scale=${scale}`,
     );
     return r.images;
+  }
+
+  async getDevResources(fileKey: string, nodeIds: string[]) {
+    const r = await this.get<{ dev_resources: DevResource[] }>(
+      `/v1/files/${fileKey}/dev_resources?node_ids=${encodeURIComponent(nodeIds.join(","))}`,
+    );
+    return r.dev_resources ?? [];
+  }
+
+  async addDevResource(res: Omit<DevResource, "id">) {
+    const r = await this.http("https://api.figma.com/v1/dev_resources", {
+      method: "POST",
+      headers: { "X-Figma-Token": this.token, "Content-Type": "application/json" },
+      body: JSON.stringify({ dev_resources: [res] }),
+    });
+    const body = (await r.json().catch(() => ({}))) as {
+      links_created?: DevResource[];
+      errors?: { error: string }[];
+      message?: string;
+    };
+    if (!r.ok || body.errors?.length || !body.links_created?.length) {
+      const why = body.errors?.map((e) => e.error).join("; ") || body.message || `HTTP ${r.status}`;
+      throw new Error(`Figma dev resource not created: ${why}`);
+    }
+    // invalidate cached listings for this file
+    for (const k of this.cache.keys()) if (k.includes(`/files/${res.file_key}/dev_resources`)) this.cache.delete(k);
+    return body.links_created[0];
   }
 }
 
@@ -86,5 +125,15 @@ export class FixtureSource implements FigmaSource {
   }
   async getImages(_fileKey: string, nodeIds: string[]) {
     return Object.fromEntries(nodeIds.map((id) => [id, null]));
+  }
+  /** In-memory dev resources so offline runs can exercise the Jira flow. */
+  private links: DevResource[] = [];
+  async getDevResources(_fileKey: string, nodeIds: string[]) {
+    return this.links.filter((l) => nodeIds.includes(l.node_id));
+  }
+  async addDevResource(res: Omit<DevResource, "id">) {
+    const link = { ...res, id: `fixture-${this.links.length + 1}` };
+    this.links.push(link);
+    return link;
   }
 }

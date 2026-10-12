@@ -1,13 +1,32 @@
 {
-  "screenFrameMarker": "화면정의서",
-  "placeholders": ["여기에 입력"],
+  "screenFrameMarker": [
+    "화면정의서",
+    "Screen Spec"
+  ],
+  "placeholders": [
+    "여기에 입력"
+  ],
   "feedback": {
-    "doneStatuses": ["종료", "검수완료"]
+    "doneStatuses": [
+      "종료",
+      "검수완료"
+    ]
   },
   "ticket": {
     "projectKey": "DEMO",
     "defaultIssueType": "작업",
     "summaryTemplate": "[{ref}] {itemName} {intent}",
-    "labels": ["screenspec"]
+    "labels": [
+      "screenspec"
+    ]
+  },
+  "jira": {
+    "baseUrl": "https://your-team.atlassian.net",
+    "parentKey": "DEMO-1",
+    "dedupe": true,
+    "extraFields": {}
+  },
+  "figma": {
+    "linkDevResources": true
   }
 }

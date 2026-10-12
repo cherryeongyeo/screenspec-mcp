@@ -1,6 +1,6 @@
 {
   "name": "screenspec-mcp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "MCP server that turns Figma screen spec (화면정의서) frames into structured specs, lint reports and Jira ticket drafts.",
   "main": "dist/index.js",
   "scripts": {
@@ -12,12 +12,14 @@
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
-    "mcp",
+    "atlassian",
+    "design-handoff",
+    "dev-mode",
     "figma",
     "jira",
-    "screen-spec",
-    "design-handoff",
-    "model-context-protocol"
+    "mcp",
+    "model-context-protocol",
+    "screen-spec"
   ],
   "author": "Chaeryeong Yeo",
   "license": "MIT",

@@ -85,7 +85,19 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 
 </details>
 
-위 결과는 모두 템플릿의 샘플 정의서를 Figma API로 읽어서 만든 거예요. 이미 종료된 피드백(DEMO-119)은 자동으로 빠져요. 티켓은 초안까지만 만들어요. 같은 대화에서 지라 MCP(예: Atlassian)에 넘기면 바로 이슈로 만들 수 있어요.
+위 결과는 모두 템플릿의 샘플 정의서를 Figma API로 읽어서 만든 거예요. 이미 종료된 피드백(DEMO-119)은 자동으로 빠져요. 초안이 괜찮으면 실제 이슈로 만들어요.
+
+> **나:** 에픽 DEMO-1 아래에 지라 이슈로 만들어줘.
+
+```json
+{
+  "created": true,
+  "issue": { "key": "DEMO-128", "url": "https://your-team.atlassian.net/browse/DEMO-128", "summary": "[C-02-1] 상품 리스트 구현" },
+  "figma": { "linked": true, "name": "DEMO-128 · [C-02-1] 상품 리스트 구현" }
+}
+```
+
+만들어진 이슈는 피그마 1번 요소에 **Dev Resource**로 붙어요. 개발자가 Dev Mode에서 요소를 선택하면 티켓이 바로 보여요. 같은 요소로 다시 요청하면 새로 만들지 않고 열려 있는 기존 이슈를 돌려줘요.
 
 ## 도구
 
@@ -96,12 +108,15 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 | `get_element` | 뱃지 번호로 요소 하나를 가져와요. 관련 피드백과 요소 카드 이미지도 함께 줘요 |
 | `lint_spec` | PM과 Design 작성률(%), 미작성 항목, 건너뛴 요소 번호, 버전 불일치, 상태 칩 문제를 알려줘요 |
 | `draft_jira_ticket` | 요소의 PM 정책으로 티켓 초안을 만들어요. State, Policy, Exception이 완료 조건이 돼요 |
+| `create_jira_ticket` | 초안을 지라 이슈로 만들고, 피그마 Dev Mode에서 요소에 연결해요. 같은 `[ref]`로 열린 이슈가 있으면 중복으로 만들지 않고 그 이슈를 돌려줘요 |
+| `link_jira_issue` | 이미 있는 지라 이슈를 피그마 Dev Mode에서 요소에 연결해요 |
 
-모든 도구는 읽기 전용이에요. 점검 메시지와 티켓 초안은 정의서 언어(한국어/영어)를 따라가요.
+`create_jira_ticket`과 `link_jira_issue`만 지라 이슈와 Dev Mode 링크를 만들고, 나머지는 모두 읽기 전용이에요. 점검 메시지와 티켓 초안은 정의서 언어(한국어/영어)를 따라가요.
 
 ## 시작하기
 
-1. Figma 개인 액세스 토큰을 만들어요. 권한은 **File content: Read-only**만 있으면 돼요.
+1. Figma 개인 액세스 토큰을 만들어요. 권한은 **File content: Read-only**가 필요하고, Dev Mode에 티켓을 연결하려면 **Dev resources: Read and write**도 추가해요.
+   지라는 id.atlassian.com → Security → API tokens에서 API 토큰을 만들어요.
 2. MCP 클라이언트(Claude 데스크톱, Cursor 등)에 서버를 추가해요.
 
 ```json
@@ -112,6 +127,9 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
       "args": ["-y", "screenspec-mcp"],
       "env": {
         "FIGMA_TOKEN": "figd_…",
+        "JIRA_BASE_URL": "https://your-team.atlassian.net",
+        "JIRA_EMAIL": "you@example.com",
+        "JIRA_API_TOKEN": "…",
         "SCREENSPEC_CONFIG": "/path/to/screenspec.config.json"
       }
     }
@@ -174,6 +192,8 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
     "summaryTemplate": "[{ref}] {itemName} {intent}",
     "labels": ["screenspec"]
   },
+  "jira": { "parentKey": "DEMO-1", "dedupe": true },
+  "figma": { "linkDevResources": true },
   "feedback": { "doneStatuses": ["종료", "검수완료"] },
   "placeholders": ["미작성으로 볼 가이드 문구"]
 }
@@ -197,8 +217,8 @@ flowchart LR
 ## 로드맵
 
 - [x] **v0.1**: 읽기 전용 파서, 도구 5개, 한국어/영어 양식, 오프라인 샘플 모드
-- [ ] **v0.2**: 시안 위 뱃지 컴포넌트로 요소별 시안 이미지 자르기, 버전 간 정의서 비교
-- [ ] **v0.3**: 지라 어댑터, Figma Dev Resources로 요소와 지라 이슈 연결 (Dev Mode에서 보임)
+- [x] **v0.2**: 정의서로 지라 이슈 생성, Figma Dev Resources로 요소와 이슈 연결 (Dev Mode에서 보임), 중복 생성 방지
+- [ ] **v0.3**: 시안 위 뱃지로 요소별 시안 이미지 자르기, 버전 간 정의서 비교
 - [ ] **v0.4**: 지라 내용으로 Feedback Log를 갱신하는 피그마 플러그인 "동기화" 버튼 (지라 → 피그마 단방향)
 - [ ] **v1.0**: 정의서가 바뀌면 지라 하위 작업 제안, Slack 알림
 
@@ -210,6 +230,7 @@ npm run build
 npm test                         # 파서, 점검, 티켓 테스트 (Node 22 이상)
 node scripts/smoke.mjs           # 서버를 띄워 모든 도구를 호출해봐요
 node scripts/live-test.mjs <url> # 실제 피그마 파일로 모든 도구를 실행해요 (.env에 FIGMA_TOKEN 필요)
+node scripts/jira-live-test.mjs <url> <item> <project> # 실제 지라 이슈 1개를 만들고 Dev Mode에 연결해요
 ```
 
 ---

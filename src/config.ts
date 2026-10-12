@@ -19,6 +19,20 @@ export interface Config {
     /** Header label -> FeedbackRow key */
     columns: Record<string, string>;
   };
+  jira: {
+    /** e.g. https://your-team.atlassian.net (or set JIRA_BASE_URL) */
+    baseUrl?: string;
+    /** Default parent (epic) key for created issues */
+    parentKey?: string;
+    /** Extra issue fields sent as-is, e.g. { "customfield_10020": 42 } */
+    extraFields?: Record<string, unknown>;
+    /** Reuse an open issue with the same [ref] instead of creating a duplicate */
+    dedupe: boolean;
+  };
+  figma: {
+    /** Attach created / linked issues to the element node as a Dev Resource */
+    linkDevResources: boolean;
+  };
   ticket: {
     projectKey?: string;
     defaultIssueType: string;
@@ -91,6 +105,8 @@ export const DEFAULT_CONFIG: Config = {
       "Fix version": "fixVersion",
     },
   },
+  jira: { dedupe: true },
+  figma: { linkDevResources: true },
   ticket: {
     defaultIssueType: "작업",
     summaryTemplate: "[{ref}] {itemName} {intent}",

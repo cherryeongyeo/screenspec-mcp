@@ -2,12 +2,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { markers, type Config } from "./config.js";
 import { parseFigmaUrl, type FigmaSource } from "./figma/client.js";
+import type { IssueTracker, JiraIssueRef } from "./jira/client.js";
 import { lintScreen } from "./spec/lint.js";
 import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.js";
 import { draftTicket } from "./spec/ticket.js";
 import type { FigmaNode, ScreenSpec } from "./spec/types.js";
 
-export const VERSION = "0.1.1";
+export const VERSION = "0.2.0";
 
 const target = {
   url: z.string().url().optional().describe("Figma URL of a screen spec frame, its section, or the file"),
@@ -24,7 +25,7 @@ const fail = (e: unknown) => ({
   content: [{ type: "text" as const, text: e instanceof Error ? e.message : String(e) }],
 });
 
-export function createServer(source: FigmaSource, cfg: Config) {
+export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTracker) {
   const server = new McpServer({ name: "screenspec-mcp", version: VERSION });
 
   function resolve(t: Target) {
@@ -111,7 +112,7 @@ export function createServer(source: FigmaSource, cfg: Config) {
     {
       title: "Get one element",
       description:
-        "Return a single element (ITEM n) of a screen spec with its PM policy, Design spec, related Jira feedback and a rendered image URL of the element card.",
+        "Return a single element (ITEM n) of a screen spec with its PM policy, Design spec, related Jira feedback, issues linked to the element in Figma Dev Mode, and a rendered image URL of the element card.",
       inputSchema: { ...target, item: z.number().int().positive().describe("Element number shown on the badge") },
       annotations: { readOnlyHint: true },
     },
@@ -122,12 +123,14 @@ export function createServer(source: FigmaSource, cfg: Config) {
         const { fileKey } = resolve(t);
         const images = fileKey ? await source.getImages(fileKey, [it.nodeId], 2).catch(() => ({})) : {};
         const feedback = s.feedback.filter((f) => refNumber(f.element, s.screenId) === item);
+        const links = fileKey ? await source.getDevResources(fileKey, [it.nodeId]).catch(() => undefined) : undefined;
         return ok({
           screen: { screenId: s.screenId, title: s.title, version: s.version },
           ...it,
           feedback,
           imageUrl: (images as Record<string, string | null>)[it.nodeId] ?? null,
           figmaUrl: figmaUrl(fileKey || undefined, it.nodeId),
+          linkedIssues: links?.map((l) => ({ name: l.name, url: l.url })),
         });
       } catch (e) {
         return fail(e);
@@ -175,6 +178,116 @@ export function createServer(source: FigmaSource, cfg: Config) {
         const [s] = await loadScreens(t);
         const it = item ? findItem(s, item) : undefined;
         return ok(draftTicket(s, it, cfg, { intent, issueType, extraNotes: notes }));
+      } catch (e) {
+        return fail(e);
+      }
+    },
+  );
+
+  const linkName = (issue: JiraIssueRef) => [issue.key, issue.summary].filter(Boolean).join(" · ").slice(0, 100);
+
+  async function linkToElement(fileKey: string, nodeId: string, issue: JiraIssueRef, force = false) {
+    if (!force && !cfg.figma.linkDevResources) return { skipped: "figma.linkDevResources is off" };
+    if (!fileKey) return { skipped: "no Figma file key (offline mode)" };
+    const existing = await source.getDevResources(fileKey, [nodeId]).catch(() => []);
+    const dup = existing.find((l) => l.url === issue.url);
+    if (dup) return { linked: true, alreadyLinked: true, name: dup.name };
+    try {
+      const r = await source.addDevResource({ name: linkName(issue), url: issue.url, file_key: fileKey, node_id: nodeId });
+      return { linked: true, name: r.name };
+    } catch (e) {
+      return { linked: false, error: e instanceof Error ? e.message : String(e) };
+    }
+  }
+
+  const needTracker = () => {
+    if (!tracker) throw new Error("Jira is not configured. Set JIRA_BASE_URL (or jira.baseUrl in the config), JIRA_EMAIL and JIRA_API_TOKEN.");
+    return tracker;
+  };
+
+  server.registerTool(
+    "create_jira_ticket",
+    {
+      title: "Create Jira ticket from spec",
+      description:
+        "Create a Jira issue from an element's PM policy (same content as draft_jira_ticket) and link it to the element in Figma Dev Mode, so developers see the ticket when they inspect the element. Skips creation and returns the existing issue when an open issue with the same [ref] already exists, unless allowDuplicate is true. Show the draft to the user and get confirmation before calling this.",
+      inputSchema: {
+        ...target,
+        item: z.number().int().positive().optional().describe("Element number; omit for a screen-level ticket"),
+        intent: z.string().optional().describe("What the ticket is for, e.g. 'API integration'"),
+        issueType: z.string().optional().describe("Jira issue type name, e.g. Task, Bug, 작업"),
+        notes: z.string().optional().describe("Extra developer notes appended to the description"),
+        projectKey: z.string().optional().describe("Jira project key; defaults to ticket.projectKey in the config"),
+        parentKey: z.string().optional().describe("Parent / epic issue key; defaults to jira.parentKey in the config"),
+        allowDuplicate: z.boolean().optional().describe("Create even if an open issue with the same [ref] exists"),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ item, intent, issueType, notes, projectKey, parentKey, allowDuplicate, ...t }) => {
+      try {
+        const jira = needTracker();
+        const project = projectKey ?? cfg.ticket.projectKey;
+        if (!project) throw new Error("No Jira project key. Pass projectKey or set ticket.projectKey in the config.");
+        const [s] = await loadScreens(t);
+        const it = item ? findItem(s, item) : undefined;
+        const draft = draftTicket(s, it, cfg, { intent, issueType, extraNotes: notes });
+        const { fileKey } = resolve(t);
+        const nodeId = it?.nodeId ?? s.nodeId;
+
+        if (cfg.jira.dedupe && !allowDuplicate) {
+          const ref = it?.ref ?? s.screenId;
+          const existing = await jira.findOpenBySummary(project, s.screenId, `[${ref}]`);
+          if (existing) {
+            const figma = await linkToElement(fileKey, nodeId, existing);
+            return ok({ created: false, reason: `An open issue for [${ref}] already exists.`, issue: existing, figma, hint: "Pass allowDuplicate: true to create another one." });
+          }
+        }
+
+        const issue = await jira.createIssue({
+          projectKey: project,
+          summary: draft.summary,
+          issueType: draft.issueType,
+          labels: draft.labels,
+          description: draft.description,
+          parentKey: parentKey ?? cfg.jira.parentKey,
+          extraFields: cfg.jira.extraFields,
+        });
+        const figma = await linkToElement(fileKey, nodeId, issue);
+        return ok({ created: true, issue, figma, acceptanceCriteria: draft.acceptanceCriteria, missingPolicy: draft.missingPolicy });
+      } catch (e) {
+        return fail(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "link_jira_issue",
+    {
+      title: "Link a Jira issue to an element",
+      description:
+        "Attach an existing Jira issue to an element (ITEM n) of a screen spec as a Figma Dev Resource, so it shows up in Dev Mode next to the element. Pass issueKey (needs Jira configured) or issueUrl.",
+      inputSchema: {
+        ...target,
+        item: z.number().int().positive().describe("Element number shown on the badge"),
+        issueKey: z.string().optional().describe("Jira issue key, e.g. DEMO-128"),
+        issueUrl: z.string().url().optional().describe("Issue URL, if Jira isn't configured"),
+        title: z.string().optional().describe("Link title when using issueUrl"),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ item, issueKey, issueUrl, title, ...t }) => {
+      try {
+        if (!issueKey && !issueUrl) throw new Error("Pass issueKey or issueUrl.");
+        const [s] = await loadScreens(t);
+        const it = findItem(s, item);
+        const { fileKey } = resolve(t);
+        if (!fileKey) throw new Error("A Figma file key is required to link (pass url or fileKey).");
+        const issue: JiraIssueRef = issueKey
+          ? await needTracker().getIssue(issueKey)
+          : { key: title ?? issueUrl!.split("/").filter(Boolean).pop() ?? "link", url: issueUrl! };
+        const figma = await linkToElement(fileKey, it.nodeId, issue, true);
+        if (!("linked" in figma) || !figma.linked) throw new Error(("error" in figma && figma.error) || "Link was not created.");
+        return ok({ element: it.ref, issue, figma });
       } catch (e) {
         return fail(e);
       }
