@@ -1,4 +1,5 @@
 import { markdownToAdf } from "./adf.js";
+import { belongsTo, sortRows, toSyncRow, type FeedbackSource, type JiraIssue, type Lang } from "./feedback.js";
 
 export interface JiraIssueRef {
   key: string;
@@ -35,7 +36,7 @@ const jqlString = (s: string) => `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"
  * Jira Cloud REST v3 client authenticated with an Atlassian account email
  * and API token (id.atlassian.com → Security → API tokens).
  */
-export class JiraClient implements IssueTracker {
+export class JiraClient implements IssueTracker, FeedbackSource {
   private auth: string;
   constructor(
     private baseUrl: string,
@@ -91,6 +92,31 @@ export class JiraClient implements IssueTracker {
     };
     const r = await this.req<{ key: string }>("POST", "/rest/api/3/issue", { fields });
     return { key: r.key, url: this.browseUrl(r.key), summary: input.summary };
+  }
+
+  /**
+   * Issues for one screen: labelled with the screen ID or summarised "[C-02-…] …",
+   * plus any keys already in the Feedback Log (so a removed label doesn't drop a row).
+   */
+  async searchFeedback(screenId: string, opts: { projectKey?: string; keys?: string[]; lang?: Lang } = {}) {
+    const keys = (opts.keys ?? []).filter((k) => /^[A-Z][A-Z0-9_]*-\d+$/.test(k));
+    let base = `(labels = ${jqlString(screenId)} OR summary ~ ${jqlString(`"${screenId}"`)})`;
+    if (opts.projectKey) base = `(${base} AND project = ${jqlString(opts.projectKey)})`;
+    const fields = "summary,status,issuetype,assignee,reporter,parent,fixVersions,labels,comment";
+    const search = (jql: string) => this.req<{ issues?: JiraIssue[] }>(
+      "GET",
+      `/rest/api/3/search/jql?jql=${encodeURIComponent(`${jql} ORDER BY created ASC`)}&fields=${fields}&maxResults=100`,
+    );
+    // JQL rejects the whole query when one listed key doesn't exist (e.g. a template example row),
+    // so fall back to the label/summary search alone.
+    const r = keys.length
+      ? await search(`${base} OR key in (${keys.join(", ")})`).catch((e: Error) => {
+          if (/\b400\b/.test(e.message)) return search(base);
+          throw e;
+        })
+      : await search(base);
+    const issues = (r.issues ?? []).filter((i) => belongsTo(i, screenId, keys));
+    return sortRows(issues.map((i) => toSyncRow(i, opts.lang ?? "ko", (k) => this.browseUrl(k))));
   }
 
   async listProjectKeys() {

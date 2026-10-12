@@ -7,11 +7,13 @@ import { lintMockup, lintScreen } from "./spec/lint.js";
 import { findBadges, findMockups, nearestMockups, pad, regionFor, type ElementRegion } from "./spec/mockup.js";
 import { cropPng } from "./figma/crop.js";
 import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.js";
-import { draftTicket } from "./spec/ticket.js";
+import { detectLang, draftTicket } from "./spec/ticket.js";
+import { compareFeedback, type FeedbackSource } from "./jira/feedback.js";
 import { diffScreens } from "./spec/diff.js";
 import type { FigmaNode, ScreenSpec } from "./spec/types.js";
 
 export const VERSION = "0.2.0";
+const JIRA_SETUP = "Jira is not configured. Set JIRA_BASE_URL (or jira.baseUrl in the config), JIRA_EMAIL and JIRA_API_TOKEN.";
 
 const target = {
   url: z.string().url().optional().describe("Figma URL of a screen spec frame, its section, or the file"),
@@ -301,7 +303,7 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
   }
 
   const needTracker = () => {
-    if (!tracker) throw new Error("Jira is not configured. Set JIRA_BASE_URL (or jira.baseUrl in the config), JIRA_EMAIL and JIRA_API_TOKEN.");
+    if (!tracker) throw new Error(JIRA_SETUP);
     return tracker;
   };
 
@@ -395,6 +397,40 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
         const figma = await linkToElement(fileKey, it.nodeId, issue, true);
         if (!("linked" in figma) || !figma.linked) throw new Error(("error" in figma && figma.error) || "Link was not created.");
         return ok({ element: it.ref, issue, figma });
+      } catch (e) {
+        return fail(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_jira_feedback",
+    {
+      title: "Jira feedback for a screen",
+      description:
+        "Fetch the Jira issues that belong to a screen (labelled with its screen ID or summarised '[C-02-1] …') as Feedback Log rows, and compare them with the Feedback Log currently in Figma: new issues, changed status/summary/assignee/comment, and rows Jira no longer returns. Read-only: the Figma plugin's Sync button (or `npx screenspec-mcp sync`) writes the table.",
+      inputSchema: target,
+      annotations: { readOnlyHint: true },
+    },
+    async (t) => {
+      try {
+        const feedback = tracker as (IssueTracker & Partial<FeedbackSource>) | undefined;
+        if (!feedback?.searchFeedback) throw new Error(JIRA_SETUP);
+        const screens = await loadScreens(t);
+        const out = await Promise.all(screens.map(async (s) => {
+          const rows = await feedback.searchFeedback!(s.screenId, {
+            projectKey: cfg.ticket.projectKey,
+            keys: s.feedback.map((r) => r.jiraKey),
+            lang: detectLang(s),
+          });
+          return {
+            screenId: s.screenId,
+            figmaLastSynced: s.feedbackLastSynced ?? null,
+            changes: compareFeedback(s.feedback, rows),
+            rows,
+          };
+        }));
+        return ok(out.length === 1 ? out[0] : out);
       } catch (e) {
         return fail(e);
       }

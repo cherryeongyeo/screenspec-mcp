@@ -111,12 +111,13 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 | `draft_jira_ticket` | 요소의 PM 정책으로 티켓 초안을 만들어요. State, Policy, Exception이 완료 조건이 돼요 |
 | `create_jira_ticket` | 초안을 지라 이슈로 만들고, 피그마 Dev Mode에서 요소에 연결해요. 같은 `[ref]`로 열린 이슈가 있으면 중복으로 만들지 않고 그 이슈를 돌려줘요 |
 | `link_jira_issue` | 이미 있는 지라 이슈를 피그마 Dev Mode에서 요소에 연결해요 |
+| `get_jira_feedback` | 화면의 지라 이슈를 Feedback Log 행으로 가져오고, 동기화하면 무엇이 바뀌는지 보여줘요. 새 이슈, 상태·담당자·댓글 변경, 지라에서 더 이상 안 나오는 행 |
 
 `create_jira_ticket`과 `link_jira_issue`만 지라 이슈와 Dev Mode 링크를 만들고, 나머지는 모두 읽기 전용이에요. 점검 메시지와 티켓 초안은 정의서 언어(한국어/영어)를 따라가요.
 
 ## 시작하기
 
-1. Figma 개인 액세스 토큰을 만들어요. 권한은 **File content: Read-only**가 필요하고, Dev Mode에 티켓을 연결하려면 **Dev resources: Read and write**도 추가해요.
+1. Figma 개인 액세스 토큰을 만들어요. 권한은 **File content: Read-only**가 필요해요. `diff_spec`을 쓰려면 **File versions: Read**를, Dev Mode에 티켓을 연결하려면 **Dev resources: Read and write**를 추가해요.
    지라는 id.atlassian.com → Security → API tokens에서 API 토큰을 만들어요.
 2. MCP 클라이언트(Claude 데스크톱, Cursor 등)에 서버를 추가해요.
 
@@ -145,6 +146,20 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 > C-02 1번 요소로 API 연동 지라 티켓 초안 만들어줘
 
 **토큰이 아직 없다면** 함께 들어 있는 샘플로 먼저 써볼 수 있어요: `SCREENSPEC_FIXTURE=test/fixtures/sample-section.json npx screenspec-mcp`
+
+## 지라로 Feedback Log 동기화하기
+
+정의서의 Feedback Log는 피그마 플러그인 버튼으로 지라 내용을 가져와 채워요(지라 → 피그마 단방향). 지라는 피그마 안에서 보내는 요청을 받지 않아서, 내 컴퓨터에서 도는 작은 도우미가 대신 지라를 읽어줘요.
+
+1. 도우미를 켜요. `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`을 환경 변수나 현재 폴더의 `.env`에서 읽어요.
+
+   ```bash
+   npx screenspec-mcp sync      # http://127.0.0.1:3917, 피그마 요청에만 응답해요
+   ```
+2. 피그마 데스크톱 앱에서 **Plugins → Development → Import plugin from manifest…**를 누르고 [`figma-plugin/manifest.json`](figma-plugin/manifest.json)을 골라요.
+3. 정의서가 있는 페이지에서 **Screen Spec Sync**를 실행하고 **동기화**를 눌러요. 정의서 하나만 선택하면 그것만 동기화해요.
+
+화면ID 레이블이 붙었거나 제목이 `[C-02-1] …`로 시작하는 이슈가 한 행이 돼요. 요소, 유형, 이슈 키(링크), 에픽, 내용, 최근 댓글, 요청자 → 담당자, 상태, 반영 버전을 채워요. 있던 행은 그 자리에서 갱신하고, 새 이슈는 추가하고, 지라에서 더 이상 안 나오는 행은 지우지 않고 알려줘요. "최종 동기화" 시간도 바뀌어요.
 
 ## 피그마 양식
 
@@ -216,7 +231,7 @@ flowchart LR
   S --> A[AI 에이전트: Claude, Cursor 등]
   A -- 점검 / 티켓 초안 --> DEV[개발자]
   A -. 이슈 생성 .-> J[(지라)]
-  J -. 피드백 로그 .-> F
+  J -. 동기화 버튼 (로컬 도우미) .-> F
 ```
 
 ## 로드맵

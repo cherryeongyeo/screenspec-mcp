@@ -111,12 +111,13 @@ The issue is attached to element 1 in Figma as a **Dev Resource**, so a develope
 | `draft_jira_ticket` | Drafts a ticket from an element's PM policy. State, Policy and Exception become acceptance criteria |
 | `create_jira_ticket` | Creates the drafted ticket in Jira and links it to the element in Figma Dev Mode. Reuses an open issue with the same `[ref]` instead of duplicating it |
 | `link_jira_issue` | Links an existing Jira issue to an element in Figma Dev Mode |
+| `get_jira_feedback` | Fetches the screen's Jira issues as Feedback Log rows and shows what a Sync would change: new issues, changed status/assignee/comment, rows Jira no longer returns |
 
 Only `create_jira_ticket` and `link_jira_issue` write anything: a Jira issue and a Dev Mode link. Everything else is read-only. Lint messages and ticket drafts follow the spec's language (Korean or English).
 
 ## Quick start
 
-1. Create a Figma personal access token with **File content: Read-only**. To link tickets in Dev Mode, also add **Dev resources: Read and write**.
+1. Create a Figma personal access token with **File content: Read-only**. For `diff_spec`, add **File versions: Read**. To link tickets in Dev Mode, add **Dev resources: Read and write**.
    For Jira, create an API token at id.atlassian.com → Security → API tokens.
 2. Add the server to your MCP client (Claude Desktop, Cursor, …):
 
@@ -145,6 +146,20 @@ Only `create_jira_ticket` and `link_jira_issue` write anything: a Jira issue and
 > Draft a Jira ticket for element 1 of C-02, for API integration.
 
 **No token yet?** Try it on the bundled sample: `SCREENSPEC_FIXTURE=test/fixtures/sample-section.json npx screenspec-mcp`.
+
+## Sync the Feedback Log from Jira
+
+The Feedback Log in each spec is filled from Jira by a Figma plugin button (Jira → Figma, one way). Jira doesn't accept requests from inside Figma, so a small helper on your computer reads Jira for the plugin.
+
+1. Start the helper. It reads `JIRA_BASE_URL`, `JIRA_EMAIL` and `JIRA_API_TOKEN` from the environment or a `.env` file in the current folder:
+
+   ```bash
+   npx screenspec-mcp sync      # http://127.0.0.1:3917, only answers Figma
+   ```
+2. In the Figma desktop app: **Plugins → Development → Import plugin from manifest…** and pick [`figma-plugin/manifest.json`](figma-plugin/manifest.json).
+3. Open the page with your specs, run **Screen Spec Sync** and press **Sync**. Select a spec first to sync just that one.
+
+Each issue labelled with the screen ID (or summarised `[C-02-1] …`) becomes a row: element, type, key with link, epic, summary, latest comment, reporter → assignee, status and fix version. Rows are updated in place, new issues are added, and rows Jira no longer returns are left alone and reported. The "Last synced" line is updated.
 
 ## The Figma template
 
@@ -223,7 +238,7 @@ flowchart LR
   S --> A[AI agent: Claude, Cursor, …]
   A -- lint / ticket draft --> DEV[Developer]
   A -. create issue .-> J[(Jira)]
-  J -. feedback log .-> F
+  J -. Sync button via local helper .-> F
 ```
 
 ## Roadmap

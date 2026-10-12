@@ -1,0 +1,113 @@
+<style>
+  :root { --fg: var(--figma-color-text, #1a1a1a); --sub: var(--figma-color-text-secondary, #777); --line: var(--figma-color-border, #e4e7ec);
+          --bg2: var(--figma-color-bg-secondary, #f7f8fa); --brand: #2a6049; --ok: #10966e; --err: #e53030; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; font: 12px/1.5 Inter, system-ui, sans-serif; color: var(--fg); background: var(--figma-color-bg, #fff); }
+  h1 { font-size: 14px; margin: 0 0 2px; }
+  p { margin: 0; color: var(--sub); }
+  .status { display: flex; gap: 8px; align-items: center; margin: 12px 0; padding: 8px 10px; background: var(--bg2); border-radius: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sub); flex: none; }
+  .dot.ok { background: var(--ok); } .dot.err { background: var(--err); }
+  code { font: 11px ui-monospace, monospace; background: var(--bg2); padding: 1px 4px; border-radius: 4px; }
+  ul { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; max-height: 180px; overflow: auto; }
+  li { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-top: 1px solid var(--line); }
+  li:first-child { border-top: 0; }
+  li .meta { margin-left: auto; color: var(--sub); white-space: nowrap; }
+  .empty { padding: 12px; color: var(--sub); }
+  button { margin-top: 12px; width: 100%; padding: 9px; border: 0; border-radius: 8px; background: var(--brand); color: #fff; font-weight: 600; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; }
+  #log { margin-top: 10px; white-space: pre-wrap; color: var(--sub); }
+  #log .err { color: var(--err); }
+</style>
+
+<h1>Screen Spec Sync</h1>
+<p>Jira → Feedback Log · 지라 내용으로 피드백 로그를 갱신해요</p>
+
+<div class="status"><span id="dot" class="dot"></span><span id="state">Checking helper…</span></div>
+
+<ul id="docs"><li class="empty">…</li></ul>
+<button id="sync" disabled>동기화 · Sync</button>
+<div id="log"></div>
+
+<script>
+  const HELPER = "http://localhost:3917";
+  const $ = (id) => document.getElementById(id);
+  let docs = [];
+  let helperOk = false;
+
+  function setState(ok, html) {
+    helperOk = ok;
+    $("dot").className = "dot " + (ok ? "ok" : "err");
+    $("state").innerHTML = html;
+    render();
+  }
+
+  async function checkHelper() {
+    try {
+      const r = await fetch(HELPER + "/health");
+      const h = await r.json();
+      if (!h.jira) return setState(false, "Helper is running, but Jira isn't set up. Add JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN to <code>.env</code> and restart it.");
+      setState(true, "Connected to the sync helper (v" + h.version + ")");
+    } catch {
+      setState(false, "Start the helper in a terminal: <code>npx screenspec-mcp sync</code><br>터미널에서 위 명령을 실행해 두세요.");
+    }
+  }
+
+  function render() {
+    const ul = $("docs");
+    if (!docs.length) {
+      ul.innerHTML = '<li class="empty">No screen specs with a Feedback Log on this page (or in the selection).</li>';
+    } else {
+      ul.innerHTML = docs.map((d) =>
+        `<li><input type="checkbox" checked data-id="${d.id}"><b>${esc(d.screenId)}</b> ${esc(d.title)}<span class="meta">${d.keys.length} rows</span></li>`).join("");
+    }
+    $("sync").disabled = !helperOk || !docs.length;
+  }
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function log(text, isErr) {
+    const line = document.createElement("div");
+    if (isErr) line.className = "err";
+    line.textContent = text;
+    $("log").appendChild(line);
+  }
+
+  const pending = new Map();
+  window.onmessage = (e) => {
+    const msg = e.data.pluginMessage;
+    if (!msg) return;
+    if (msg.type === "docs") { docs = msg.docs; render(); }
+    if (msg.type === "applied") { pending.get(msg.docId)?.(msg); pending.delete(msg.docId); }
+  };
+  const apply = (docId, rows, syncedAt) => new Promise((resolve) => {
+    pending.set(docId, resolve);
+    parent.postMessage({ pluginMessage: { type: "apply", docId, rows, syncedAt } }, "*");
+  });
+
+  $("sync").onclick = async () => {
+    $("sync").disabled = true;
+    $("log").textContent = "";
+    const chosen = [...document.querySelectorAll("#docs input:checked")].map((i) => docs.find((d) => d.id === i.dataset.id));
+    let ok = 0;
+    for (const d of chosen) {
+      try {
+        const q = new URLSearchParams({ screenId: d.screenId, lang: d.lang, keys: d.keys.join(",") });
+        const r = await fetch(HELPER + "/feedback?" + q);
+        const body = await r.json();
+        if (!r.ok) throw new Error(body.error || "HTTP " + r.status);
+        const res = await apply(d.id, body.rows, body.syncedAt);
+        if (res.error) throw new Error(res.error);
+        const x = res.result;
+        log(`${d.screenId}: ${body.rows.length} issues · +${x.added.length} new, ${x.updated.length} updated` +
+          (x.kept.length ? ` · not in Jira: ${x.kept.join(", ")}` : ""));
+        ok++;
+      } catch (err) {
+        log(`${d.screenId}: ${err.message}`, true);
+      }
+    }
+    parent.postMessage({ pluginMessage: { type: "done", text: `Synced ${ok}/${chosen.length} screen spec(s) from Jira` } }, "*");
+    render();
+  };
+
+  checkHelper();
+  setInterval(() => { if (!helperOk) checkHelper(); }, 4000);
+</script>

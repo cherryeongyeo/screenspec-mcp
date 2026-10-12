@@ -42,7 +42,8 @@
     "dist",
     "README.md",
     "LICENSE",
-    "examples"
+    "examples",
+    "figma-plugin"
   ],
   "engines": {
     "node": ">=18"
