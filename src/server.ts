@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import type { Config } from "./config.js";
+import { markers, type Config } from "./config.js";
 import { parseFigmaUrl, type FigmaSource } from "./figma/client.js";
 import { lintScreen } from "./spec/lint.js";
 import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.js";
@@ -67,13 +67,13 @@ export function createServer(source: FigmaSource, cfg: Config) {
         const out: { screenId: string; title: string; version?: string; status?: string; nodeId: string; page?: string; url?: string; template: boolean }[] = [];
         const visit = (n: FigmaNode, page?: string) => {
           const pg = n.type === "CANVAS" ? n.name : page;
-          if ((n.type === "FRAME" || n.type === "COMPONENT") && n.name.includes(cfg.screenFrameMarker)) {
+          if ((n.type === "FRAME" || n.type === "COMPONENT") && markers(cfg).some((m) => n.name.includes(m))) {
             if (n.children?.length) {
               const s = parseScreen(n, cfg, fileKey || undefined);
               out.push({ screenId: s.screenId, title: s.title, version: s.version, status: s.status, nodeId: n.id, page: pg, url: s.figmaUrl, template: s.isTemplate });
             } else {
               const m = /^\W*\s*(\S+)\s+(.+?)\s*·/.exec(n.name);
-              out.push({ screenId: m?.[1] ?? "", title: m?.[2] ?? n.name, nodeId: n.id, page: pg, url: figmaUrl(fileKey || undefined, n.id), template: m?.[1] === "[화면ID]" });
+              out.push({ screenId: m?.[1] ?? "", title: m?.[2] ?? n.name, nodeId: n.id, page: pg, url: figmaUrl(fileKey || undefined, n.id), template: cfg.placeholders.includes(m?.[1] ?? "") });
             }
             return;
           }

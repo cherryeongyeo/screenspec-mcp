@@ -1,4 +1,5 @@
 import { readFileSync, existsSync } from "node:fs";
+import { TEMPLATE_PLACEHOLDERS } from "./placeholders.generated.js";
 
 /**
  * Public, generic configuration. Team-specific values (Jira project key,
@@ -6,8 +7,8 @@ import { readFileSync, existsSync } from "node:fs";
  * SCREENSPEC_CONFIG and are merged over these defaults.
  */
 export interface Config {
-  /** Text that marks a frame as a screen spec document */
-  screenFrameMarker: string;
+  /** Text(s) that mark a frame as a screen spec document */
+  screenFrameMarker: string | string[];
   /** Depth used when scanning a whole file for screen specs */
   scanDepth: number;
   /** Values that count as "not written yet" (template guide text) */
@@ -37,6 +38,7 @@ export interface Config {
 }
 
 export const DEFAULT_PLACEHOLDERS = [
+  ...TEMPLATE_PLACEHOLDERS,
   "",
   "[화면ID]",
   "화면명",
@@ -66,11 +68,11 @@ export const DEFAULT_PLACEHOLDERS = [
 ];
 
 export const DEFAULT_CONFIG: Config = {
-  screenFrameMarker: "화면정의서",
+  screenFrameMarker: ["화면정의서", "Screen Spec"],
   scanDepth: 4,
   placeholders: DEFAULT_PLACEHOLDERS,
   feedback: {
-    doneStatuses: ["종료", "검수완료", "Done", "Closed"],
+    doneStatuses: ["종료", "검수완료", "Done", "Closed", "Approved"],
     columns: {
       요소: "element",
       유형: "type",
@@ -80,6 +82,13 @@ export const DEFAULT_CONFIG: Config = {
       "요청 → 담당": "flow",
       상태: "status",
       "반영 버전": "fixVersion",
+      Element: "element",
+      Type: "type",
+      Feedback: "summary",
+      "Latest comment": "comment",
+      "Requester → Owner": "flow",
+      Status: "status",
+      "Fix version": "fixVersion",
     },
   },
   ticket: {
@@ -87,8 +96,8 @@ export const DEFAULT_CONFIG: Config = {
     summaryTemplate: "[{ref}] {itemName} {intent}",
     labels: [],
     sections: {
-      background: ["기능"],
-      scope: ["콘텐츠", "Interaction"],
+      background: ["기능", "Function"],
+      scope: ["콘텐츠", "Content", "Interaction"],
       policy: ["Policy"],
       states: ["State"],
       exceptions: ["Exception"],
@@ -117,3 +126,6 @@ export function loadConfig(path = process.env.SCREENSPEC_CONFIG): Config {
   }
   return cfg;
 }
+
+export const markers = (cfg: Config) =>
+  Array.isArray(cfg.screenFrameMarker) ? cfg.screenFrameMarker : [cfg.screenFrameMarker];

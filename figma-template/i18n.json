@@ -1,0 +1,268 @@
+{
+  "ko": {
+    "section": "화면정의서 양식 · KOR",
+    "marker": "화면정의서",
+    "idPlaceholder": "[화면ID]",
+    "mock": {
+      "name": "[화면ID] 화면 시안 영역",
+      "title": "화면 시안 배치 영역",
+      "body": "디자이너가 최종 시안을 배치하고, PM Spec의 요소 번호와 같은 번호 뱃지(①②③…)를 시안 위에 표기합니다.\n상태별 화면(Default · Empty · Loading · Error 등)은 오른쪽에 나란히 추가합니다."
+    },
+    "components": "컴포넌트 (복제해서 사용)",
+    "badgeMock": "badge / 시안용",
+    "badgeItem": "badge / 요소 카드용",
+    "statusProp": "상태",
+    "statuses": [["작성중", "blue"], ["검토중", "orange"], ["확정", "green"]],
+    "titlePlaceholder": "화면명",
+    "summaryPlaceholder": "이 화면을 한 문장으로 설명합니다. (예: 사용자가 담은 상품을 확인하고 결제로 넘어가는 화면)",
+    "ownerPlaceholder": "@담당자",
+    "guide": {
+      "title": "작성 순서 및 역할",
+      "flow": ["① PM Spec · 기획자", "② Design Spec · 디자이너", "③ 검토 · PO", "④ 개발 · 개발자"],
+      "body": "• PM은 “무엇이 필요하고 어떤 의도로 동작하는지”만 정의합니다. px · 컬러값 · 폰트 크기 같은 디자인 수치는 쓰지 않습니다.\n• Design은 PM이 정의한 요소 번호·순서를 그대로 따라 오른쪽 Design 칸에 Visual Spec을 채웁니다.\n• 수치는 디자인 토큰명 + 값으로 표기합니다. (예: spacing/6 20px, Color/text/primary #1A1A1A)\n• 요소 번호는 화면 시안의 번호 뱃지와 1:1로 일치시킵니다.\n• 회색 가이드 문구는 실제 내용으로 교체하고, 변경 시 하단 Change Log에 기록합니다.\n• 레이어 이름(row / 기능, ITEM / 1 / 요소명 등)은 MCP가 읽는 키이므로 바꾸지 않습니다."
+    },
+    "pmHeader": "① PM Spec · 기능 및 정책 정의",
+    "pmBy": "작성: 기획자",
+    "overview": { "layer": "개요", "title": "화면 개요" },
+    "overviewRows": [
+      ["화면 목적", "이 화면에서 사용자가 무엇을 하는지"],
+      ["진입 경로", "어느 화면 / 어떤 동작으로 진입하는지 (예: 상단 GNB 아이콘 → 장바구니 클릭)"]
+    ],
+    "items": {
+      "layer": "요소별 정의",
+      "title": "요소별 정의 — 왼쪽은 PM, 오른쪽은 Design이 작성",
+      "note": "요소 개수만큼 카드를 복제해서 사용합니다.",
+      "namePlaceholder": "요소명",
+      "pmHead": "PM · 무엇이 필요하고 어떻게 동작하는가",
+      "designHead": "Design · 어떻게 보이는가"
+    },
+    "pmRows": [
+      ["기능", "이 요소가 제공하는 기능과 사용 목적"],
+      ["콘텐츠", "노출 문구 · 데이터 · 노출 조건 (예: 로그인 시에만 노출)"],
+      ["Interaction", "클릭/탭/입력 시 어떻게 동작하는지, 이동 화면"],
+      ["State", "존재하는 상태 (Default / Empty / Error / Disabled …)"],
+      ["Policy", "입력 제한, 권한, 정렬 기준 등 정책"],
+      ["Exception", "예외 상황과 처리 방식"]
+    ],
+    "designRows": [
+      ["Layout", "크기 · 여백 · 정렬 · Grid (spacing 토큰)"],
+      ["Typography", "Font / Size / Weight / Line Height"],
+      ["Color", "Text · Background · Border (토큰명 + HEX)"],
+      ["Component", "사용 컴포넌트 / Variant명"],
+      ["State Visual", "Default · Hover · Active · Focus · Disabled · Loading"],
+      ["Interaction Visual", "Transition · Animation · Tooltip · Toast"],
+      ["Responsive", "Desktop / Tablet / Mobile 변화"],
+      ["Asset", "Icon · Image · Illustration · Lottie"]
+    ],
+    "feedback": {
+      "title": "Feedback Log",
+      "chips": ["Jira → Figma 단방향", "요청 시 갱신"],
+      "sync": "동기화 열기 ↗",
+      "desc": "제목이나 레이블에 이 화면ID가 있는 Jira 티켓을 가져와 표시합니다. 피드백 작성·댓글·상태 변경은 Jira에서만 하고, 이 표는 직접 수정하지 않습니다.",
+      "cols": ["요소", "유형", "Jira", "피드백 내용", "최근 댓글", "요청 → 담당", "상태", "반영 버전"],
+      "exampleRowName": "row / 예시",
+      "example": {
+        "element": ["ITEM 1", "요소명"], "type": "작업", "jira": ["PROJ-000 ↗", "에픽: 에픽명"],
+        "summary": "선택 상태와 기본 상태가 잘 구분되지 않음. 선택 상태의 강조 대비 조정 요청",
+        "comment": ["“강조 테두리 2px로 조정한 시안 공유드릴게요.”", "Design · YYYY.MM.DD · 댓글 3"],
+        "flow": "QA → Design", "status": "진행중", "version": ["—", "반영 시 Change Log 버전 기입"]
+      },
+      "exampleTag": "↑ 예시 데이터입니다. 실제 사용 시 Jira 티켓 데이터로 대체됩니다.",
+      "legendType": "유형", "legendStatus": "상태",
+      "types": [["버그", "red"], ["작업", "blue"], ["하위 작업", "gray"]],
+      "states": [["미해결", "gray"], ["진행중", "orange"], ["작업완료", "green"], ["검수요청", "blue"], ["검수중", "blue"], ["수정요청", "red"], ["검수완료", "green"], ["종료", "green"], ["보류", "neutral"]],
+      "legendNote": "※ 상태는 Jira 프로젝트의 상태명을 그대로 표시",
+      "synced": "최종 동기화 YYYY.MM.DD HH:mm · Jira 기준",
+      "noComment": "댓글 없음"
+    },
+    "changeLog": {
+      "title": "Change Log", "layer": "변경 이력",
+      "cols": ["버전", "날짜", "역할", "작성자", "변경 내용"],
+      "rows": [["v1.0", "YYYY-MM-DD", "PM", "@이름", "최초 작성"], ["v1.1", "YYYY-MM-DD", "Design", "@이름", "Visual Spec 추가"]]
+    },
+    "sample": {
+      "id": "C-02", "title": "장바구니 목록", "version": "v1.2", "status": "검토중",
+      "summary": "담아둔 상품을 확인하고 수량을 바꾸거나 주문으로 넘어가는 화면",
+      "owners": ["PM @김기획", "Design @박디자인", "DEV @이개발", "QA @최품질"],
+      "overview": ["사용자가 담아둔 상품을 확인하고 결제할 상품을 고른다", "상단 GNB 장바구니 아이콘 클릭 / 상품 상세 → ‘장바구니 담기’ 후 토스트의 ‘바로가기’"],
+      "items": [
+        {
+          "name": "상품 리스트",
+          "pm": [
+            "담은 상품을 판매자별로 묶어 보여주고, 결제할 상품을 선택한다",
+            "상품 이미지 · 상품명 · 옵션 · 수량 · 가격. 품절 상품은 리스트 하단에 별도 그룹으로 노출",
+            "체크박스로 선택/해제. 상품명 클릭 시 상품 상세로 이동",
+            "Default / Loading / Empty(담은 상품 없음) / Error(불러오기 실패)",
+            "기본값은 전체 선택. 품절 상품은 선택할 수 없음. 최대 100개까지 담을 수 있음",
+            "가격이 바뀐 상품은 ‘가격 변동’ 배지와 이전 가격을 함께 표시. 목록 API 실패 시 재시도 버튼 노출"
+          ],
+          "design": [
+            "리스트 폭 FILL · 행 높이 112 · 좌우 padding spacing/6 20px",
+            "Body/M 16 · Medium · 24 / Caption 13 · Regular · 18",
+            "Color/text/primary #1A1A1A · Color/border/subtle #EEF0F3",
+            "CartItem / State=Default, Soldout",
+            "Default · Selected · Disabled(품절)",
+            null, null,
+            "Icon/check-16 · Icon/close-16"
+          ]
+        },
+        {
+          "name": "수량 변경",
+          "pm": [
+            "상품별 수량을 1개 단위로 조절한다",
+            "− 버튼 · 수량 · + 버튼",
+            "+/− 클릭 시 화면에 즉시 반영하고, 0.5초 뒤 서버에 저장",
+            "Default / Disabled(최소·최대 수량)",
+            "최소 1개, 최대 재고 수량까지. 1개일 때 − 버튼 비활성",
+            "재고가 부족하면 ‘남은 수량 N개’ 토스트를 띄우고 최대 수량으로 맞춤"
+          ],
+          "design": [null, null, null, null, null, null, null, null]
+        }
+      ],
+      "feedback": [
+        ["C-02-1", "버그", "DEMO-128", "에픽: 장바구니", "품절 상품이 선택된 상태로 결제 금액에 포함됨", ["“품절 상품 체크박스 비활성 처리했습니다.”", "이개발 · 2026.09.24 · 댓글 2"], "김기획 → 이개발", "검수요청", "v1.2.0"],
+        ["C-02-2", "작업", "DEMO-131", "에픽: 장바구니", "수량 변경 시 서버 저장 지연(디바운스) 적용", null, "김기획 → 이개발", "진행중", "—"],
+        ["C-02-1", "버그", "DEMO-119", "에픽: 장바구니", "가격 변동 배지 색상이 디자인과 다름", ["“Color/status/warning 토큰으로 수정했어요.”", "박디자인 · 2026.09.18 · 댓글 1"], "최품질 → 박디자인", "종료", "v1.1.0"]
+      ],
+      "synced": "최종 동기화 2026.10.12 10:30 · Jira 기준",
+      "changeLog": [
+        ["v1.0", "2026-09-01", "PM", "@김기획", "최초 작성"],
+        ["v1.1", "2026-09-10", "Design", "@박디자인", "Visual Spec 추가"],
+        ["v1.2", "2026-09-22", "PM", "@김기획", "‘품절 상품 선택 불가’ 정책 추가, 수량 변경 요소 추가"]
+      ]
+    }
+  },
+  "en": {
+    "section": "Screen Spec Template · ENG",
+    "marker": "Screen Spec",
+    "idPlaceholder": "[Screen ID]",
+    "mock": {
+      "name": "[Screen ID] Mockup area",
+      "title": "Place the mockup here",
+      "body": "The designer places the final mockup and marks each element with the same number badge (①②③…) used in the PM Spec.\nAdd state screens (Default · Empty · Loading · Error, etc.) side by side to the right."
+    },
+    "components": "Components (duplicate to use)",
+    "badgeMock": "badge / mockup",
+    "badgeItem": "badge / element card",
+    "statusProp": "Status",
+    "statuses": [["Draft", "blue"], ["In review", "orange"], ["Final", "green"]],
+    "titlePlaceholder": "Screen name",
+    "summaryPlaceholder": "Describe this screen in one sentence. (e.g. Where users review items in their cart and move on to checkout)",
+    "ownerPlaceholder": "@owner",
+    "guide": {
+      "title": "Workflow & roles",
+      "flow": ["① PM Spec · PM", "② Design Spec · Designer", "③ Review · PO", "④ Build · Developer"],
+      "body": "• PM defines only what is needed and how it should behave. No pixel values, colors or font sizes.\n• Design follows the PM's element numbers and order, and fills in the Visual Spec in the right-hand Design column.\n• Write values as design token + value. (e.g. spacing/6 20px, Color/text/primary #1A1A1A)\n• Element numbers match the number badges on the mockup one-to-one.\n• Replace the grey guide text with real content, and record every change in the Change Log below.\n• Layer names (row / Function, ITEM / 1 / Element name, …) are keys read by the MCP server. Don't rename them."
+    },
+    "pmHeader": "① PM Spec · Features & policy",
+    "pmBy": "Written by: PM",
+    "overview": { "layer": "Overview", "title": "Screen overview" },
+    "overviewRows": [
+      ["Purpose", "What the user does on this screen"],
+      ["Entry point", "Which screen / action leads here (e.g. Top nav icon → Cart)"]
+    ],
+    "items": {
+      "layer": "Elements",
+      "title": "Elements — PM writes the left, Design writes the right",
+      "note": "Duplicate one card per element.",
+      "namePlaceholder": "Element name",
+      "pmHead": "PM · What is needed and how it behaves",
+      "designHead": "Design · How it looks"
+    },
+    "pmRows": [
+      ["Function", "What this element does and why it exists"],
+      ["Content", "Copy · data · display conditions (e.g. shown only when signed in)"],
+      ["Interaction", "What happens on click / tap / input, and where it leads"],
+      ["State", "States that exist (Default / Empty / Error / Disabled …)"],
+      ["Policy", "Rules such as input limits, permissions, sort order"],
+      ["Exception", "Edge cases and how they are handled"]
+    ],
+    "designRows": [
+      ["Layout", "Size · spacing · alignment · grid (spacing tokens)"],
+      ["Typography", "Font / Size / Weight / Line Height"],
+      ["Color", "Text · Background · Border (token + HEX)"],
+      ["Component", "Component / variant used"],
+      ["State Visual", "Default · Hover · Active · Focus · Disabled · Loading"],
+      ["Interaction Visual", "Transition · Animation · Tooltip · Toast"],
+      ["Responsive", "Desktop / Tablet / Mobile changes"],
+      ["Asset", "Icon · Image · Illustration · Lottie"]
+    ],
+    "feedback": {
+      "title": "Feedback Log",
+      "chips": ["Jira → Figma, one way", "Refreshed on request"],
+      "sync": "Open sync ↗",
+      "desc": "Shows Jira issues whose title or labels contain this screen ID. Write feedback, comments and status changes in Jira only. Don't edit this table by hand.",
+      "cols": ["Element", "Type", "Jira", "Feedback", "Latest comment", "Requester → Owner", "Status", "Fix version"],
+      "exampleRowName": "row / Example",
+      "example": {
+        "element": ["ITEM 1", "Element name"], "type": "Task", "jira": ["PROJ-000 ↗", "Epic: Epic name"],
+        "summary": "Selected and default states look too similar. Please increase the contrast of the selected state",
+        "comment": ["“I'll share a version with a 2px highlight border.”", "Design · YYYY.MM.DD · 3 comments"],
+        "flow": "QA → Design", "status": "In Progress", "version": ["—", "Add the Change Log version once shipped"]
+      },
+      "exampleTag": "↑ Example data. Replaced by Jira issues when in use.",
+      "legendType": "Type", "legendStatus": "Status",
+      "types": [["Bug", "red"], ["Task", "blue"], ["Sub-task", "gray"]],
+      "states": [["To Do", "gray"], ["In Progress", "orange"], ["Done", "green"], ["Review Requested", "blue"], ["In Review", "blue"], ["Changes Requested", "red"], ["Approved", "green"], ["Closed", "green"], ["On Hold", "neutral"]],
+      "legendNote": "※ Status names are shown exactly as in your Jira project",
+      "synced": "Last synced YYYY.MM.DD HH:mm · from Jira",
+      "noComment": "No comments"
+    },
+    "changeLog": {
+      "title": "Change Log", "layer": "Change history",
+      "cols": ["Version", "Date", "Role", "Author", "Changes"],
+      "rows": [["v1.0", "YYYY-MM-DD", "PM", "@name", "First draft"], ["v1.1", "YYYY-MM-DD", "Design", "@name", "Visual Spec added"]]
+    },
+    "sample": {
+      "id": "C-02", "title": "Cart list", "version": "v1.2", "status": "In review",
+      "summary": "Where users review items in their cart, change quantities and move on to checkout",
+      "owners": ["PM @Jamie", "Design @Sam", "DEV @Alex", "QA @Riley"],
+      "overview": ["The user reviews saved items and picks what to pay for", "Top nav cart icon / Product detail → ‘Add to cart’ → ‘Go to cart’ in the toast"],
+      "items": [
+        {
+          "name": "Item list",
+          "pm": [
+            "Shows cart items grouped by seller and lets the user pick what to check out",
+            "Image · name · option · quantity · price. Sold-out items appear as a separate group at the bottom",
+            "Checkbox selects / deselects. Tapping the name opens the product detail",
+            "Default / Loading / Empty (cart is empty) / Error (failed to load)",
+            "All items are selected by default. Sold-out items can't be selected. Up to 100 items",
+            "If a price changed, show a ‘Price changed’ badge with the old price. If the list API fails, show a retry button"
+          ],
+          "design": [
+            "List width FILL · row height 112 · horizontal padding spacing/6 20px",
+            "Body/M 16 · Medium · 24 / Caption 13 · Regular · 18",
+            "Color/text/primary #1A1A1A · Color/border/subtle #EEF0F3",
+            "CartItem / State=Default, Soldout",
+            "Default · Selected · Disabled (sold out)",
+            null, null,
+            "Icon/check-16 · Icon/close-16"
+          ]
+        },
+        {
+          "name": "Quantity stepper",
+          "pm": [
+            "Changes the quantity of each item one by one",
+            "− button · quantity · + button",
+            "Updates on screen immediately, saves to the server after 0.5s",
+            "Default / Disabled (min · max quantity)",
+            "Min 1, max equals stock. The − button is disabled at 1",
+            "If stock runs out, show an ‘Only N left’ toast and set the quantity to the max"
+          ],
+          "design": [null, null, null, null, null, null, null, null]
+        }
+      ],
+      "feedback": [
+        ["C-02-1", "Bug", "DEMO-128", "Epic: Cart", "Sold-out items stay selected and are added to the total", ["“Sold-out checkboxes are disabled now.”", "Alex · 2026.09.24 · 2 comments"], "Jamie → Alex", "Review Requested", "v1.2.0"],
+        ["C-02-2", "Task", "DEMO-131", "Epic: Cart", "Debounce server save when quantity changes", null, "Jamie → Alex", "In Progress", "—"],
+        ["C-02-1", "Bug", "DEMO-119", "Epic: Cart", "Price-changed badge color differs from the design", ["“Switched to the Color/status/warning token.”", "Sam · 2026.09.18 · 1 comment"], "Riley → Sam", "Closed", "v1.1.0"]
+      ],
+      "synced": "Last synced 2026.10.12 10:30 · from Jira",
+      "changeLog": [
+        ["v1.0", "2026-09-01", "PM", "@Jamie", "First draft"],
+        ["v1.1", "2026-09-10", "Design", "@Sam", "Visual Spec added"],
+        ["v1.2", "2026-09-22", "PM", "@Jamie", "Added ‘sold-out items can't be selected’ policy and the quantity stepper"]
+      ]
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import type { Config } from "../config.js";
+import { markers, type Config } from "../config.js";
 import type {
   ChangeLogRow,
   FeedbackRow,
@@ -27,7 +27,7 @@ export function find(n: FigmaNode | undefined, pred: (n: FigmaNode) => boolean):
   return undefined;
 }
 
-const byName = (name: string) => (n: FigmaNode) => n.name === name;
+const byName = (...names: string[]) => (n: FigmaNode) => names.includes(n.name);
 
 /** Text of all TEXT descendants, in document order. */
 export function texts(n: FigmaNode | undefined): string[] {
@@ -100,7 +100,7 @@ function parseFeedback(doc: FigmaNode, cfg: Config): FeedbackRow[] {
       const get = (key: string) => cells[columns.indexOf(key)] ?? [];
       const jira = get("jira");
       const comment = get("comment");
-      const hasComment = comment.length > 0 && !/^댓글 없음$/.test(comment[0]);
+      const hasComment = comment.length > 0 && !/^(댓글 없음|No comments?)$/i.test(comment[0]);
       return {
         element: get("element")[0] ?? "",
         type: get("type")[0] ?? "",
@@ -118,7 +118,7 @@ function parseFeedback(doc: FigmaNode, cfg: Config): FeedbackRow[] {
 }
 
 function parseChangeLog(doc: FigmaNode, cfg: Config): ChangeLogRow[] {
-  const log = find(doc, byName("변경 이력")) ?? find(doc, byName("Change Log"));
+  const log = find(doc, byName("변경 이력", "Change history")) ?? find(doc, byName("Change Log"));
   return kids(log)
     .filter((r) => r.name === "row" || r.name.startsWith("row /"))
     .map((r) => {
@@ -129,7 +129,7 @@ function parseChangeLog(doc: FigmaNode, cfg: Config): ChangeLogRow[] {
 }
 
 function parseStatus(header: FigmaNode | undefined): string {
-  const inst = find(header, (n) => n.type === "INSTANCE" && n.name === "상태") ??
+  const inst = find(header, (n) => n.type === "INSTANCE" && (n.name === "상태" || /^status$/i.test(n.name))) ??
     find(header, (n) => n.type === "INSTANCE" && /status/i.test(n.name));
   if (!inst) return "";
   const variant = Object.values(inst.componentProperties ?? {}).find((p) => p.type === "VARIANT");
@@ -141,7 +141,7 @@ function parseStatus(header: FigmaNode | undefined): string {
 
 export function isScreenDoc(n: FigmaNode, cfg: Config): boolean {
   return (n.type === "FRAME" || n.type === "COMPONENT") &&
-    n.name.includes(cfg.screenFrameMarker) &&
+    markers(cfg).some((m) => n.name.includes(m)) &&
     !!find(n, byName("Doc Header"));
 }
 
@@ -187,7 +187,7 @@ export function parseScreen(doc: FigmaNode, cfg: Config, fileKey?: string): Scre
     nodeId: doc.id,
     figmaUrl: figmaUrl(fileKey, doc.id),
     isTemplate: !isFilled(screenId, cfg),
-    overview: parseRows(find(doc, byName("개요")), cfg),
+    overview: parseRows(find(doc, byName("개요", "Overview")), cfg),
     items: parseItems(doc, screenId, cfg).sort((a, b) => a.no - b.no),
     feedback: parseFeedback(doc, cfg),
     feedbackLastSynced: syncedText && syncedText !== "last-synced" ? syncedText : undefined,

@@ -31,6 +31,21 @@ function stateList(text: string): string[] {
   return text.split(/\s*[/,·]\s*/).map((s) => s.trim()).filter(Boolean);
 }
 
+const STR = {
+  ko: { intent: "구현", state: (st: string) => `${st} 상태가 정의대로 표시된다`, screen: "화면", element: "요소", spec: "정의서",
+    bg: "배경 / 목적", scope: "구현 범위", policy: "정책", states: "상태", exc: "예외 처리", ac: "완료 조건", design: "디자인 참고",
+    fb: "열린 피드백", notes: "메모", link: "Figma에서 보기", type: "작업" },
+  en: { intent: "implementation", state: (st: string) => `${st} state is shown as specified`, screen: "Screen", element: "Element", spec: "spec",
+    bg: "Background", scope: "Scope", policy: "Policy", states: "States", exc: "Edge cases", ac: "Acceptance criteria", design: "Design reference",
+    fb: "Open feedback", notes: "Notes", link: "Open in Figma", type: "Task" },
+};
+
+/** English when the spec uses the English template (no Hangul in field labels). */
+export function detectLang(s: ScreenSpec): "ko" | "en" {
+  const labels = [...s.overview, ...s.items.flatMap((i) => i.pm)].map((f) => f.label).join(" ");
+  return /[가-힣]/.test(labels) ? "ko" : "en";
+}
+
 function fill(tpl: string, vars: Record<string, string>) {
   return tpl.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "").replace(/\s+/g, " ").trim();
 }
@@ -42,10 +57,12 @@ export function draftTicket(
   opts: { intent?: string; issueType?: string; extraNotes?: string } = {},
 ): TicketDraft {
   const sec = cfg.ticket.sections;
+  const lang = detectLang(s);
+  const t = STR[lang];
   const pm = item?.pm ?? [];
   const ref = item?.ref ?? s.screenId;
   const name = item?.name ?? s.title;
-  const intent = opts.intent ?? "구현";
+  const intent = opts.intent ?? t.intent;
   const link = item ? s.figmaUrl?.replace(/node-id=[^&]+/, `node-id=${item.nodeId.replace(":", "-")}`) : s.figmaUrl;
 
   const background = [...s.overview.filter((f) => f.filled), ...pick(pm, sec.background)];
@@ -55,7 +72,7 @@ export function draftTicket(
   const exceptions = pick(pm, sec.exceptions);
 
   const ac: string[] = [
-    ...states.flatMap((f) => stateList(f.value).map((st) => `${st} 상태가 정의대로 표시된다`)),
+    ...states.flatMap((f) => stateList(f.value).map(t.state)),
     ...policy.flatMap((f) => splitStatements(f.value)),
     ...exceptions.flatMap((f) => splitStatements(f.value)),
   ];
@@ -73,36 +90,36 @@ export function draftTicket(
     fields.forEach((f) => md.push(`**${f.label}**: ${f.value}`));
     md.push("");
   };
-  md.push(`> 화면: ${s.screenId} ${s.title}${item ? ` · 요소 ${item.no}. ${item.name}` : ""} (정의서 ${s.version || "-"})`, "");
-  section("배경 / 목적", background);
-  section("구현 범위", scope);
-  section("정책", policy);
-  section("상태", states);
-  section("예외 처리", exceptions);
+  md.push(`> ${t.screen}: ${s.screenId} ${s.title}${item ? ` · ${t.element} ${item.no}. ${item.name}` : ""} (${t.spec} ${s.version || "-"})`, "");
+  section(t.bg, background);
+  section(t.scope, scope);
+  section(t.policy, policy);
+  section(t.states, states);
+  section(t.exc, exceptions);
   if (ac.length) {
-    md.push("## 완료 조건");
+    md.push(`## ${t.ac}`);
     ac.forEach((a) => md.push(`- [ ] ${a}`));
     md.push("");
   }
   const design = (item?.design ?? []).filter((f) => f.filled);
   if (design.length) {
-    md.push("## 디자인 참고");
+    md.push(`## ${t.design}`);
     design.forEach((f) => md.push(`- ${f.label}: ${f.value}`));
     md.push("");
   }
   if (relatedFb.length) {
-    md.push("## 열린 피드백");
+    md.push(`## ${t.fb}`);
     relatedFb.forEach((fb) => md.push(`- ${fb.jiraKey} (${fb.status}) ${fb.summary}`));
     md.push("");
   }
-  if (opts.extraNotes) md.push("## 메모", opts.extraNotes, "");
-  if (link) md.push(`[Figma에서 보기](${link})`);
+  if (opts.extraNotes) md.push(`## ${t.notes}`, opts.extraNotes, "");
+  if (link) md.push(`[${t.link}](${link})`);
 
   const labels = [...new Set([s.screenId, ...cfg.ticket.labels].filter(Boolean))];
 
   return {
     summary: fill(cfg.ticket.summaryTemplate, { screenId: s.screenId, ref, itemName: name, intent }),
-    issueType: opts.issueType ?? cfg.ticket.defaultIssueType,
+    issueType: opts.issueType ?? (lang === "en" && cfg.ticket.defaultIssueType === "작업" ? t.type : cfg.ticket.defaultIssueType),
     projectKey: cfg.ticket.projectKey,
     labels,
     description: md.join("\n").trim(),
