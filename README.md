@@ -2,6 +2,8 @@
 
 **Turn Figma screen specs into the single source of truth for developers and their AI agents.**
 
+**English** · [한국어](https://github.com/cherryeongyeo/screenspec-mcp/blob/main/README.ko.md)
+
 [![npm](https://img.shields.io/npm/v/screenspec-mcp?color=2a6049)](https://www.npmjs.com/package/screenspec-mcp)
 [![CI](https://github.com/cherryeongyeo/screenspec-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/cherryeongyeo/screenspec-mcp/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/screenspec-mcp?color=3a6ce8)](LICENSE)
@@ -218,15 +220,5 @@ node scripts/live-test.mjs <url> # runs every tool against a real Figma file (FI
 ```
 
 ---
-
-### 한국어 요약
-
-피그마 화면정의서를 개발의 단일 기준으로 만드는 MCP 서버예요.
-
-- **기획자:** 요소별 정책(기능, 콘텐츠, Interaction, State, Policy, Exception)을 피그마에 한 번만 써요.
-- **디자이너:** 옆 칸에 디자인 토큰 기준으로 Visual Spec을 채워요.
-- **개발자:** AI 에이전트에게 "C-02 1번 요소 지라 티켓 초안 만들어줘"라고 하면, 정책에서 뽑은 완료 조건이 담긴 티켓을 받아요.
-
-한국어/영어 피그마 양식을 함께 제공해요. 팀 고유 설정(Jira 프로젝트 키, 상태명 등)은 비공개 config로 분리했어요.
 
 MIT © Chaeryeong Yeo
