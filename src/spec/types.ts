@@ -5,6 +5,8 @@ export interface FigmaNode {
   type: string;
   characters?: string;
   componentProperties?: Record<string, { type: string; value: string | boolean }>;
+  /** Variable modes pinned on this node (collection id -> mode id) */
+  explicitVariableModes?: Record<string, string>;
   children?: FigmaNode[];
 }
 
@@ -54,6 +56,8 @@ export interface ScreenSpec {
   summary: string;
   version: string;
   status: string;
+  /** true when the status chip pins its own variable mode and may not follow the frame's status */
+  statusModeConflict?: boolean;
   owners: { role: string; name: string }[];
   nodeId: string;
   figmaUrl?: string;

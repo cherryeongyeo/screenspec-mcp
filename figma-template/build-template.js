@@ -202,8 +202,8 @@ function buildDoc(S) {
   chip(idRow, id, K.brand, "#ffffff", { name: `chip / ${L.idPlaceholder}`, fs: 16 });
   chip(idRow, filled ? S.version : "v1.0", K.brandBg, K.brand, { name: `chip / ${filled ? S.version : "v1.0"}` });
   const stInst = status.instance(); stInst.name = L.statusProp; idRow.appendChild(stInst);
-  status.apply(stInst, filled ? S.status : L.statuses[0][0]);
-  if (status.kind === "variables") status.apply(doc, filled ? S.status : L.statuses[0][0]);
+  // variables: set the mode on the spec frame only, so the chip follows it
+  status.apply(status.kind === "variables" ? doc : stInst, filled ? S.status : L.statuses[0][0]);
   T(head, filled ? S.title : L.titlePlaceholder, { fs: 34, fw: "Bold", w: "FILL" });
   T(head, filled ? S.summary : L.summaryPlaceholder, { fs: 16, color: filled ? K.sub : K.ph, w: "FILL" });
   const owners = AL(head, "H", { name: "owners", gap: 8, center: true });

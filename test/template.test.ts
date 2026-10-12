@@ -65,3 +65,27 @@ for (const [lang, expectTitle, expectStatus, fn] of [
     });
   });
 }
+
+describe("status chip variable mode", () => {
+  const withModes = (chipMode: string) => {
+    const doc = findScreenDocs(load("en"), cfg)[0];
+    doc.explicitVariableModes = { "VariableCollectionId:1": "2:7" };
+    const chip = (function f(n: FigmaNode): FigmaNode | undefined {
+      if (n.type === "INSTANCE" && n.name === "Status") return n;
+      for (const c of n.children ?? []) { const r = f(c); if (r) return r; }
+    })(doc)!;
+    chip.explicitVariableModes = { "VariableCollectionId:1": chipMode };
+    return parseScreen(doc, cfg);
+  };
+
+  it("warns (in English) when the chip pins a different mode than its frame", () => {
+    const s = withModes("2:6");
+    expect(s.statusModeConflict).toBe(true);
+    const r = lintScreen(s, cfg);
+    expect(r.issues.find((i) => i.where === "header")?.message).toMatch(/pins its own variable mode/);
+  });
+
+  it("stays quiet when the modes agree", () => {
+    expect(withModes("2:7").statusModeConflict).toBeUndefined();
+  });
+});

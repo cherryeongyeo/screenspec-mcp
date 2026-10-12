@@ -128,9 +128,19 @@ function parseChangeLog(doc: FigmaNode, cfg: Config): ChangeLogRow[] {
     .filter((r) => [r.version, r.change].some((v) => isFilled(v, cfg)));
 }
 
+const findStatusChip = (header: FigmaNode | undefined) =>
+  find(header, (n) => n.type === "INSTANCE" && (n.name === "상태" || /^status$/i.test(n.name))) ??
+  find(header, (n) => n.type === "INSTANCE" && /status/i.test(n.name));
+
+/** The chip pins a mode that differs from the one set on the spec frame. */
+function statusModeConflict(doc: FigmaNode, header: FigmaNode | undefined): boolean {
+  const own = findStatusChip(header)?.explicitVariableModes ?? {};
+  const frame = doc.explicitVariableModes ?? {};
+  return Object.entries(own).some(([col, mode]) => col in frame && frame[col] !== mode);
+}
+
 function parseStatus(header: FigmaNode | undefined): string {
-  const inst = find(header, (n) => n.type === "INSTANCE" && (n.name === "상태" || /^status$/i.test(n.name))) ??
-    find(header, (n) => n.type === "INSTANCE" && /status/i.test(n.name));
+  const inst = findStatusChip(header);
   if (!inst) return "";
   const variant = Object.values(inst.componentProperties ?? {}).find((p) => p.type === "VARIANT");
   if (variant) return String(variant.value);
@@ -183,6 +193,7 @@ export function parseScreen(doc: FigmaNode, cfg: Config, fileKey?: string): Scre
     summary: isFilled(summary, cfg) ? summary : "",
     version: texts(verChip)[0] ?? "",
     status: parseStatus(header),
+    statusModeConflict: statusModeConflict(doc, header) || undefined,
     owners,
     nodeId: doc.id,
     figmaUrl: figmaUrl(fileKey, doc.id),
