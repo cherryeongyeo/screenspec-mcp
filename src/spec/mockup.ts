@@ -46,6 +46,33 @@ export function findMockups(root: FigmaNode, screenId: string, markers = MOCKUP_
   return out;
 }
 
+function pathTo(root: FigmaNode, id: string): string[] | undefined {
+  if (root.id === id) return [root.id];
+  for (const c of root.children ?? []) {
+    const p = pathTo(c, id);
+    if (p) return [root.id, ...p];
+  }
+  return undefined;
+}
+
+/**
+ * Keep the mockups that sit closest to the spec document in the layer tree
+ * (e.g. the same section), so a KOR spec doesn't pick the ENG mockup of the same screen ID.
+ */
+export function nearestMockups(root: FigmaNode, specNodeId: string, mockups: FigmaNode[]): FigmaNode[] {
+  const spec = pathTo(root, specNodeId);
+  if (!spec || mockups.length < 2) return mockups;
+  const shared = (m: FigmaNode) => {
+    const p = pathTo(root, m.id) ?? [];
+    let i = 0;
+    while (i < p.length && i < spec.length && p[i] === spec[i]) i++;
+    return i;
+  };
+  const scored = mockups.map((m) => ({ m, d: shared(m) }));
+  const best = Math.max(...scored.map((x) => x.d));
+  return scored.filter((x) => x.d === best).map((x) => x.m);
+}
+
 /** Badge number from the instance's TEXT property or its text child. */
 function badgeNumber(n: FigmaNode): number | undefined {
   const prop = Object.values(n.componentProperties ?? {}).find((p) => p.type === "TEXT");

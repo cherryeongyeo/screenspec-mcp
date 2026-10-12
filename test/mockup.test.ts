@@ -7,7 +7,7 @@ import { DEFAULT_CONFIG } from "../src/config.js";
 import { cropPng } from "../src/figma/crop.js";
 import type { FigmaSource } from "../src/figma/client.js";
 import { createServer } from "../src/server.js";
-import { findBadges, findMockups, regionFor } from "../src/spec/mockup.js";
+import { findBadges, findMockups, nearestMockups, regionFor } from "../src/spec/mockup.js";
 import type { FigmaNode } from "../src/spec/types.js";
 
 // --- the ENG cart sample spec (exported from Figma) + a synthetic mockup frame ---
@@ -59,6 +59,18 @@ describe("mockup regions", () => {
   it("falls back to a box next to the badge, and knows nothing about unknown numbers", () => {
     expect(regionFor(mockup, 7)).toMatchObject({ source: "badge-box", rect: { x: 300, y: 260, width: 100, height: 40 } });
     expect(regionFor(mockup, 3)).toBeUndefined();
+  });
+});
+
+describe("nearestMockups", () => {
+  it("keeps the mockup in the spec's own section when two languages share a screen ID", () => {
+    const ko: FigmaNode = { id: "s:ko", name: "KOR", type: "SECTION", children: [{ id: "d:ko", name: "spec", type: "FRAME" }, { id: "m:ko", name: "C-02 시안", type: "FRAME" }] };
+    const en: FigmaNode = { id: "s:en", name: "ENG", type: "SECTION", children: [{ id: "d:en", name: "spec", type: "FRAME" }, { id: "m:en", name: "C-02 Mockup", type: "FRAME" }] };
+    const r: FigmaNode = { id: "0:0", name: "doc", type: "DOCUMENT", children: [{ id: "0:1", name: "Page", type: "CANVAS", children: [ko, en] }] };
+    const all = findMockups(r, "C-02");
+    expect(nearestMockups(r, "d:en", all).map((m) => m.id)).toEqual(["m:en"]);
+    expect(nearestMockups(r, "d:ko", all).map((m) => m.id)).toEqual(["m:ko"]);
+    expect(nearestMockups(r, "unknown", all)).toHaveLength(2);
   });
 });
 

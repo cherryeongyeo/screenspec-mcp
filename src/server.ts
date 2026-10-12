@@ -4,7 +4,7 @@ import { markers, type Config } from "./config.js";
 import { parseFigmaUrl, type FigmaSource } from "./figma/client.js";
 import type { IssueTracker, JiraIssueRef } from "./jira/client.js";
 import { lintMockup, lintScreen } from "./spec/lint.js";
-import { findBadges, findMockups, pad, regionFor, type ElementRegion } from "./spec/mockup.js";
+import { findBadges, findMockups, nearestMockups, pad, regionFor, type ElementRegion } from "./spec/mockup.js";
 import { cropPng } from "./figma/crop.js";
 import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.js";
 import { draftTicket } from "./spec/ticket.js";
@@ -53,8 +53,9 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
   async function loadMockups(fileKey: string, s: ScreenSpec): Promise<FigmaNode[]> {
     if (s.isTemplate) return [];
     const root = await source.getFile(fileKey, cfg.scanDepth);
-    const frames = findMockups(root, s.screenId, cfg.mockup.markers);
-    return Promise.all(frames.map((f) => (f.children?.length && f.absoluteBoundingBox ? f : source.getNode(fileKey, f.id))));
+    const frames = nearestMockups(root, s.nodeId, findMockups(root, s.screenId, cfg.mockup.markers));
+    // The file scan is depth-limited, so fetch each mockup's full layer tree.
+    return Promise.all(frames.map((f) => source.getNode(fileKey, f.id)));
   }
 
   /** Region + cropped image for element `no`, from the first mockup that has its badge or area. */

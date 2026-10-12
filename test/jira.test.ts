@@ -85,6 +85,11 @@ describe("Figma dev resources", () => {
     await expect(new FigmaRestClient("tok", 0, bad.fn).addDevResource({ name: "n", url: "u", file_key: "F", node_id: "1:2" }))
       .rejects.toThrow("Invalid scope");
   });
+
+  it("names the missing scope when version history is forbidden", async () => {
+    const bad = mockFetch([{ status: 403, body: { message: "Invalid scope: [file_content:read]" } }]);
+    await expect(new FigmaRestClient("tok", 0, bad.fn).getVersions("F")).rejects.toThrow("file_versions:read");
+  });
 });
 
 describe("create_jira_ticket / link_jira_issue tools", () => {

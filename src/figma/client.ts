@@ -44,6 +44,14 @@ export function parseFigmaUrl(url: string): { fileKey: string; nodeId?: string }
   return { fileKey, nodeId: node ? node.replace("-", ":") : undefined };
 }
 
+/** Which token scope a Figma endpoint needs, for a readable 403. */
+export function scopeHint(path: string): string {
+  const need = /\/versions/.test(path) ? "File versions: Read (file_versions:read)"
+    : /dev_resources/.test(path) ? "Dev resources: Read and write (file_dev_resources:read/write)"
+    : "File content: Read (file_content:read)";
+  return `\nYour FIGMA_TOKEN is missing a scope. Create a new personal access token with ${need} and put it in .env.`;
+}
+
 export class FigmaRestClient implements FigmaSource {
   private cache = new Map<string, { at: number; data: unknown }>();
   constructor(private token: string, private ttlMs = 60_000, private http: typeof fetch = fetch) {}
@@ -54,7 +62,8 @@ export class FigmaRestClient implements FigmaSource {
     const res = await this.http(`https://api.figma.com${path}`, { headers: { "X-Figma-Token": this.token } });
     if (!res.ok) {
       const body = await res.text();
-      throw new Error(`Figma API ${res.status} on ${path}: ${body.slice(0, 300)}`);
+      const scope = res.status === 403 && /Invalid scope/i.test(body) ? scopeHint(path) : "";
+      throw new Error(`Figma API ${res.status} on ${path}: ${body.slice(0, 300)}${scope}`);
     }
     const data = (await res.json()) as T;
     this.cache.set(path, { at: Date.now(), data });
