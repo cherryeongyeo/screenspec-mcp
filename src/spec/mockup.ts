@@ -74,8 +74,8 @@ const relative = (r: Rect, origin: Rect): Rect => ({
 /**
  * Where element `no` sits on the mockup:
  *  1. a layer named `area / <no>` (explicit, most precise)
- *  2. the smallest layer under the badge's bottom-right corner
- *     (badges are placed on the top-left corner of the element they mark)
+ *  2. the smallest layer just inside the badge's center
+ *     (place the badge's center on the top-left corner of the element it marks)
  *  3. a fixed box next to the badge
  */
 export function regionFor(mockup: FigmaNode, no: number): ElementRegion | undefined {
@@ -88,8 +88,8 @@ export function regionFor(mockup: FigmaNode, no: number): ElementRegion | undefi
 
   const badge = findBadges(mockup).find((b) => b.no === no);
   if (!badge) return undefined;
-  const px = badge.box.x + badge.box.width;
-  const py = badge.box.y + badge.box.height;
+  const px = badge.box.x + badge.box.width / 2 + 2;
+  const py = badge.box.y + badge.box.height / 2 + 2;
 
   let best: FigmaNode | undefined;
   walk(mockup, (n, depth) => {
