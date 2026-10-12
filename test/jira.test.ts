@@ -141,6 +141,16 @@ describe("create_jira_ticket / link_jira_issue tools", () => {
     expect(r.data).toMatchObject({ element: "M-07-1", issue: { key: "DEMO-42" }, figma: { linked: true } });
   });
 
+  it("lists usable project keys when the project is wrong", async () => {
+    const tracker = new FakeTracker();
+    tracker.createIssue = async () => { throw new Error("Jira 400 on POST /rest/api/3/issue: project: 대상 프로젝트가 존재하지 않거나 …"); };
+    (tracker as IssueTracker).listProjectKeys = async () => ["SCRUM"];
+    const { call } = await connect(tracker);
+    const r = await call("create_jira_ticket", { ...t, item: 1 });
+    expect(r.isError).toBe(true);
+    expect(r.text).toMatch(/Projects you can use: SCRUM/);
+  });
+
   it("explains how to configure Jira when it is missing", async () => {
     const { call } = await connect();
     const r = await call("create_jira_ticket", { ...t, item: 1 });

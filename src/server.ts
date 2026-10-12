@@ -251,6 +251,13 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
           description: draft.description,
           parentKey: parentKey ?? cfg.jira.parentKey,
           extraFields: cfg.jira.extraFields,
+        }).catch(async (e: Error) => {
+          // Turn "project doesn't exist or no permission" into an actionable hint.
+          if (/\bproject\b/i.test(e.message) && jira.listProjectKeys) {
+            const keys: string[] = await jira.listProjectKeys().catch(() => []);
+            if (keys.length && !keys.includes(project)) throw new Error(`${e.message}\nProject "${project}" not found. Projects you can use: ${keys.join(", ")}`);
+          }
+          throw e;
         });
         const figma = await linkToElement(fileKey, nodeId, issue);
         return ok({ created: true, issue, figma, acceptanceCriteria: draft.acceptanceCriteria, missingPolicy: draft.missingPolicy });

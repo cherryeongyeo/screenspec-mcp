@@ -22,6 +22,8 @@ export interface IssueTracker {
   findOpenBySummary(projectKey: string, label: string, summaryPrefix: string): Promise<JiraIssueRef | undefined>;
   createIssue(input: CreateIssueInput): Promise<JiraIssueRef>;
   getIssue(key: string): Promise<JiraIssueRef>;
+  /** Project keys the account can see (used to explain "project not found"). */
+  listProjectKeys?(): Promise<string[]>;
 }
 
 type Fetch = typeof fetch;
@@ -89,6 +91,11 @@ export class JiraClient implements IssueTracker {
     };
     const r = await this.req<{ key: string }>("POST", "/rest/api/3/issue", { fields });
     return { key: r.key, url: this.browseUrl(r.key), summary: input.summary };
+  }
+
+  async listProjectKeys() {
+    const r = await this.req<{ values?: { key: string }[] }>("GET", "/rest/api/3/project/search?maxResults=50");
+    return (r.values ?? []).map((p) => p.key);
   }
 
   async getIssue(key: string) {
