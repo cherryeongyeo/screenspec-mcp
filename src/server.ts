@@ -3,7 +3,9 @@ import { z } from "zod";
 import { markers, type Config } from "./config.js";
 import { parseFigmaUrl, type FigmaSource } from "./figma/client.js";
 import type { IssueTracker, JiraIssueRef } from "./jira/client.js";
-import { lintScreen } from "./spec/lint.js";
+import { lintMockup, lintScreen } from "./spec/lint.js";
+import { findBadges, findMockups, pad, regionFor, type ElementRegion } from "./spec/mockup.js";
+import { cropPng } from "./figma/crop.js";
 import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.js";
 import { draftTicket } from "./spec/ticket.js";
 import { diffScreens } from "./spec/diff.js";
@@ -45,6 +47,39 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
     if (t.screenId) screens = screens.filter((s) => s.screenId === t.screenId);
     if (!screens.length) throw new Error(`No screen spec found under node ${nodeId}${t.screenId ? ` with ID ${t.screenId}` : ""}.`);
     return screens;
+  }
+
+  /** Mockup frames for a screen (full subtrees), found anywhere in the file. */
+  async function loadMockups(fileKey: string, s: ScreenSpec): Promise<FigmaNode[]> {
+    if (s.isTemplate) return [];
+    const root = await source.getFile(fileKey, cfg.scanDepth);
+    const frames = findMockups(root, s.screenId, cfg.mockup.markers);
+    return Promise.all(frames.map((f) => (f.children?.length && f.absoluteBoundingBox ? f : source.getNode(fileKey, f.id))));
+  }
+
+  /** Region + cropped image for element `no`, from the first mockup that has its badge or area. */
+  async function elementMockup(fileKey: string, s: ScreenSpec, no: number, withImage: boolean) {
+    const frames = await loadMockups(fileKey, s);
+    let region: ElementRegion | undefined;
+    let frame: FigmaNode | undefined;
+    for (const f of frames) {
+      region = regionFor(f, no);
+      if (region) { frame = f; break; }
+    }
+    if (!region || !frame) return { found: false as const, mockups: frames.map((f) => ({ id: f.id, name: f.name })) };
+    const box = frame.absoluteBoundingBox!;
+    const rect = pad(region.rect, box, cfg.mockup.padding);
+    const info = { found: true as const, mockup: { id: frame.id, name: frame.name }, source: region.source, region: rect, elementNodeId: region.nodeId };
+    if (!withImage || !fileKey) return info;
+    try {
+      const scale = cfg.mockup.imageScale;
+      const url = (await source.getImages(fileKey, [frame.id], scale))[frame.id];
+      if (!url) return { ...info, imageError: "Figma returned no image for the mockup frame" };
+      const png = cropPng(await source.download(url), rect, scale);
+      return { ...info, image: png.toString("base64") };
+    } catch (e) {
+      return { ...info, imageError: e instanceof Error ? e.message : String(e) };
+    }
   }
 
   function findItem(s: ScreenSpec, item: number) {
@@ -113,11 +148,15 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
     {
       title: "Get one element",
       description:
-        "Return a single element (ITEM n) of a screen spec with its PM policy, Design spec, related Jira feedback, issues linked to the element in Figma Dev Mode, and a rendered image URL of the element card.",
-      inputSchema: { ...target, item: z.number().int().positive().describe("Element number shown on the badge") },
+        "Return a single element (ITEM n) of a screen spec with its PM policy, Design spec, related Jira feedback, issues linked to the element in Figma Dev Mode, and a cropped image of the element taken from the mockup (found via the number badge or an `area / n` layer).",
+      inputSchema: {
+        ...target,
+        item: z.number().int().positive().describe("Element number shown on the badge"),
+        mockupImage: z.boolean().optional().describe("Attach a cropped image of this element from the mockup (default true)"),
+      },
       annotations: { readOnlyHint: true },
     },
-    async ({ item, ...t }) => {
+    async ({ item, mockupImage, ...t }) => {
       try {
         const [s] = await loadScreens(t);
         const it = findItem(s, item);
@@ -125,14 +164,19 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
         const images = fileKey ? await source.getImages(fileKey, [it.nodeId], 2).catch(() => ({})) : {};
         const feedback = s.feedback.filter((f) => refNumber(f.element, s.screenId) === item);
         const links = fileKey ? await source.getDevResources(fileKey, [it.nodeId]).catch(() => undefined) : undefined;
-        return ok({
+        const mockup = await elementMockup(fileKey, s, item, mockupImage !== false).catch((e: Error) => ({ found: false as const, error: e.message }));
+        const { image, ...mockupInfo } = mockup as typeof mockup & { image?: string };
+        const res = ok({
           screen: { screenId: s.screenId, title: s.title, version: s.version },
           ...it,
           feedback,
           imageUrl: (images as Record<string, string | null>)[it.nodeId] ?? null,
           figmaUrl: figmaUrl(fileKey || undefined, it.nodeId),
           linkedIssues: links?.map((l) => ({ name: l.name, url: l.url })),
+          mockup: mockupInfo,
         });
+        if (!image) return res;
+        return { content: [...res.content, { type: "image" as const, data: image, mimeType: "image/png" }] };
       } catch (e) {
         return fail(e);
       }
@@ -144,14 +188,24 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
     {
       title: "Lint screen spec",
       description:
-        "Check a screen spec for gaps before hand-off: unfilled PM policy / Design fields, duplicate or skipped element numbers, feedback pointing to missing elements, header version vs change log mismatch. Returns completeness % and issues.",
+        "Check a screen spec for gaps before hand-off: unfilled PM policy / Design fields, duplicate or skipped element numbers, mockup badges that don't match element cards, feedback pointing to missing elements, header version vs change log mismatch. Returns completeness % and issues.",
       inputSchema: target,
       annotations: { readOnlyHint: true },
     },
     async (t) => {
       try {
         const screens = await loadScreens(t);
-        const reports = screens.map((s) => lintScreen(s, cfg));
+        const { fileKey } = resolve(t);
+        const reports = await Promise.all(screens.map(async (s) => {
+          const r = lintScreen(s, cfg);
+          if (s.isTemplate) return r;
+          const frames = await loadMockups(fileKey, s).catch(() => undefined);
+          if (!frames) return r;
+          const badges = frames.flatMap((f) => findBadges(f).map((b) => ({ no: b.no, frameId: f.id })));
+          const extra = lintMockup(s, { found: frames.length > 0, badges });
+          for (const i of extra) r.counts[i.level]++;
+          return { ...r, issues: [...r.issues, ...extra], mockups: frames.map((f) => ({ id: f.id, name: f.name, badges: findBadges(f).map((b) => b.no) })) };
+        }));
         return ok(reports.length === 1 ? reports[0] : reports);
       } catch (e) {
         return fail(e);

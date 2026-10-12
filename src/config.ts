@@ -33,6 +33,14 @@ export interface Config {
     /** Attach created / linked issues to the element node as a Dev Resource */
     linkDevResources: boolean;
   };
+  mockup: {
+    /** Words that mark a frame as the mockup of a screen (with the screen ID in its name) */
+    markers: string[];
+    /** Render scale for element crops */
+    imageScale: number;
+    /** Extra pixels around a cropped element */
+    padding: number;
+  };
   ticket: {
     projectKey?: string;
     defaultIssueType: string;
@@ -107,6 +115,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   jira: { dedupe: true },
   figma: { linkDevResources: true },
+  mockup: { markers: ["시안", "Mockup", "mockup"], imageScale: 2, padding: 16 },
   ticket: {
     defaultIssueType: "작업",
     summaryTemplate: "[{ref}] {itemName} {intent}",

@@ -39,6 +39,10 @@ const MSG = {
     clEmpty: "Change Log가 비어 있습니다.",
     clVer: (h: string, l: string) => `헤더 버전(${h})과 마지막 Change Log 버전(${l})이 다릅니다.`,
     clDate: (v: string) => `${v} 날짜가 비어 있거나 형식(YYYY-MM-DD)이 다릅니다.`,
+    noMockup: (id: string) => `'${id}'와 '시안'이 이름에 들어간 시안 프레임을 찾지 못했습니다. 요소별 시안 이미지를 쓰려면 프레임 이름을 맞춰 주세요.`,
+    noBadge: (ref: string) => `${ref}: 시안 위에 같은 번호의 뱃지가 없습니다.`,
+    orphanBadge: (n: number) => `시안의 뱃지 ${n}에 해당하는 요소 카드가 없습니다.`,
+    dupBadge: (n: number) => `시안에 뱃지 ${n}이 여러 개 있습니다.`,
   },
   en: {
     template: "Screen ID is empty or still the template value.",
@@ -57,6 +61,10 @@ const MSG = {
     clEmpty: "Change Log is empty.",
     clVer: (h: string, l: string) => `Header version (${h}) differs from the latest Change Log version (${l}).`,
     clDate: (v: string) => `${v}: date is empty or not YYYY-MM-DD.`,
+    noMockup: (id: string) => `No mockup frame found with '${id}' and 'Mockup' in its name. Name it that way to get per-element mockup images.`,
+    noBadge: (ref: string) => `${ref}: no badge with this number on the mockup.`,
+    orphanBadge: (n: number) => `Badge ${n} on the mockup has no element card.`,
+    dupBadge: (n: number) => `Badge ${n} appears more than once on the mockup.`,
   },
 };
 
@@ -121,4 +129,20 @@ export function lintScreen(s: ScreenSpec, cfg: Config): LintReport {
     counts,
     issues,
   };
+}
+
+/** Badges on the mockup(s) vs element cards in the spec (1:1). State screens may repeat badges across frames. */
+export function lintMockup(s: ScreenSpec, mockup: { found: boolean; badges: { no: number; frameId: string }[] }): LintIssue[] {
+  const M = MSG[detectLang(s)];
+  if (!mockup.found) return [{ level: "info", where: "mockup", message: M.noMockup(s.screenId), nodeId: s.nodeId }];
+  const issues: LintIssue[] = [];
+  const nos = new Set(mockup.badges.map((b) => b.no));
+  const perFrame = new Map<string, number>();
+  mockup.badges.forEach((b) => perFrame.set(`${b.frameId}#${b.no}`, (perFrame.get(`${b.frameId}#${b.no}`) ?? 0) + 1));
+  const itemNos = new Set(s.items.map((i) => i.no));
+  for (const it of s.items) if (!nos.has(it.no)) issues.push({ level: "warn", where: it.ref, message: M.noBadge(it.ref), nodeId: it.nodeId });
+  for (const n of [...nos].sort((a, b) => a - b)) if (!itemNos.has(n)) issues.push({ level: "warn", where: "mockup", message: M.orphanBadge(n) });
+  const dups = new Set([...perFrame].filter(([, c]) => c > 1).map(([k]) => Number(k.split("#")[1])));
+  for (const n of dups) issues.push({ level: "info", where: "mockup", message: M.dupBadge(n) });
+  return issues;
 }

@@ -10,6 +10,8 @@ export interface FigmaSource {
   getFile(fileKey: string, depth: number): Promise<FigmaNode>;
   /** Rendered PNG URLs for nodes. */
   getImages(fileKey: string, nodeIds: string[], scale?: number): Promise<Record<string, string | null>>;
+  /** Download a rendered image. */
+  download(url: string): Promise<Buffer>;
   /** Dev Resources (links shown in Dev Mode) attached to nodes. */
   getDevResources(fileKey: string, nodeIds: string[]): Promise<DevResource[]>;
   /** Attach a link to a node. Needs the file_dev_resources:write scope. */
@@ -78,6 +80,12 @@ export class FigmaRestClient implements FigmaSource {
       `/v1/images/${fileKey}?ids=${encodeURIComponent(nodeIds.join(","))}&format=png&scale=${scale}`,
     );
     return r.images;
+  }
+
+  async download(url: string) {
+    const res = await this.http(url);
+    if (!res.ok) throw new Error(`Image download failed: HTTP ${res.status}`);
+    return Buffer.from(await res.arrayBuffer());
   }
 
   async getVersions(fileKey: string) {
@@ -150,6 +158,9 @@ export class FixtureSource implements FigmaSource {
   }
   async getImages(_fileKey: string, nodeIds: string[]) {
     return Object.fromEntries(nodeIds.map((id) => [id, null]));
+  }
+  async download(): Promise<Buffer> {
+    throw new Error("Images are not available in offline fixture mode");
   }
   /** In-memory dev resources so offline runs can exercise the Jira flow. */
   private links: DevResource[] = [];

@@ -7,6 +7,8 @@ export interface FigmaNode {
   componentProperties?: Record<string, { type: string; value: string | boolean }>;
   /** Variable modes pinned on this node (collection id -> mode id) */
   explicitVariableModes?: Record<string, string>;
+  visible?: boolean;
+  absoluteBoundingBox?: { x: number; y: number; width: number; height: number };
   children?: FigmaNode[];
 }
 
