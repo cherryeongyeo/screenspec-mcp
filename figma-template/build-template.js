@@ -82,16 +82,61 @@ function makeBadge(name, size, fs) {
   c.description = "Element number badge. Must match ITEM / n in the spec.";
   return { comp: c, prop };
 }
-function makeStatusSet() {
+// Status chip. Preferred: one component whose label and colors are bound to a
+// variable collection with one mode per status (switch the mode on a section or
+// frame and the chip updates). Free Figma plans allow a single mode, so we fall
+// back to a variant set there.
+const SECTION_TONE = { blue: "#e2eafc", orange: "#fdecd6", green: "#dcf2e7" };
+function makeStatus() {
+  let col;
+  try {
+    col = figma.variables.createVariableCollection(L.statusCollection);
+    col.renameMode(col.modes[0].modeId, L.statuses[0][0]);
+    const modeIds = [col.modes[0].modeId, ...L.statuses.slice(1).map(([label]) => col.addMode(label))];
+    const mk = (name, type, scopes) => { const v = figma.variables.createVariable(name, col, type); v.scopes = scopes; return v; };
+    const vLabel = mk("status/label", "STRING", ["TEXT_CONTENT"]);
+    const vFg = mk("status/chip-fg", "COLOR", ["SHAPE_FILL", "TEXT_FILL"]);
+    const vBg = mk("status/chip-bg", "COLOR", ["FRAME_FILL"]);
+    const vSec = mk("status/section-bg", "COLOR", ["FRAME_FILL"]);
+    L.statuses.forEach(([label, tone], i) => {
+      vLabel.setValueForMode(modeIds[i], label);
+      vFg.setValueForMode(modeIds[i], hex(TONE[tone][1]));
+      vBg.setValueForMode(modeIds[i], hex(TONE[tone][0]));
+      vSec.setValueForMode(modeIds[i], hex(SECTION_TONE[tone] || K.sectionBg));
+    });
+    const bound = (v, h) => [figma.variables.setBoundVariableForPaint({ type: "SOLID", color: hex(h) }, "color", v)];
+    const [tone0] = [TONE[L.statuses[0][1]]];
+    const c = figma.createComponent();
+    c.name = L.statusComp;
+    c.layoutMode = "HORIZONTAL"; c.itemSpacing = 6; c.counterAxisAlignItems = "CENTER";
+    c.paddingTop = 4; c.paddingBottom = 4; c.paddingLeft = 10; c.paddingRight = 12;
+    c.primaryAxisSizingMode = "AUTO"; c.counterAxisSizingMode = "AUTO";
+    c.cornerRadius = 9999; c.fills = bound(vBg, tone0[0]);
+    const dot = figma.createEllipse(); dot.name = "dot"; dot.resize(8, 8); dot.fills = bound(vFg, tone0[1]); c.appendChild(dot);
+    const t = T(c, L.statuses[0][0], { fs: 13, fw: "Semi Bold", color: tone0[1], name: "label" });
+    t.fills = bound(vFg, tone0[1]);
+    t.setBoundVariable("characters", vLabel);
+    c.description = L.statusDesc;
+    const modeOf = (label) => modeIds[Math.max(0, L.statuses.findIndex(([l]) => l === label))];
+    return {
+      kind: "variables", node: c,
+      instance: () => c.createInstance(),
+      apply: (frame, label) => frame.setExplicitVariableModeForCollection(col, modeOf(label)),
+      sectionFill: () => bound(vSec, K.sectionBg),
+      init: (sec) => sec.setExplicitVariableModeForCollection(col, modeIds[0]),
+    };
+  } catch (e) {
+    if (col) col.remove(); // e.g. "Limited to 1 modes only" on free plans
+  }
   const variants = L.statuses.map(([label, tone]) => {
     const c = figma.createComponent();
     c.name = `${L.statusProp}=${label}`;
     c.layoutMode = "HORIZONTAL"; c.itemSpacing = 6; c.counterAxisAlignItems = "CENTER";
-    c.paddingTop = 7; c.paddingBottom = 7; c.paddingLeft = 12; c.paddingRight = 12;
+    c.paddingTop = 4; c.paddingBottom = 4; c.paddingLeft = 10; c.paddingRight = 12;
     c.primaryAxisSizingMode = "AUTO"; c.counterAxisSizingMode = "AUTO";
     c.cornerRadius = 9999; c.fills = solid(TONE[tone][0]);
     const dot = figma.createEllipse(); dot.name = "dot"; dot.resize(8, 8); dot.fills = solid(TONE[tone][1]); c.appendChild(dot);
-    T(c, label, { fs: 13, fw: "Semi Bold", color: TONE[tone][1] });
+    T(c, label, { fs: 13, fw: "Semi Bold", color: TONE[tone][1], name: "label" });
     return c;
   });
   const set = figma.combineAsVariants(variants, figma.currentPage);
@@ -102,7 +147,14 @@ function makeStatusSet() {
   set.cornerRadius = 12; set.fills = solid("#ffffff");
   set.strokes = [{ type: "SOLID", color: hex("#9747ff") }]; set.dashPattern = [6, 4];
   set.description = "Spec status. The MCP server reads the variant value.";
-  return set;
+  let pending = null;
+  return {
+    kind: "variants", node: set,
+    instance: () => (pending = set.defaultVariant.createInstance()),
+    apply: (_frame, label) => { const v = set.children.find((c) => c.name.endsWith("=" + label)); if (v && pending) pending.swapComponent(v); },
+    sectionFill: () => solid(K.sectionBg),
+    init: () => {},
+  };
 }
 
 // ---------- section ----------
@@ -112,7 +164,6 @@ for (const n of existing) { maxY = Math.max(maxY, n.y + n.height); minX = Math.m
 const section = figma.createSection();
 section.name = L.section;
 section.x = minX; section.y = existing.length ? maxY + 200 : 0;
-section.fills = solid(K.sectionBg);
 
 // components frame
 const compFrame = AL(null, "V", { name: L.components, gap: 16, pad: [20, 20, 20, 20], fill: "#ffffff", r: 16, stroke: K.line });
@@ -122,8 +173,10 @@ const badgeRow = AL(compFrame, "H", { name: "badges", gap: 16, center: true });
 const badgeL = makeBadge(L.badgeMock, 36, 16);
 const badgeS = makeBadge(L.badgeItem, 26, 13);
 badgeRow.appendChild(badgeL.comp); badgeRow.appendChild(badgeS.comp);
-const statusSet = makeStatusSet();
-compFrame.appendChild(statusSet);
+const status = makeStatus();
+compFrame.appendChild(status.node);
+section.fills = status.sectionFill();
+status.init(section);
 compFrame.x = 60; compFrame.y = 260;
 
 // mockup placeholder
@@ -148,8 +201,9 @@ function buildDoc(S) {
   const idRow = AL(head, "H", { name: "id", gap: 8, center: true });
   chip(idRow, id, K.brand, "#ffffff", { name: `chip / ${L.idPlaceholder}`, fs: 16 });
   chip(idRow, filled ? S.version : "v1.0", K.brandBg, K.brand, { name: `chip / ${filled ? S.version : "v1.0"}` });
-  const st = statusSet.children.find((c) => c.name.endsWith("=" + (filled ? S.status : L.statuses[0][0]))) || statusSet.defaultVariant;
-  const stInst = st.createInstance(); stInst.name = L.statusProp; idRow.appendChild(stInst);
+  const stInst = status.instance(); stInst.name = L.statusProp; idRow.appendChild(stInst);
+  status.apply(stInst, filled ? S.status : L.statuses[0][0]);
+  if (status.kind === "variables") status.apply(doc, filled ? S.status : L.statuses[0][0]);
   T(head, filled ? S.title : L.titlePlaceholder, { fs: 34, fw: "Bold", w: "FILL" });
   T(head, filled ? S.summary : L.summaryPlaceholder, { fs: 16, color: filled ? K.sub : K.ph, w: "FILL" });
   const owners = AL(head, "H", { name: "owners", gap: 8, center: true });
@@ -283,6 +337,6 @@ const h = Math.max(tpl.height, sample.height, compFrame.y + compFrame.height) + 
 section.resizeWithoutConstraints(sample.x + 1400 + 80, h);
 
 return {
-  sectionId: section.id, templateId: tpl.id, sampleId: sample.id, componentsId: compFrame.id, statusSetId: statusSet.id,
+  sectionId: section.id, templateId: tpl.id, sampleId: sample.id, componentsId: compFrame.id, statusKind: status.kind, statusId: status.node.id,
   size: [section.width, section.height], nodes: section.findAll(() => true).length,
 };
