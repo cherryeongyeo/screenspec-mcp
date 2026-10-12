@@ -27,8 +27,18 @@ export function splitStatements(text: string): string[] {
     .filter((s) => s.length > 0);
 }
 
-function stateList(text: string): string[] {
-  return text.split(/\s*[/,·]\s*/).map((s) => s.trim()).filter(Boolean);
+/** Split "Default / Empty (no items) / Disabled (min · max)" on / , · — but not inside parentheses. */
+export function stateList(text: string): string[] {
+  const out: string[] = [];
+  let depth = 0, cur = "";
+  for (const ch of text) {
+    if (ch === "(" || ch === "（") depth++;
+    if (ch === ")" || ch === "）") depth = Math.max(0, depth - 1);
+    if (depth === 0 && "/,·".includes(ch)) { out.push(cur); cur = ""; continue; }
+    cur += ch;
+  }
+  out.push(cur);
+  return out.map((s) => s.trim()).filter(Boolean);
 }
 
 const STR = {

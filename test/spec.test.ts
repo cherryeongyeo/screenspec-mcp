@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG as cfg } from "../src/config.js";
 import { parseFigmaUrl } from "../src/figma/client.js";
 import { lintScreen } from "../src/spec/lint.js";
 import { findScreenDocs, parseScreen, refNumber } from "../src/spec/parse.js";
-import { draftTicket, splitStatements } from "../src/spec/ticket.js";
+import { draftTicket, splitStatements, stateList } from "../src/spec/ticket.js";
 
 const json = JSON.parse(readFileSync(new URL("./fixtures/sample-section.json", import.meta.url), "utf8"));
 const section = json.nodes["2914:18601"].document;
@@ -82,6 +82,11 @@ describe("ticket draft", () => {
     expect(t.acceptanceCriteria).toContain("목차 API 실패 시 재시도 버튼 노출");
     expect(t.description).toContain("## 완료 조건");
     expect(t.figmaUrl).toContain("node-id=2956-18656");
+  });
+
+  it("keeps parenthesised state details together", () => {
+    expect(stateList("Default / Disabled (min · max quantity)")).toEqual(["Default", "Disabled (min · max quantity)"]);
+    expect(stateList("Default / Disabled(최소·최대 수량)")).toEqual(["Default", "Disabled(최소·최대 수량)"]);
   });
 
   it("splits statements", () => {

@@ -1,6 +1,6 @@
 {
   "name": "screenspec-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server that turns Figma screen spec (화면정의서) frames into structured specs, lint reports and Jira ticket drafts.",
   "main": "dist/index.js",
   "scripts": {

@@ -7,7 +7,7 @@ import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.j
 import { draftTicket } from "./spec/ticket.js";
 import type { FigmaNode, ScreenSpec } from "./spec/types.js";
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 
 const target = {
   url: z.string().url().optional().describe("Figma URL of a screen spec frame, its section, or the file"),
