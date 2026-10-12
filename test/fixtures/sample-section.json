@@ -1,0 +1,3296 @@
+{
+ "name": "screenspec sample",
+ "nodes": {
+  "2914:18601": {
+   "document": {
+    "id": "2914:18601",
+    "name": "화면정의서 양식",
+    "type": "SECTION",
+    "children": [
+     {
+      "id": "2914:18602",
+      "name": "[화면ID] 화면 시안 영역",
+      "type": "FRAME",
+      "children": [
+       {
+        "id": "2914:18603",
+        "name": "화면 시안 배치 영역",
+        "type": "TEXT",
+        "characters": "화면 시안 배치 영역"
+       },
+       {
+        "id": "2914:18604",
+        "name": "디자이너가 최종 시안을 배치하고, PM Spec의 요소 번호와 동일한 번호 뱃지(①②③…)를 시안 위에 표기합니다. 상태별 화면(Default · Empty · Loading · Error 등)은 오른쪽에 나란히 추가합니다.",
+        "type": "TEXT",
+        "characters": "디자이너가 최종 시안을 배치하고, PM Spec의 요소 번호와 동일한 번호 뱃지(①②③…)를 시안 위에 표기합니다. 상태별 화면(Default · Empty · Loading · Error 등)은 오른쪽에 나란히 추가합니다."
+       }
+      ]
+     },
+     {
+      "id": "2914:18605",
+      "name": "badge-1 (복제해서 사용)",
+      "type": "FRAME",
+      "children": [
+       {
+        "id": "2914:18606",
+        "name": "1",
+        "type": "TEXT",
+        "characters": "1"
+       }
+      ]
+     },
+     {
+      "id": "2914:18607",
+      "name": "📄 [화면ID] 화면명 · 화면정의서",
+      "type": "FRAME",
+      "children": [
+       {
+        "id": "2914:18608",
+        "name": "Doc Header",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2914:18609",
+          "name": "id",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2914:18610",
+            "name": "chip / [화면ID]",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18611",
+              "name": "[화면ID]",
+              "type": "TEXT",
+              "characters": "[화면ID]"
+             }
+            ]
+           },
+           {
+            "id": "2914:18612",
+            "name": "chip / v1.0",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18613",
+              "name": "v1.0",
+              "type": "TEXT",
+              "characters": "v1.0"
+             }
+            ]
+           },
+           {
+            "id": "2927:18611",
+            "name": "상태",
+            "type": "INSTANCE",
+            "componentProperties": {
+             "상태": {
+              "type": "VARIANT",
+              "value": "작성중"
+             }
+            },
+            "children": [
+             {
+              "id": "2927:18611;t",
+              "name": "label",
+              "type": "TEXT",
+              "characters": "● 작성중"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2914:18616",
+          "name": "화면명",
+          "type": "TEXT",
+          "characters": "화면명"
+         },
+         {
+          "id": "2914:18617",
+          "name": "이 화면을 한 문장으로 설명합니다. (예: 사용자가 콘텐츠을 열람하는 최상위 기준 화면)",
+          "type": "TEXT",
+          "characters": "이 화면을 한 문장으로 설명합니다. (예: 사용자가 콘텐츠을 열람하는 최상위 기준 화면)"
+         },
+         {
+          "id": "2914:18618",
+          "name": "owners",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2914:18619",
+            "name": "chip / PM @담당자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18620",
+              "name": "PM @담당자",
+              "type": "TEXT",
+              "characters": "PM @담당자"
+             }
+            ]
+           },
+           {
+            "id": "2914:18621",
+            "name": "chip / Design @담당자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18622",
+              "name": "Design @담당자",
+              "type": "TEXT",
+              "characters": "Design @담당자"
+             }
+            ]
+           },
+           {
+            "id": "2914:18623",
+            "name": "chip / DEV @담당자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18624",
+              "name": "DEV @담당자",
+              "type": "TEXT",
+              "characters": "DEV @담당자"
+             }
+            ]
+           },
+           {
+            "id": "2914:18625",
+            "name": "chip / QA @담당자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18626",
+              "name": "QA @담당자",
+              "type": "TEXT",
+              "characters": "QA @담당자"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "2914:18629",
+        "name": "작성 가이드",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2914:18630",
+          "name": "작성 순서 및 역할",
+          "type": "TEXT",
+          "characters": "작성 순서 및 역할"
+         },
+         {
+          "id": "2914:18631",
+          "name": "flow",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2914:18632",
+            "name": "chip / ① PM Spec · 기획자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18633",
+              "name": "① PM Spec · 기획자",
+              "type": "TEXT",
+              "characters": "① PM Spec · 기획자"
+             }
+            ]
+           },
+           {
+            "id": "2914:18634",
+            "name": "→",
+            "type": "TEXT",
+            "characters": "→"
+           },
+           {
+            "id": "2914:18635",
+            "name": "chip / ② Design Spec · 디자이너",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18636",
+              "name": "② Design Spec · 디자이너",
+              "type": "TEXT",
+              "characters": "② Design Spec · 디자이너"
+             }
+            ]
+           },
+           {
+            "id": "2914:18637",
+            "name": "→",
+            "type": "TEXT",
+            "characters": "→"
+           },
+           {
+            "id": "2914:18638",
+            "name": "chip / ③ Dev Note · 개발자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18639",
+              "name": "③ 검토 · PO",
+              "type": "TEXT",
+              "characters": "③ 검토 · PO"
+             }
+            ]
+           },
+           {
+            "id": "2914:18640",
+            "name": "→",
+            "type": "TEXT",
+            "characters": "→"
+           },
+           {
+            "id": "2914:18641",
+            "name": "chip / ④ QA Criteria · QA",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18642",
+              "name": "④ Code · 개발",
+              "type": "TEXT",
+              "characters": "④ Code · 개발"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2914:18643",
+          "name": "• PM은 “무엇이 필요하고 어떤 의도로 동작하는지”만 정의합니다. px · 컬러값 · 폰트 크기 같은 디자인 수치는 쓰지 않습니다. • Design은 PM이 정의한 요소 번호·순서를 그대로 따라 오른쪽 Design 칸에 Visual Spec을 채웁니다. • 수치는 디자인 토큰명 + 값으로 표기합니다. (예: spacing/6 20px, Color/text/primary #1A1A1A) • 요소 번호는 화면 시안의 번호 뱃지와 1:1로 일치시킵니다. • 회색 가이드 문구는 실제 내용으로 교체하고, 변경 시 하단 Change Log에 기록합니다.",
+          "type": "TEXT",
+          "characters": "• PM은 “무엇이 필요하고 어떤 의도로 동작하는지”만 정의합니다. px · 컬러값 · 폰트 크기 같은 디자인 수치는 쓰지 않습니다. • Design은 PM이 정의한 요소 번호·순서를 그대로 따라 오른쪽 Design 칸에 Visual Spec을 채웁니다. • 수치는 디자인 토큰명 + 값으로 표기합니다. (예: spacing/6 20px, Color/text/primary #1A1A1A) • 요소 번호는 화면 시안의 번호 뱃지와 1:1로 일치시킵니다. • 회색 가이드 문구는 실제 내용으로 교체하고, 변경 시 하단 Change Log에 기록합니다."
+         }
+        ]
+       },
+       {
+        "id": "2914:18644",
+        "name": "① PM Spec",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2914:18645",
+          "name": "role header",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2914:18646",
+            "name": "chip / [PM]",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18647",
+              "name": "[PM]",
+              "type": "TEXT",
+              "characters": "[PM]"
+             }
+            ]
+           },
+           {
+            "id": "2914:18648",
+            "name": "① PM Spec · 기능 및 정책 정의",
+            "type": "TEXT",
+            "characters": "① PM Spec · 기능 및 정책 정의"
+           },
+           {
+            "id": "2914:18649",
+            "name": "작성: 기획자",
+            "type": "TEXT",
+            "characters": "작성: 기획자"
+           }
+          ]
+         },
+         {
+          "id": "2914:18650",
+          "name": "개요",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2914:18651",
+            "name": "head",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18652",
+              "name": "화면 개요",
+              "type": "TEXT",
+              "characters": "화면 개요"
+             }
+            ]
+           },
+           {
+            "id": "2914:18653",
+            "name": "row / 화면 목적",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18654",
+              "name": "화면 목적",
+              "type": "TEXT",
+              "characters": "화면 목적"
+             },
+             {
+              "id": "2914:18655",
+              "name": "이 화면에서 사용자가 무엇을 하는지",
+              "type": "TEXT",
+              "characters": "이 화면에서 사용자가 무엇을 하는지"
+             }
+            ]
+           },
+           {
+            "id": "2914:18656",
+            "name": "row / 진입 경로",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18657",
+              "name": "진입 경로",
+              "type": "TEXT",
+              "characters": "진입 경로"
+             },
+             {
+              "id": "2914:18658",
+              "name": "어느 화면 / 어떤 동작으로 진입하는지 (예: D-02 아이콘 레일 → 썸네일 버튼 클릭)",
+              "type": "TEXT",
+              "characters": "어느 화면 / 어떤 동작으로 진입하는지 (예: D-02 아이콘 레일 → 썸네일 버튼 클릭)"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "2914:18680",
+        "name": "요소별 정의",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2914:18681",
+          "name": "items header",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2914:18682",
+            "name": "요소별 정의 — 왼쪽은 PM, 오른쪽은 Design이 작성",
+            "type": "TEXT",
+            "characters": "요소별 정의 — 왼쪽은 PM, 오른쪽은 Design이 작성"
+           }
+          ]
+         },
+         {
+          "id": "2914:18683",
+          "name": "요소 개수만큼 카드를 복제해서 사용합니다.",
+          "type": "TEXT",
+          "characters": "요소 개수만큼 카드를 복제해서 사용합니다."
+         },
+         {
+          "id": "2914:18684",
+          "name": "ITEM / 1 / 요소명",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2914:18685",
+            "name": "TitleBar",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18686",
+              "name": "badge",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2914:18687",
+                "name": "1",
+                "type": "TEXT",
+                "characters": "1"
+               }
+              ]
+             },
+             {
+              "id": "2914:18688",
+              "name": "요소명",
+              "type": "TEXT",
+              "characters": "요소명"
+             },
+             {
+              "id": "2914:18689",
+              "name": "chip / [화면ID]-1 ↗",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2914:18690",
+                "name": "[화면ID]-1 ↗",
+                "type": "TEXT",
+                "characters": "[화면ID]-1 ↗"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2914:18691",
+            "name": "body",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2914:18692",
+              "name": "PM column",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2914:18693",
+                "name": "col head",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18694",
+                  "name": "PM · 무엇이 필요하고 어떻게 동작하는가",
+                  "type": "TEXT",
+                  "characters": "PM · 무엇이 필요하고 어떻게 동작하는가"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18695",
+                "name": "row / 기능",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18696",
+                  "name": "기능",
+                  "type": "TEXT",
+                  "characters": "기능"
+                 },
+                 {
+                  "id": "2914:18697",
+                  "name": "이 요소가 제공하는 기능과 사용 목적",
+                  "type": "TEXT",
+                  "characters": "이 요소가 제공하는 기능과 사용 목적"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18698",
+                "name": "row / 콘텐츠",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18699",
+                  "name": "콘텐츠",
+                  "type": "TEXT",
+                  "characters": "콘텐츠"
+                 },
+                 {
+                  "id": "2914:18700",
+                  "name": "노출 문구 · 데이터 · 노출 조건 (예: 로그인 시에만 노출)",
+                  "type": "TEXT",
+                  "characters": "노출 문구 · 데이터 · 노출 조건 (예: 로그인 시에만 노출)"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18701",
+                "name": "row / Interaction",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18702",
+                  "name": "Interaction",
+                  "type": "TEXT",
+                  "characters": "Interaction"
+                 },
+                 {
+                  "id": "2914:18703",
+                  "name": "클릭/탭/입력 시 어떻게 동작하는지, 이동 화면",
+                  "type": "TEXT",
+                  "characters": "클릭/탭/입력 시 어떻게 동작하는지, 이동 화면"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18704",
+                "name": "row / State",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18705",
+                  "name": "State",
+                  "type": "TEXT",
+                  "characters": "State"
+                 },
+                 {
+                  "id": "2914:18706",
+                  "name": "존재하는 상태 (Default / Empty / Error / Disabled …)",
+                  "type": "TEXT",
+                  "characters": "존재하는 상태 (Default / Empty / Error / Disabled …)"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18707",
+                "name": "row / Policy",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18708",
+                  "name": "Policy",
+                  "type": "TEXT",
+                  "characters": "Policy"
+                 },
+                 {
+                  "id": "2914:18709",
+                  "name": "입력 제한, 권한, 정- 렬 기준 등 정책",
+                  "type": "TEXT",
+                  "characters": "입력 제한, 권한, 정- 렬 기준 등 정책"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18710",
+                "name": "row / Exception",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18711",
+                  "name": "Exception",
+                  "type": "TEXT",
+                  "characters": "Exception"
+                 },
+                 {
+                  "id": "2914:18712",
+                  "name": "예외 상황과 처리 방식",
+                  "type": "TEXT",
+                  "characters": "예외 상황과 처리 방식"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2914:18713",
+              "name": "Design column",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2914:18714",
+                "name": "col head",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18715",
+                  "name": "Design · 어떻게 보이는가",
+                  "type": "TEXT",
+                  "characters": "Design · 어떻게 보이는가"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18716",
+                "name": "row / Layout",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18717",
+                  "name": "Layout",
+                  "type": "TEXT",
+                  "characters": "Layout"
+                 },
+                 {
+                  "id": "2914:18718",
+                  "name": "크기 · 여백 · 정렬 · Grid (spacing 토큰)",
+                  "type": "TEXT",
+                  "characters": "크기 · 여백 · 정렬 · Grid (spacing 토큰)"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18719",
+                "name": "row / Typography",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18720",
+                  "name": "Typography",
+                  "type": "TEXT",
+                  "characters": "Typography"
+                 },
+                 {
+                  "id": "2914:18721",
+                  "name": "Font / Size / Weight / Line Height",
+                  "type": "TEXT",
+                  "characters": "Font / Size / Weight / Line Height"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18722",
+                "name": "row / Color",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18723",
+                  "name": "Color",
+                  "type": "TEXT",
+                  "characters": "Color"
+                 },
+                 {
+                  "id": "2914:18724",
+                  "name": "Text · Background · Border (토큰명 + HEX)",
+                  "type": "TEXT",
+                  "characters": "Text · Background · Border (토큰명 + HEX)"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18725",
+                "name": "row / Component",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18726",
+                  "name": "Component",
+                  "type": "TEXT",
+                  "characters": "Component"
+                 },
+                 {
+                  "id": "2914:18727",
+                  "name": "사용 컴포넌트 / Variant명",
+                  "type": "TEXT",
+                  "characters": "사용 컴포넌트 / Variant명"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18728",
+                "name": "row / State Visual",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18729",
+                  "name": "State Visual",
+                  "type": "TEXT",
+                  "characters": "State Visual"
+                 },
+                 {
+                  "id": "2914:18730",
+                  "name": "Default · Hover · Active · Focus · Disabled · Loading",
+                  "type": "TEXT",
+                  "characters": "Default · Hover · Active · Focus · Disabled · Loading"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18731",
+                "name": "row / Interaction Visual",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18732",
+                  "name": "Interaction Visual",
+                  "type": "TEXT",
+                  "characters": "Interaction Visual"
+                 },
+                 {
+                  "id": "2914:18733",
+                  "name": "Transition · Animation · Tooltip · Toast",
+                  "type": "TEXT",
+                  "characters": "Transition · Animation · Tooltip · Toast"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18734",
+                "name": "row / Responsive",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18735",
+                  "name": "Responsive",
+                  "type": "TEXT",
+                  "characters": "Responsive"
+                 },
+                 {
+                  "id": "2914:18736",
+                  "name": "Desktop / Tablet / Mobile 변화",
+                  "type": "TEXT",
+                  "characters": "Desktop / Tablet / Mobile 변화"
+                 }
+                ]
+               },
+               {
+                "id": "2914:18737",
+                "name": "row / Asset",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2914:18738",
+                  "name": "Asset",
+                  "type": "TEXT",
+                  "characters": "Asset"
+                 },
+                 {
+                  "id": "2914:18739",
+                  "name": "Icon · Image · Illustration · Lottie",
+                  "type": "TEXT",
+                  "characters": "Icon · Image · Illustration · Lottie"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "2944:18603",
+        "name": "Feedback Log",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2944:18604",
+          "name": "title",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2944:18605",
+            "name": "Feedback Log",
+            "type": "TEXT",
+            "characters": "Feedback Log"
+           },
+           {
+            "id": "2961:18605",
+            "name": "sync-link",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2961:18606",
+              "name": "동기화 열기 ↗",
+              "type": "TEXT",
+              "characters": "동기화 열기 ↗"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2944:18610",
+          "name": "제목이나 레이블에 이 화면ID가 있는 Jira 티켓을 가져와 표시합니다. 피드백 작성·댓글·상태 변경은 Jira에서만 하고, 이 표는 직접 수정하지 않습니다.",
+          "type": "TEXT",
+          "characters": "제목이나 레이블에 이 화면ID가 있는 Jira 티켓을 가져와 표시합니다. 피드백 작성·댓글·상태 변경은 Jira에서만 하고, 이 표는 직접 수정하지 않습니다."
+         },
+         {
+          "id": "2944:18611",
+          "name": "feedback table",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2944:18612",
+            "name": "head",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2944:18613",
+              "name": "cell / 요소",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18614",
+                "name": "요소",
+                "type": "TEXT",
+                "characters": "요소"
+               }
+              ]
+             },
+             {
+              "id": "2944:18615",
+              "name": "cell / 유형",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18616",
+                "name": "유형",
+                "type": "TEXT",
+                "characters": "유형"
+               }
+              ]
+             },
+             {
+              "id": "2944:18617",
+              "name": "cell / Jira",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18618",
+                "name": "Jira",
+                "type": "TEXT",
+                "characters": "Jira"
+               }
+              ]
+             },
+             {
+              "id": "2944:18619",
+              "name": "cell / 피드백 내용",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18620",
+                "name": "피드백 내용",
+                "type": "TEXT",
+                "characters": "피드백 내용"
+               }
+              ]
+             },
+             {
+              "id": "2944:18621",
+              "name": "cell / 최근 댓글",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18622",
+                "name": "최근 댓글",
+                "type": "TEXT",
+                "characters": "최근 댓글"
+               }
+              ]
+             },
+             {
+              "id": "2944:18623",
+              "name": "cell / 요청 → 담당",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18624",
+                "name": "요청 → 담당",
+                "type": "TEXT",
+                "characters": "요청 → 담당"
+               }
+              ]
+             },
+             {
+              "id": "2944:18625",
+              "name": "cell / 상태",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18626",
+                "name": "상태",
+                "type": "TEXT",
+                "characters": "상태"
+               }
+              ]
+             },
+             {
+              "id": "2944:18627",
+              "name": "cell / 반영 버전",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18628",
+                "name": "반영 버전",
+                "type": "TEXT",
+                "characters": "반영 버전"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2944:18629",
+            "name": "row / 예시",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2944:18630",
+              "name": "cell / 요소",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18631",
+                "name": "ITEM 1",
+                "type": "TEXT",
+                "characters": "ITEM 1"
+               },
+               {
+                "id": "2944:18632",
+                "name": "요소명",
+                "type": "TEXT",
+                "characters": "요소명"
+               }
+              ]
+             },
+             {
+              "id": "2944:18633",
+              "name": "cell / 유형",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2955:18607",
+                "name": "chip / 작업",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2955:18608",
+                  "name": "작업",
+                  "type": "TEXT",
+                  "characters": "작업"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2944:18636",
+              "name": "cell / Jira",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18637",
+                "name": "DEMO-000 ↗",
+                "type": "TEXT",
+                "characters": "DEMO-000 ↗"
+               },
+               {
+                "id": "2944:18638",
+                "name": "에픽: #12_Viewer",
+                "type": "TEXT",
+                "characters": "에픽: #12_Viewer"
+               }
+              ]
+             },
+             {
+              "id": "2944:18639",
+              "name": "cell / 피드백 내용",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18640",
+                "name": "선택된 상태와 기본 상태가 잘 구분되지 않음. 선택 상태의 강조 대비 조정 요청",
+                "type": "TEXT",
+                "characters": "선택된 상태와 기본 상태가 잘 구분되지 않음. 선택 상태의 강조 대비 조정 요청"
+               }
+              ]
+             },
+             {
+              "id": "2944:18641",
+              "name": "cell / 최근 댓글",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18642",
+                "name": "“강조 테두리 2px로 조정한 시안 공유드릴게요.”",
+                "type": "TEXT",
+                "characters": "“강조 테두리 2px로 조정한 시안 공유드릴게요.”"
+               },
+               {
+                "id": "2944:18643",
+                "name": "Design · 2026.09.28 · 댓글 3",
+                "type": "TEXT",
+                "characters": "Design · 2026.09.28 · 댓글 3"
+               }
+              ]
+             },
+             {
+              "id": "2944:18644",
+              "name": "cell / 요청 → 담당",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18645",
+                "name": "QA → Design",
+                "type": "TEXT",
+                "characters": "QA → Design"
+               }
+              ]
+             },
+             {
+              "id": "2944:18646",
+              "name": "cell / 상태",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18647",
+                "name": "chip / 진행중",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2944:18648",
+                  "name": "진행중",
+                  "type": "TEXT",
+                  "characters": "진행중"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2944:18649",
+              "name": "cell / 반영 버전",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2944:18650",
+                "name": "—",
+                "type": "TEXT",
+                "characters": "—"
+               },
+               {
+                "id": "2944:18651",
+                "name": "반영 시 Change Log 버전 기입",
+                "type": "TEXT",
+                "characters": "반영 시 Change Log 버전 기입"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2944:18652",
+            "name": "example tag",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2944:18653",
+              "name": "↑ 예시 데이터입니다. 실제 반영 시 Jira 티켓 데이터로 대체됩니다.",
+              "type": "TEXT",
+              "characters": "↑ 예시 데이터입니다. 실제 반영 시 Jira 티켓 데이터로 대체됩니다."
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2944:18654",
+          "name": "legend",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2944:18655",
+            "name": "유형",
+            "type": "TEXT",
+            "characters": "유형"
+           },
+           {
+            "id": "2944:18656",
+            "name": "chip / 버그",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2944:18657",
+              "name": "버그",
+              "type": "TEXT",
+              "characters": "버그"
+             }
+            ]
+           },
+           {
+            "id": "2955:18603",
+            "name": "chip / 작업",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2955:18604",
+              "name": "작업",
+              "type": "TEXT",
+              "characters": "작업"
+             }
+            ]
+           },
+           {
+            "id": "2955:18605",
+            "name": "chip / 하위 작업",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2955:18606",
+              "name": "하위 작업",
+              "type": "TEXT",
+              "characters": "하위 작업"
+             }
+            ]
+           },
+           {
+            "id": "2944:18664",
+            "name": "상태",
+            "type": "TEXT",
+            "characters": "상태"
+           },
+           {
+            "id": "2954:18603",
+            "name": "chip / 미해결",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18604",
+              "name": "미해결",
+              "type": "TEXT",
+              "characters": "미해결"
+             }
+            ]
+           },
+           {
+            "id": "2954:18605",
+            "name": "chip / 진행중",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18606",
+              "name": "진행중",
+              "type": "TEXT",
+              "characters": "진행중"
+             }
+            ]
+           },
+           {
+            "id": "2954:18607",
+            "name": "chip / 작업완료",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18608",
+              "name": "작업완료",
+              "type": "TEXT",
+              "characters": "작업완료"
+             }
+            ]
+           },
+           {
+            "id": "2954:18609",
+            "name": "chip / 검수요청",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18610",
+              "name": "검수요청",
+              "type": "TEXT",
+              "characters": "검수요청"
+             }
+            ]
+           },
+           {
+            "id": "2954:18611",
+            "name": "chip / 검수중",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18612",
+              "name": "검수중",
+              "type": "TEXT",
+              "characters": "검수중"
+             }
+            ]
+           },
+           {
+            "id": "2954:18613",
+            "name": "chip / 수정요청",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18614",
+              "name": "수정요청",
+              "type": "TEXT",
+              "characters": "수정요청"
+             }
+            ]
+           },
+           {
+            "id": "2954:18615",
+            "name": "chip / 검수완료",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18616",
+              "name": "검수완료",
+              "type": "TEXT",
+              "characters": "검수완료"
+             }
+            ]
+           },
+           {
+            "id": "2954:18617",
+            "name": "chip / 종료",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18618",
+              "name": "종료",
+              "type": "TEXT",
+              "characters": "종료"
+             }
+            ]
+           },
+           {
+            "id": "2954:18619",
+            "name": "chip / 보류",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2954:18620",
+              "name": "보류",
+              "type": "TEXT",
+              "characters": "보류"
+             }
+            ]
+           },
+           {
+            "id": "2954:18621",
+            "name": "※ 상태는 Jira DEMO 프로젝트 상태명을 그대로 표시",
+            "type": "TEXT",
+            "characters": "※ 상태는 Jira DEMO 프로젝트 상태명을 그대로 표시"
+           }
+          ]
+         },
+         {
+          "id": "2944:18675",
+          "name": "last-synced",
+          "type": "TEXT",
+          "characters": "last-synced"
+         }
+        ]
+       },
+       {
+        "id": "2919:21866",
+        "name": "Change Log",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2919:21867",
+          "name": "Change Log",
+          "type": "TEXT",
+          "characters": "Change Log"
+         },
+         {
+          "id": "2919:21868",
+          "name": "변경 이력",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2919:21869",
+            "name": "head",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2919:21870",
+              "name": "버전",
+              "type": "TEXT",
+              "characters": "버전"
+             },
+             {
+              "id": "2919:21871",
+              "name": "날짜",
+              "type": "TEXT",
+              "characters": "날짜"
+             },
+             {
+              "id": "2919:21872",
+              "name": "역할",
+              "type": "TEXT",
+              "characters": "역할"
+             },
+             {
+              "id": "2919:21873",
+              "name": "작성자",
+              "type": "TEXT",
+              "characters": "작성자"
+             },
+             {
+              "id": "2919:21874",
+              "name": "변경 내용",
+              "type": "TEXT",
+              "characters": "변경 내용"
+             }
+            ]
+           },
+           {
+            "id": "2919:21875",
+            "name": "row",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2919:21876",
+              "name": "v1.0",
+              "type": "TEXT",
+              "characters": "v1.0"
+             },
+             {
+              "id": "2919:21877",
+              "name": "YYYY-MM-DD",
+              "type": "TEXT",
+              "characters": "YYYY-MM-DD"
+             },
+             {
+              "id": "2919:21878",
+              "name": "PM",
+              "type": "TEXT",
+              "characters": "PM"
+             },
+             {
+              "id": "2919:21879",
+              "name": "@이름",
+              "type": "TEXT",
+              "characters": "@이름"
+             },
+             {
+              "id": "2919:21880",
+              "name": "최초 작성",
+              "type": "TEXT",
+              "characters": "최초 작성"
+             }
+            ]
+           },
+           {
+            "id": "2919:21881",
+            "name": "row",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2919:21882",
+              "name": "v1.1",
+              "type": "TEXT",
+              "characters": "v1.1"
+             },
+             {
+              "id": "2919:21883",
+              "name": "YYYY-MM-DD",
+              "type": "TEXT",
+              "characters": "YYYY-MM-DD"
+             },
+             {
+              "id": "2919:21884",
+              "name": "Design",
+              "type": "TEXT",
+              "characters": "Design"
+             },
+             {
+              "id": "2919:21885",
+              "name": "@이름",
+              "type": "TEXT",
+              "characters": "@이름"
+             },
+             {
+              "id": "2919:21886",
+              "name": "Visual Spec 추가",
+              "type": "TEXT",
+              "characters": "Visual Spec 추가"
+             }
+            ]
+           },
+           {
+            "id": "2919:21887",
+            "name": "row",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2919:21888",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2919:21889",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2919:21890",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2919:21891",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2919:21892",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "2956:18603",
+      "name": "📄 M-07 목차 패널 · 화면정의서",
+      "type": "FRAME",
+      "children": [
+       {
+        "id": "2956:18604",
+        "name": "Doc Header",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2956:18605",
+          "name": "id",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18606",
+            "name": "chip / [화면ID]",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18607",
+              "name": "M-07",
+              "type": "TEXT",
+              "characters": "M-07"
+             }
+            ]
+           },
+           {
+            "id": "2956:18608",
+            "name": "chip / v1.0",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18609",
+              "name": "v1.0",
+              "type": "TEXT",
+              "characters": "v1.0"
+             }
+            ]
+           },
+           {
+            "id": "2956:18610",
+            "name": "상태",
+            "type": "INSTANCE",
+            "componentProperties": {
+             "상태": {
+              "type": "VARIANT",
+              "value": "작성중"
+             }
+            },
+            "children": [
+             {
+              "id": "2956:18610;t",
+              "name": "label",
+              "type": "TEXT",
+              "characters": "● 작성중"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2956:18611",
+          "name": "목차 패널",
+          "type": "TEXT",
+          "characters": "목차 패널"
+         },
+         {
+          "id": "2956:18612",
+          "name": "이 화면을 한 문장으로 설명합니다. (예: 사용자가 콘텐츠을 열람하는 최상위 기준 화면)",
+          "type": "TEXT",
+          "characters": "호(issue)별 기사 목록을 탐색하고 원하는 기사로 바로 이동하는 패널"
+         }
+        ]
+       },
+       {
+        "id": "2956:18622",
+        "name": "작성 가이드",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2956:18623",
+          "name": "작성 순서 및 역할",
+          "type": "TEXT",
+          "characters": "작성 순서 및 역할"
+         },
+         {
+          "id": "2956:18624",
+          "name": "flow",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18625",
+            "name": "chip / ① PM Spec · 기획자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18626",
+              "name": "① PM Spec · 기획자",
+              "type": "TEXT",
+              "characters": "① PM Spec · 기획자"
+             }
+            ]
+           },
+           {
+            "id": "2956:18627",
+            "name": "→",
+            "type": "TEXT",
+            "characters": "→"
+           },
+           {
+            "id": "2956:18628",
+            "name": "chip / ② Design Spec · 디자이너",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18629",
+              "name": "② Design Spec · 디자이너",
+              "type": "TEXT",
+              "characters": "② Design Spec · 디자이너"
+             }
+            ]
+           },
+           {
+            "id": "2956:18630",
+            "name": "→",
+            "type": "TEXT",
+            "characters": "→"
+           },
+           {
+            "id": "2956:18631",
+            "name": "chip / ③ Dev Note · 개발자",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18632",
+              "name": "③ 검토 · PO",
+              "type": "TEXT",
+              "characters": "③ 검토 · PO"
+             }
+            ]
+           },
+           {
+            "id": "2956:18633",
+            "name": "→",
+            "type": "TEXT",
+            "characters": "→"
+           },
+           {
+            "id": "2956:18634",
+            "name": "chip / ④ QA Criteria · QA",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18635",
+              "name": "④ Code · 개발",
+              "type": "TEXT",
+              "characters": "④ Code · 개발"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2956:18636",
+          "name": "• PM은 “무엇이 필요하고 어떤 의도로 동작하는지”만 정의합니다. px · 컬러값 · 폰트 크기 같은 디자인 수치는 쓰지 않습니다. • Design은 PM이 정의한 요소 번호·순서를 그대로 따라 오른쪽 Design 칸에 Visual Spec을 채웁니다. • 수치는 디자인 토큰명 + 값으로 표기합니다. (예: spacing/6 20px, Color/text/primary #1A1A1A) • 요소 번호는 화면 시안의 번호 뱃지와 1:1로 일치시킵니다. • 회색 가이드 문구는 실제 내용으로 교체하고, 변경 시 하단 Change Log에 기록합니다.",
+          "type": "TEXT",
+          "characters": "• PM은 “무엇이 필요하고 어떤 의도로 동작하는지”만 정의합니다. px · 컬러값 · 폰트 크기 같은 디자인 수치는 쓰지 않습니다. • Design은 PM이 정의한 요소 번호·순서를 그대로 따라 오른쪽 Design 칸에 Visual Spec을 채웁니다. • 수치는 디자인 토큰명 + 값으로 표기합니다. (예: spacing/6 20px, Color/text/primary #1A1A1A) • 요소 번호는 화면 시안의 번호 뱃지와 1:1로 일치시킵니다. • 회색 가이드 문구는 실제 내용으로 교체하고, 변경 시 하단 Change Log에 기록합니다."
+         }
+        ]
+       },
+       {
+        "id": "2956:18637",
+        "name": "① PM Spec",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2956:18638",
+          "name": "role header",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18639",
+            "name": "chip / [PM]",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18640",
+              "name": "[PM]",
+              "type": "TEXT",
+              "characters": "[PM]"
+             }
+            ]
+           },
+           {
+            "id": "2956:18641",
+            "name": "① PM Spec · 기능 및 정책 정의",
+            "type": "TEXT",
+            "characters": "① PM Spec · 기능 및 정책 정의"
+           },
+           {
+            "id": "2956:18642",
+            "name": "작성: 기획자",
+            "type": "TEXT",
+            "characters": "작성: 기획자"
+           }
+          ]
+         },
+         {
+          "id": "2956:18643",
+          "name": "개요",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18644",
+            "name": "head",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18645",
+              "name": "화면 개요",
+              "type": "TEXT",
+              "characters": "화면 개요"
+             }
+            ]
+           },
+           {
+            "id": "2956:18646",
+            "name": "row / 화면 목적",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18647",
+              "name": "화면 목적",
+              "type": "TEXT",
+              "characters": "화면 목적"
+             },
+             {
+              "id": "2956:18648",
+              "name": "이 화면에서 사용자가 무엇을 하는지",
+              "type": "TEXT",
+              "characters": "사용자가 목차를 보고 읽을 기사를 고른다"
+             }
+            ]
+           },
+           {
+            "id": "2956:18649",
+            "name": "row / 진입 경로",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18650",
+              "name": "진입 경로",
+              "type": "TEXT",
+              "characters": "진입 경로"
+             },
+             {
+              "id": "2956:18651",
+              "name": "어느 화면 / 어떤 동작으로 진입하는지 (예: D-02 아이콘 레일 → 썸네일 버튼 클릭)",
+              "type": "TEXT",
+              "characters": "어느 화면 / 어떤 동작으로 진입하는지 (예: D-02 아이콘 레일 → 썸네일 버튼 클릭)"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "2956:18652",
+        "name": "요소별 정의",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2956:18653",
+          "name": "items header",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18654",
+            "name": "요소별 정의 — 왼쪽은 PM, 오른쪽은 Design이 작성",
+            "type": "TEXT",
+            "characters": "요소별 정의 — 왼쪽은 PM, 오른쪽은 Design이 작성"
+           }
+          ]
+         },
+         {
+          "id": "2956:18655",
+          "name": "요소 개수만큼 카드를 복제해서 사용합니다.",
+          "type": "TEXT",
+          "characters": "요소 개수만큼 카드를 복제해서 사용합니다."
+         },
+         {
+          "id": "2956:18656",
+          "name": "ITEM / 1 / 요소명",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18657",
+            "name": "TitleBar",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18658",
+              "name": "badge",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18659",
+                "name": "1",
+                "type": "TEXT",
+                "characters": "1"
+               }
+              ]
+             },
+             {
+              "id": "2956:18660",
+              "name": "요소명",
+              "type": "TEXT",
+              "characters": "목차 리스트"
+             },
+             {
+              "id": "2956:18661",
+              "name": "chip / [화면ID]-1 ↗",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18662",
+                "name": "[화면ID]-1 ↗",
+                "type": "TEXT",
+                "characters": "[화면ID]-1 ↗"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2956:18663",
+            "name": "body",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18664",
+              "name": "PM column",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18665",
+                "name": "col head",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18666",
+                  "name": "PM · 무엇이 필요하고 어떻게 동작하는가",
+                  "type": "TEXT",
+                  "characters": "PM · 무엇이 필요하고 어떻게 동작하는가"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18667",
+                "name": "row / 기능",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18668",
+                  "name": "기능",
+                  "type": "TEXT",
+                  "characters": "기능"
+                 },
+                 {
+                  "id": "2956:18669",
+                  "name": "이 요소가 제공하는 기능과 사용 목적",
+                  "type": "TEXT",
+                  "characters": "현재 호(issue)의 기사 목록을 섹션별로 보여주고, 선택한 기사로 바로 이동한다"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18670",
+                "name": "row / 콘텐츠",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18671",
+                  "name": "콘텐츠",
+                  "type": "TEXT",
+                  "characters": "콘텐츠"
+                 },
+                 {
+                  "id": "2956:18672",
+                  "name": "노출 문구 · 데이터 · 노출 조건 (예: 로그인 시에만 노출)",
+                  "type": "TEXT",
+                  "characters": "섹션명 · 기사 제목 · 페이지 번호. 광고 섹션은 노출하지 않음"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18673",
+                "name": "row / Interaction",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18674",
+                  "name": "Interaction",
+                  "type": "TEXT",
+                  "characters": "Interaction"
+                 },
+                 {
+                  "id": "2956:18675",
+                  "name": "클릭/탭/입력 시 어떻게 동작하는지, 이동 화면",
+                  "type": "TEXT",
+                  "characters": "기사 탭 → 해당 기사 상세로 이동. 상세에서 닫으면 목차 패널로 복귀"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18676",
+                "name": "row / State",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18677",
+                  "name": "State",
+                  "type": "TEXT",
+                  "characters": "State"
+                 },
+                 {
+                  "id": "2956:18678",
+                  "name": "존재하는 상태 (Default / Empty / Error / Disabled …)",
+                  "type": "TEXT",
+                  "characters": "Default / Loading / Empty(기사 없음) / Error(불러오기 실패)"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18679",
+                "name": "row / Policy",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18680",
+                  "name": "Policy",
+                  "type": "TEXT",
+                  "characters": "Policy"
+                 },
+                 {
+                  "id": "2956:18681",
+                  "name": "입력 제한, 권한, 정- 렬 기준 등 정책",
+                  "type": "TEXT",
+                  "characters": "정렬: 지면 순서(페이지 번호 오름차순). 유료 기사는 잠금 아이콘 표시, 비로그인 시 탭하면 로그인 유도"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18682",
+                "name": "row / Exception",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18683",
+                  "name": "Exception",
+                  "type": "TEXT",
+                  "characters": "Exception"
+                 },
+                 {
+                  "id": "2956:18684",
+                  "name": "예외 상황과 처리 방식",
+                  "type": "TEXT",
+                  "characters": "목차 API 실패 시 재시도 버튼 노출. 제목이 없는 기사는 \"제목 없음\"으로 표시"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2956:18685",
+              "name": "Design column",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18686",
+                "name": "col head",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18687",
+                  "name": "Design · 어떻게 보이는가",
+                  "type": "TEXT",
+                  "characters": "Design · 어떻게 보이는가"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18688",
+                "name": "row / Layout",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18689",
+                  "name": "Layout",
+                  "type": "TEXT",
+                  "characters": "Layout"
+                 },
+                 {
+                  "id": "2956:18690",
+                  "name": "크기 · 여백 · 정렬 · Grid (spacing 토큰)",
+                  "type": "TEXT",
+                  "characters": "패널 폭 360 · 행 높이 56 · 좌우 padding spacing/6 20px"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18691",
+                "name": "row / Typography",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18692",
+                  "name": "Typography",
+                  "type": "TEXT",
+                  "characters": "Typography"
+                 },
+                 {
+                  "id": "2956:18693",
+                  "name": "Font / Size / Weight / Line Height",
+                  "type": "TEXT",
+                  "characters": "Body/M 16 · Medium · 24"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18694",
+                "name": "row / Color",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18695",
+                  "name": "Color",
+                  "type": "TEXT",
+                  "characters": "Color"
+                 },
+                 {
+                  "id": "2956:18696",
+                  "name": "Text · Background · Border (토큰명 + HEX)",
+                  "type": "TEXT",
+                  "characters": "Color/text/primary #1A1A1A · Color/bg/surface #FFFFFF"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18697",
+                "name": "row / Component",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18698",
+                  "name": "Component",
+                  "type": "TEXT",
+                  "characters": "Component"
+                 },
+                 {
+                  "id": "2956:18699",
+                  "name": "사용 컴포넌트 / Variant명",
+                  "type": "TEXT",
+                  "characters": "ListItem / Variant=Article"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18700",
+                "name": "row / State Visual",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18701",
+                  "name": "State Visual",
+                  "type": "TEXT",
+                  "characters": "State Visual"
+                 },
+                 {
+                  "id": "2956:18702",
+                  "name": "Default · Hover · Active · Focus · Disabled · Loading",
+                  "type": "TEXT",
+                  "characters": "Default · Hover · Active · Focus · Disabled · Loading"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18703",
+                "name": "row / Interaction Visual",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18704",
+                  "name": "Interaction Visual",
+                  "type": "TEXT",
+                  "characters": "Interaction Visual"
+                 },
+                 {
+                  "id": "2956:18705",
+                  "name": "Transition · Animation · Tooltip · Toast",
+                  "type": "TEXT",
+                  "characters": "Transition · Animation · Tooltip · Toast"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18706",
+                "name": "row / Responsive",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18707",
+                  "name": "Responsive",
+                  "type": "TEXT",
+                  "characters": "Responsive"
+                 },
+                 {
+                  "id": "2956:18708",
+                  "name": "Desktop / Tablet / Mobile 변화",
+                  "type": "TEXT",
+                  "characters": "Desktop / Tablet / Mobile 변화"
+                 }
+                ]
+               },
+               {
+                "id": "2956:18709",
+                "name": "row / Asset",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2956:18710",
+                  "name": "Asset",
+                  "type": "TEXT",
+                  "characters": "Asset"
+                 },
+                 {
+                  "id": "2956:18711",
+                  "name": "Icon · Image · Illustration · Lottie",
+                  "type": "TEXT",
+                  "characters": "Icon · Image · Illustration · Lottie"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "2956:18712",
+        "name": "Feedback Log",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2956:18713",
+          "name": "title",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18714",
+            "name": "Feedback Log",
+            "type": "TEXT",
+            "characters": "Feedback Log"
+           },
+           {
+            "id": "2956:18715",
+            "name": "chip / Jira → Figma 단방향",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18716",
+              "name": "Jira → Figma 단방향",
+              "type": "TEXT",
+              "characters": "Jira → Figma 단방향"
+             }
+            ]
+           },
+           {
+            "id": "2956:18717",
+            "name": "chip / 요청 시 갱신",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18718",
+              "name": "요청 시 갱신",
+              "type": "TEXT",
+              "characters": "요청 시 갱신"
+             }
+            ]
+           },
+           {
+            "id": "2961:18607",
+            "name": "sync-link",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2961:18608",
+              "name": "동기화 열기 ↗",
+              "type": "TEXT",
+              "characters": "동기화 열기 ↗"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2956:18719",
+          "name": "제목이나 레이블에 이 화면ID가 있는 Jira 티켓을 가져와 표시합니다. 피드백 작성·댓글·상태 변경은 Jira에서만 하고, 이 표는 직접 수정하지 않습니다.",
+          "type": "TEXT",
+          "characters": "제목이나 레이블에 이 화면ID가 있는 Jira 티켓을 가져와 표시합니다. 피드백 작성·댓글·상태 변경은 Jira에서만 하고, 이 표는 직접 수정하지 않습니다."
+         },
+         {
+          "id": "2956:18720",
+          "name": "feedback table",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18721",
+            "name": "head",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18722",
+              "name": "cell / 요소",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18723",
+                "name": "요소",
+                "type": "TEXT",
+                "characters": "요소"
+               }
+              ]
+             },
+             {
+              "id": "2956:18724",
+              "name": "cell / 유형",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18725",
+                "name": "유형",
+                "type": "TEXT",
+                "characters": "유형"
+               }
+              ]
+             },
+             {
+              "id": "2956:18726",
+              "name": "cell / Jira",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18727",
+                "name": "Jira",
+                "type": "TEXT",
+                "characters": "Jira"
+               }
+              ]
+             },
+             {
+              "id": "2956:18728",
+              "name": "cell / 피드백 내용",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18729",
+                "name": "피드백 내용",
+                "type": "TEXT",
+                "characters": "피드백 내용"
+               }
+              ]
+             },
+             {
+              "id": "2956:18730",
+              "name": "cell / 최근 댓글",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18731",
+                "name": "최근 댓글",
+                "type": "TEXT",
+                "characters": "최근 댓글"
+               }
+              ]
+             },
+             {
+              "id": "2956:18732",
+              "name": "cell / 요청 → 담당",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18733",
+                "name": "요청 → 담당",
+                "type": "TEXT",
+                "characters": "요청 → 담당"
+               }
+              ]
+             },
+             {
+              "id": "2956:18734",
+              "name": "cell / 상태",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18735",
+                "name": "상태",
+                "type": "TEXT",
+                "characters": "상태"
+               }
+              ]
+             },
+             {
+              "id": "2956:18736",
+              "name": "cell / 반영 버전",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2956:18737",
+                "name": "반영 버전",
+                "type": "TEXT",
+                "characters": "반영 버전"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2959:18605",
+            "name": "row / DEMO-475",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2959:18606",
+              "name": "cell 0",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18607",
+                "name": "M-07-009",
+                "type": "TEXT",
+                "characters": "M-07-009"
+               }
+              ]
+             },
+             {
+              "id": "2959:18608",
+              "name": "cell 1",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18609",
+                "name": "chip / 버그",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18610",
+                  "name": "버그",
+                  "type": "TEXT",
+                  "characters": "버그"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18611",
+              "name": "cell 2",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18612",
+                "name": "DEMO-475 ↗",
+                "type": "TEXT",
+                "characters": "DEMO-475 ↗"
+               },
+               {
+                "id": "2959:18613",
+                "name": "[EPIC] Reader",
+                "type": "TEXT",
+                "characters": "[EPIC] Reader"
+               }
+              ]
+             },
+             {
+              "id": "2959:18614",
+              "name": "cell 3",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18615",
+                "name": "목차에서 기사 닫으면 목차로 복귀하지 않음",
+                "type": "TEXT",
+                "characters": "목차에서 기사 닫으면 목차로 복귀하지 않음"
+               }
+              ]
+             },
+             {
+              "id": "2959:18616",
+              "name": "cell 4",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18617",
+                "name": "“상세보기시 상단 바 노출되도록 수정”",
+                "type": "TEXT",
+                "characters": "“상세보기시 상단 바 노출되도록 수정”"
+               },
+               {
+                "id": "2959:18618",
+                "name": "이개발 · 2026.09.03 · 댓글 4",
+                "type": "TEXT",
+                "characters": "이개발 · 2026.09.03 · 댓글 4"
+               }
+              ]
+             },
+             {
+              "id": "2959:18619",
+              "name": "cell 5",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18620",
+                "name": "김기획 → 이개발",
+                "type": "TEXT",
+                "characters": "김기획 → 이개발"
+               }
+              ]
+             },
+             {
+              "id": "2959:18621",
+              "name": "cell 6",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18622",
+                "name": "chip / 종료",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18623",
+                  "name": "종료",
+                  "type": "TEXT",
+                  "characters": "종료"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18624",
+              "name": "cell 7",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18625",
+                "name": "v2.1.0",
+                "type": "TEXT",
+                "characters": "v2.1.0"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2959:18626",
+            "name": "row / DEMO-493",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2959:18627",
+              "name": "cell 0",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18628",
+                "name": "M-07-008",
+                "type": "TEXT",
+                "characters": "M-07-008"
+               }
+              ]
+             },
+             {
+              "id": "2959:18629",
+              "name": "cell 1",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18630",
+                "name": "chip / 버그",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18631",
+                  "name": "버그",
+                  "type": "TEXT",
+                  "characters": "버그"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18632",
+              "name": "cell 2",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18633",
+                "name": "DEMO-493 ↗",
+                "type": "TEXT",
+                "characters": "DEMO-493 ↗"
+               },
+               {
+                "id": "2959:18634",
+                "name": "[EPIC] Reader",
+                "type": "TEXT",
+                "characters": "[EPIC] Reader"
+               }
+              ]
+             },
+             {
+              "id": "2959:18635",
+              "name": "cell 3",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18636",
+                "name": "목차에 [광고] 섹션이 표시됨",
+                "type": "TEXT",
+                "characters": "목차에 [광고] 섹션이 표시됨"
+               }
+              ]
+             },
+             {
+              "id": "2959:18637",
+              "name": "cell 4",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18638",
+                "name": "“광고를 리스트에서 제거”",
+                "type": "TEXT",
+                "characters": "“광고를 리스트에서 제거”"
+               },
+               {
+                "id": "2959:18639",
+                "name": "이개발 · 2026.08.31 · 댓글 1",
+                "type": "TEXT",
+                "characters": "이개발 · 2026.08.31 · 댓글 1"
+               }
+              ]
+             },
+             {
+              "id": "2959:18640",
+              "name": "cell 5",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18641",
+                "name": "김기획 → 이개발",
+                "type": "TEXT",
+                "characters": "김기획 → 이개발"
+               }
+              ]
+             },
+             {
+              "id": "2959:18642",
+              "name": "cell 6",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18643",
+                "name": "chip / 종료",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18644",
+                  "name": "종료",
+                  "type": "TEXT",
+                  "characters": "종료"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18645",
+              "name": "cell 7",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18646",
+                "name": "v2.1.0-beta",
+                "type": "TEXT",
+                "characters": "v2.1.0-beta"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2959:18647",
+            "name": "row / DEMO-533",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2959:18648",
+              "name": "cell 0",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18649",
+                "name": "M-07-004",
+                "type": "TEXT",
+                "characters": "M-07-004"
+               }
+              ]
+             },
+             {
+              "id": "2959:18650",
+              "name": "cell 1",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18651",
+                "name": "chip / 버그",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18652",
+                  "name": "버그",
+                  "type": "TEXT",
+                  "characters": "버그"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18653",
+              "name": "cell 2",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18654",
+                "name": "DEMO-533 ↗",
+                "type": "TEXT",
+                "characters": "DEMO-533 ↗"
+               },
+               {
+                "id": "2959:18655",
+                "name": "[EPIC] Reader",
+                "type": "TEXT",
+                "characters": "[EPIC] Reader"
+               }
+              ]
+             },
+             {
+              "id": "2959:18656",
+              "name": "cell 3",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18657",
+                "name": "목차 패널 헤더에 제목이 표시되지 않음",
+                "type": "TEXT",
+                "characters": "목차 패널 헤더에 제목이 표시되지 않음"
+               }
+              ]
+             },
+             {
+              "id": "2959:18658",
+              "name": "cell 4",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18659",
+                "name": "댓글 없음",
+                "type": "TEXT",
+                "characters": "댓글 없음"
+               }
+              ]
+             },
+             {
+              "id": "2959:18660",
+              "name": "cell 5",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18661",
+                "name": "김기획 → 이개발",
+                "type": "TEXT",
+                "characters": "김기획 → 이개발"
+               }
+              ]
+             },
+             {
+              "id": "2959:18662",
+              "name": "cell 6",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18663",
+                "name": "chip / 종료",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18664",
+                  "name": "종료",
+                  "type": "TEXT",
+                  "characters": "종료"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18665",
+              "name": "cell 7",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18666",
+                "name": "v2.1.0-beta",
+                "type": "TEXT",
+                "characters": "v2.1.0-beta"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2959:18667",
+            "name": "row / DEMO-476",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2959:18668",
+              "name": "cell 0",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18669",
+                "name": "M-07-011",
+                "type": "TEXT",
+                "characters": "M-07-011"
+               }
+              ]
+             },
+             {
+              "id": "2959:18670",
+              "name": "cell 1",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18671",
+                "name": "chip / 버그",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18672",
+                  "name": "버그",
+                  "type": "TEXT",
+                  "characters": "버그"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18673",
+              "name": "cell 2",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18674",
+                "name": "DEMO-476 ↗",
+                "type": "TEXT",
+                "characters": "DEMO-476 ↗"
+               },
+               {
+                "id": "2959:18675",
+                "name": "[EPIC] Reader",
+                "type": "TEXT",
+                "characters": "[EPIC] Reader"
+               }
+              ]
+             },
+             {
+              "id": "2959:18676",
+              "name": "cell 3",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18677",
+                "name": "목차에서 기사 닫으면 목차로 복귀하지 않음",
+                "type": "TEXT",
+                "characters": "목차에서 기사 닫으면 목차로 복귀하지 않음"
+               }
+              ]
+             },
+             {
+              "id": "2959:18678",
+              "name": "cell 4",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18679",
+                "name": "댓글 없음",
+                "type": "TEXT",
+                "characters": "댓글 없음"
+               }
+              ]
+             },
+             {
+              "id": "2959:18680",
+              "name": "cell 5",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18681",
+                "name": "김기획 → 이개발",
+                "type": "TEXT",
+                "characters": "김기획 → 이개발"
+               }
+              ]
+             },
+             {
+              "id": "2959:18682",
+              "name": "cell 6",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18683",
+                "name": "chip / 종료",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18684",
+                  "name": "종료",
+                  "type": "TEXT",
+                  "characters": "종료"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18685",
+              "name": "cell 7",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18686",
+                "name": "v2.1.0-beta",
+                "type": "TEXT",
+                "characters": "v2.1.0-beta"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "2959:18687",
+            "name": "row / DEMO-565",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2959:18688",
+              "name": "cell 0",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18689",
+                "name": "M-07",
+                "type": "TEXT",
+                "characters": "M-07"
+               }
+              ]
+             },
+             {
+              "id": "2959:18690",
+              "name": "cell 1",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18691",
+                "name": "chip / 버그",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18692",
+                  "name": "버그",
+                  "type": "TEXT",
+                  "characters": "버그"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18693",
+              "name": "cell 2",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18694",
+                "name": "DEMO-565 ↗",
+                "type": "TEXT",
+                "characters": "DEMO-565 ↗"
+               },
+               {
+                "id": "2959:18695",
+                "name": "[EPIC] Reader",
+                "type": "TEXT",
+                "characters": "[EPIC] Reader"
+               }
+              ]
+             },
+             {
+              "id": "2959:18696",
+              "name": "cell 3",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18697",
+                "name": "기사 폰트/padding/구분선 스타일 수정 필요",
+                "type": "TEXT",
+                "characters": "기사 폰트/padding/구분선 스타일 수정 필요"
+               }
+              ]
+             },
+             {
+              "id": "2959:18698",
+              "name": "cell 4",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18699",
+                "name": "댓글 없음",
+                "type": "TEXT",
+                "characters": "댓글 없음"
+               }
+              ]
+             },
+             {
+              "id": "2959:18700",
+              "name": "cell 5",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18701",
+                "name": "박디자인 → 이개발",
+                "type": "TEXT",
+                "characters": "박디자인 → 이개발"
+               }
+              ]
+             },
+             {
+              "id": "2959:18702",
+              "name": "cell 6",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18703",
+                "name": "chip / 종료",
+                "type": "FRAME",
+                "children": [
+                 {
+                  "id": "2959:18704",
+                  "name": "종료",
+                  "type": "TEXT",
+                  "characters": "종료"
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "id": "2959:18705",
+              "name": "cell 7",
+              "type": "FRAME",
+              "children": [
+               {
+                "id": "2959:18706",
+                "name": "v2.1.0-beta",
+                "type": "TEXT",
+                "characters": "v2.1.0-beta"
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "2956:18763",
+          "name": "legend",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18764",
+            "name": "유형",
+            "type": "TEXT",
+            "characters": "유형"
+           },
+           {
+            "id": "2956:18765",
+            "name": "chip / 버그",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18766",
+              "name": "버그",
+              "type": "TEXT",
+              "characters": "버그"
+             }
+            ]
+           },
+           {
+            "id": "2956:18767",
+            "name": "chip / 작업",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18768",
+              "name": "작업",
+              "type": "TEXT",
+              "characters": "작업"
+             }
+            ]
+           },
+           {
+            "id": "2956:18769",
+            "name": "chip / 하위 작업",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18770",
+              "name": "하위 작업",
+              "type": "TEXT",
+              "characters": "하위 작업"
+             }
+            ]
+           },
+           {
+            "id": "2956:18771",
+            "name": "상태",
+            "type": "TEXT",
+            "characters": "상태"
+           },
+           {
+            "id": "2956:18772",
+            "name": "chip / 미해결",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18773",
+              "name": "미해결",
+              "type": "TEXT",
+              "characters": "미해결"
+             }
+            ]
+           },
+           {
+            "id": "2956:18774",
+            "name": "chip / 진행중",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18775",
+              "name": "진행중",
+              "type": "TEXT",
+              "characters": "진행중"
+             }
+            ]
+           },
+           {
+            "id": "2956:18776",
+            "name": "chip / 작업완료",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18777",
+              "name": "작업완료",
+              "type": "TEXT",
+              "characters": "작업완료"
+             }
+            ]
+           },
+           {
+            "id": "2956:18778",
+            "name": "chip / 검수요청",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18779",
+              "name": "검수요청",
+              "type": "TEXT",
+              "characters": "검수요청"
+             }
+            ]
+           },
+           {
+            "id": "2956:18780",
+            "name": "chip / 검수중",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18781",
+              "name": "검수중",
+              "type": "TEXT",
+              "characters": "검수중"
+             }
+            ]
+           },
+           {
+            "id": "2956:18782",
+            "name": "chip / 수정요청",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18783",
+              "name": "수정요청",
+              "type": "TEXT",
+              "characters": "수정요청"
+             }
+            ]
+           },
+           {
+            "id": "2956:18784",
+            "name": "chip / 검수완료",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18785",
+              "name": "검수완료",
+              "type": "TEXT",
+              "characters": "검수완료"
+             }
+            ]
+           },
+           {
+            "id": "2956:18786",
+            "name": "chip / 종료",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18787",
+              "name": "종료",
+              "type": "TEXT",
+              "characters": "종료"
+             }
+            ]
+           },
+           {
+            "id": "2956:18788",
+            "name": "chip / 보류",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18789",
+              "name": "보류",
+              "type": "TEXT",
+              "characters": "보류"
+             }
+            ]
+           },
+           {
+            "id": "2956:18790",
+            "name": "※ 상태는 Jira DEMO 프로젝트 상태명을 그대로 표시",
+            "type": "TEXT",
+            "characters": "※ 상태는 Jira DEMO 프로젝트 상태명을 그대로 표시"
+           }
+          ]
+         },
+         {
+          "id": "2956:18791",
+          "name": "last-synced",
+          "type": "TEXT",
+          "characters": "last-synced"
+         }
+        ]
+       },
+       {
+        "id": "2956:18792",
+        "name": "Change Log",
+        "type": "FRAME",
+        "children": [
+         {
+          "id": "2956:18793",
+          "name": "Change Log",
+          "type": "TEXT",
+          "characters": "Change Log"
+         },
+         {
+          "id": "2956:18794",
+          "name": "변경 이력",
+          "type": "FRAME",
+          "children": [
+           {
+            "id": "2956:18795",
+            "name": "head",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18796",
+              "name": "버전",
+              "type": "TEXT",
+              "characters": "버전"
+             },
+             {
+              "id": "2956:18797",
+              "name": "날짜",
+              "type": "TEXT",
+              "characters": "날짜"
+             },
+             {
+              "id": "2956:18798",
+              "name": "역할",
+              "type": "TEXT",
+              "characters": "역할"
+             },
+             {
+              "id": "2956:18799",
+              "name": "작성자",
+              "type": "TEXT",
+              "characters": "작성자"
+             },
+             {
+              "id": "2956:18800",
+              "name": "변경 내용",
+              "type": "TEXT",
+              "characters": "변경 내용"
+             }
+            ]
+           },
+           {
+            "id": "2956:18801",
+            "name": "row",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18802",
+              "name": "v1.0",
+              "type": "TEXT",
+              "characters": "v1.0"
+             },
+             {
+              "id": "2956:18803",
+              "name": "YYYY-MM-DD",
+              "type": "TEXT",
+              "characters": "YYYY-MM-DD"
+             },
+             {
+              "id": "2956:18804",
+              "name": "PM",
+              "type": "TEXT",
+              "characters": "PM"
+             },
+             {
+              "id": "2956:18805",
+              "name": "@이름",
+              "type": "TEXT",
+              "characters": "@이름"
+             },
+             {
+              "id": "2956:18806",
+              "name": "최초 작성",
+              "type": "TEXT",
+              "characters": "최초 작성"
+             }
+            ]
+           },
+           {
+            "id": "2956:18807",
+            "name": "row",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18808",
+              "name": "v1.1",
+              "type": "TEXT",
+              "characters": "v1.1"
+             },
+             {
+              "id": "2956:18809",
+              "name": "YYYY-MM-DD",
+              "type": "TEXT",
+              "characters": "YYYY-MM-DD"
+             },
+             {
+              "id": "2956:18810",
+              "name": "Design",
+              "type": "TEXT",
+              "characters": "Design"
+             },
+             {
+              "id": "2956:18811",
+              "name": "@이름",
+              "type": "TEXT",
+              "characters": "@이름"
+             },
+             {
+              "id": "2956:18812",
+              "name": "Visual Spec 추가",
+              "type": "TEXT",
+              "characters": "Visual Spec 추가"
+             }
+            ]
+           },
+           {
+            "id": "2956:18813",
+            "name": "row",
+            "type": "FRAME",
+            "children": [
+             {
+              "id": "2956:18814",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2956:18815",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2956:18816",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2956:18817",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             },
+             {
+              "id": "2956:18818",
+              "name": "Text",
+              "type": "TEXT",
+              "characters": "Text"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}
