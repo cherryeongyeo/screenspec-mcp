@@ -106,11 +106,12 @@ function makeStatusSet() {
 }
 
 // ---------- section ----------
-let maxY = 0;
-for (const n of figma.currentPage.children) maxY = Math.max(maxY, n.y + n.height);
+const existing = [...figma.currentPage.children];
+let maxY = 0, minX = existing.length ? Infinity : 0;
+for (const n of existing) { maxY = Math.max(maxY, n.y + n.height); minX = Math.min(minX, n.x); }
 const section = figma.createSection();
 section.name = L.section;
-section.x = 0; section.y = figma.currentPage.children.length > 1 ? maxY + 200 : 0;
+section.x = minX; section.y = existing.length ? maxY + 200 : 0;
 section.fills = solid(K.sectionBg);
 
 // components frame

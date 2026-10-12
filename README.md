@@ -60,17 +60,23 @@ All tools are read-only. `draft_jira_ticket` doesn't create issues. Hand the dra
 
 ## The spec template
 
+Ready-made Figma template in Korean and English: blank spec + filled sample (a cart screen) + badge and status components.
+
+- Generate it in any Figma file: `node scripts/render-template.mjs en` (or `ko`) prints a Figma Plugin API script. Run it with the Figma MCP `use_figma` tool or a plugin console.
+- Copy and wording live in [`figma-template/i18n.json`](figma-template/i18n.json). Add a language block to localize.
+
+
 The parser follows layer names, not visual layout, so designers can restyle freely as long as names stay.
 
 | Layer name | Meaning |
 |---|---|
-| `📄 <ID> <title> · 화면정의서` | A screen spec document (marker configurable) |
+| `📄 <ID> <title> · 화면정의서` / `· Screen Spec` | A screen spec document (markers configurable) |
 | `Doc Header` → `chip / [화면ID]`, `chip / v1.0`, instance `상태` | Screen ID, version, status variant |
-| `개요` → `row / <label>` | Screen overview rows (purpose, entry path) |
+| `개요` / `Overview` → `row / <label>` | Screen overview rows (purpose, entry point) |
 | `ITEM / <n> / <name>` | One element card. `n` matches the badge on the mockup |
 | `PM column` / `Design column` → `row / <label>` | Fields. First text is the label, the rest is the value |
 | `feedback table` → `head`, `row / <JIRA-KEY>` → `cell n` | Feedback log synced from Jira |
-| `변경 이력` → `row` | Change log: version, date, role, author, change |
+| `변경 이력` / `Change history` → `row` | Change log: version, date, role, author, change |
 
 Values still equal to the template's guide text count as **unfilled**. That's how `lint_spec` measures completeness.
 
