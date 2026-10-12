@@ -6,7 +6,7 @@
     "mock": {
       "name": "[화면ID] 화면 시안 영역",
       "title": "화면 시안 배치 영역",
-      "body": "디자이너가 최종 시안을 배치하고, PM Spec의 요소 번호와 같은 번호 뱃지(①②③…)를 시안 위에 표기합니다.\n상태별 화면(Default · Empty · Loading · Error 등)은 오른쪽에 나란히 추가합니다."
+      "body": "디자이너가 최종 시안을 배치하고, PM Spec의 요소 번호와 같은 번호 뱃지(①②③…)를 시안 위에 표기합니다.\n• 시안 프레임 이름: [화면ID] … 시안 (예: C-02 장바구니 목록 시안)\n• 뱃지 중심을 요소의 왼쪽 위 모서리에 놓으면 MCP가 요소 영역을 자동으로 잘라냅니다.\n• 영역을 정확히 지정하려면 요소 위에 area / 번호 레이어(투명 사각형)를 둡니다.\n상태별 화면(Default · Empty · Loading · Error 등)은 오른쪽에 나란히 추가합니다."
     },
     "components": "컴포넌트 (복제해서 사용)",
     "badgeMock": "badge / 시안용",
@@ -387,7 +387,7 @@
     "mock": {
       "name": "[Screen ID] Mockup area",
       "title": "Place the mockup here",
-      "body": "The designer places the final mockup and marks each element with the same number badge (①②③…) used in the PM Spec.\nAdd state screens (Default · Empty · Loading · Error, etc.) side by side to the right."
+      "body": "The designer places the final mockup and marks each element with the same number badge (①②③…) used in the PM Spec.\n• Name the mockup frame [Screen ID] … Mockup (e.g. C-02 Cart list · Mockup).\n• Put the badge's center on the element's top-left corner and the MCP server crops that element automatically.\n• For an exact region, add a transparent rectangle named area / <number> over the element.\nAdd state screens (Default · Empty · Loading · Error, etc.) side by side to the right."
     },
     "components": "Components (duplicate to use)",
     "badgeMock": "badge / mockup",

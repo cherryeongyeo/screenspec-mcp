@@ -105,8 +105,9 @@ The issue is attached to element 1 in Figma as a **Dev Resource**, so a develope
 |---|---|
 | `list_screens` | Finds every screen spec in a file or section, with ID, title, version and status |
 | `get_screen_spec` | Returns the full spec as JSON: header, overview, elements (PM + Design fields), feedback log, change log |
-| `get_element` | Returns one element by its badge number, with related feedback and a rendered image of the element card |
-| `lint_spec` | Reports completeness % for PM and Design, unfilled fields, skipped element numbers, version drift and status chip issues |
+| `get_element` | Returns one element by its badge number, with related feedback, linked Jira issues and a crop of that element from the mockup |
+| `lint_spec` | Reports completeness % for PM and Design, unfilled fields, skipped element numbers, version drift, status chip issues and mockup badges with no element card |
+| `diff_spec` | Compares a spec with an earlier Figma version (the last named version by default): changed fields per element, policy changes that may affect tickets, and a suggested Change Log row |
 | `draft_jira_ticket` | Drafts a ticket from an element's PM policy. State, Policy and Exception become acceptance criteria |
 | `create_jira_ticket` | Creates the drafted ticket in Jira and links it to the element in Figma Dev Mode. Reuses an open issue with the same `[ref]` instead of duplicating it |
 | `link_jira_issue` | Links an existing Jira issue to an element in Figma Dev Mode |
@@ -184,6 +185,9 @@ The parser follows layer names, not visual layout, so designers can restyle free
 | `PM column` / `Design column` → `row / <label>` | Fields. The first text is the label, the rest is the value |
 | `feedback table` → `head`, `row / <JIRA-KEY>` → `cell n` | Feedback log synced from Jira |
 | `변경 이력` / `Change history` → `row` | Change log: version, date, role, author, change |
+| `<ID> … Mockup` / `<ID> … 시안` (frame) | The mockup for that screen, e.g. `C-02 Cart list · Mockup` |
+| `badge…` (instance) on the mockup | Number badge. Put its **center on the element's top-left corner** and `get_element` crops that element |
+| `area / <n>` (optional) | Exact region for element `n`, e.g. a transparent rectangle. Wins over the badge position |
 
 Values still equal to the template's guide text count as **unfilled**. That's how `lint_spec` measures completeness.
 
@@ -201,6 +205,7 @@ Everything team-specific lives in a JSON file outside the repo (`*.private.json`
   },
   "jira": { "parentKey": "DEMO-1", "dedupe": true },
   "figma": { "linkDevResources": true },
+  "mockup": { "markers": ["Mockup", "시안"], "imageScale": 2, "padding": 16 },
   "feedback": { "doneStatuses": ["Done", "Closed"] },
   "placeholders": ["extra guide text to treat as empty"]
 }

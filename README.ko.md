@@ -105,8 +105,9 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 |---|---|
 | `list_screens` | 파일이나 섹션 안의 화면정의서를 모두 찾아요. 화면ID, 제목, 버전, 상태를 알려줘요 |
 | `get_screen_spec` | 정의서 전체를 JSON으로 돌려줘요. 헤더, 개요, 요소별 PM/Design 항목, 피드백 로그, 변경 이력이 들어 있어요 |
-| `get_element` | 뱃지 번호로 요소 하나를 가져와요. 관련 피드백과 요소 카드 이미지도 함께 줘요 |
-| `lint_spec` | PM과 Design 작성률(%), 미작성 항목, 건너뛴 요소 번호, 버전 불일치, 상태 칩 문제를 알려줘요 |
+| `get_element` | 뱃지 번호로 요소 하나를 가져와요. 관련 피드백, 연결된 지라 이슈, 시안에서 잘라낸 요소 이미지도 함께 줘요 |
+| `lint_spec` | PM과 Design 작성률(%), 미작성 항목, 건너뛴 요소 번호, 버전 불일치, 상태 칩 문제, 요소 카드가 없는 시안 뱃지를 알려줘요 |
+| `diff_spec` | 정의서를 피그마의 이전 버전(기본값: 마지막으로 이름 붙인 버전)과 비교해요. 요소별 바뀐 항목, 티켓에 영향을 줄 수 있는 정책 변경, Change Log에 넣을 문구를 알려줘요 |
 | `draft_jira_ticket` | 요소의 PM 정책으로 티켓 초안을 만들어요. State, Policy, Exception이 완료 조건이 돼요 |
 | `create_jira_ticket` | 초안을 지라 이슈로 만들고, 피그마 Dev Mode에서 요소에 연결해요. 같은 `[ref]`로 열린 이슈가 있으면 중복으로 만들지 않고 그 이슈를 돌려줘요 |
 | `link_jira_issue` | 이미 있는 지라 이슈를 피그마 Dev Mode에서 요소에 연결해요 |
@@ -177,6 +178,9 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 | `PM column` / `Design column` → `row / <항목>` | 항목. 첫 텍스트가 항목명, 나머지가 내용이에요 |
 | `feedback table` → `head`, `row / <지라 키>` → `cell n` | 지라에서 동기화한 피드백 로그 |
 | `변경 이력` / `Change history` → `row` | 변경 이력: 버전, 날짜, 역할, 작성자, 변경 내용 |
+| `<ID> … 시안` / `<ID> … Mockup` (프레임) | 그 화면의 시안. 예: `C-02 장바구니 목록 시안` |
+| 시안 위 `badge…` 인스턴스 | 번호 뱃지. **뱃지 중심을 요소의 왼쪽 위 모서리**에 놓으면 `get_element`가 그 요소를 잘라내요 |
+| `area / <n>` (선택) | 요소 `n`의 정확한 영역(예: 투명 사각형). 뱃지 위치보다 우선해요 |
 
 내용이 양식의 회색 가이드 문구와 같으면 **미작성**으로 봐요. `lint_spec`은 이 기준으로 작성률을 계산해요.
 
@@ -194,6 +198,7 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
   },
   "jira": { "parentKey": "DEMO-1", "dedupe": true },
   "figma": { "linkDevResources": true },
+  "mockup": { "markers": ["시안", "Mockup"], "imageScale": 2, "padding": 16 },
   "feedback": { "doneStatuses": ["종료", "검수완료"] },
   "placeholders": ["미작성으로 볼 가이드 문구"]
 }
