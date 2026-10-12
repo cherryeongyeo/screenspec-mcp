@@ -2,8 +2,10 @@ import { readFileSync } from "node:fs";
 import type { FigmaNode } from "../spec/types.js";
 
 export interface FigmaSource {
-  /** Subtree for a node (screen frame, section, or page). */
-  getNode(fileKey: string, nodeId: string): Promise<FigmaNode>;
+  /** Subtree for a node (screen frame, section, or page), optionally at a past file version. */
+  getNode(fileKey: string, nodeId: string, version?: string): Promise<FigmaNode>;
+  /** File version history, newest first. */
+  getVersions(fileKey: string): Promise<FileVersion[]>;
   /** Shallow file tree used to discover screen specs. */
   getFile(fileKey: string, depth: number): Promise<FigmaNode>;
   /** Rendered PNG URLs for nodes. */
@@ -12,6 +14,14 @@ export interface FigmaSource {
   getDevResources(fileKey: string, nodeIds: string[]): Promise<DevResource[]>;
   /** Attach a link to a node. Needs the file_dev_resources:write scope. */
   addDevResource(res: Omit<DevResource, "id">): Promise<DevResource>;
+}
+
+export interface FileVersion {
+  id: string;
+  created_at: string;
+  label: string | null;
+  description: string | null;
+  user?: { handle?: string };
 }
 
 export interface DevResource {
@@ -49,9 +59,9 @@ export class FigmaRestClient implements FigmaSource {
     return data;
   }
 
-  async getNode(fileKey: string, nodeId: string) {
+  async getNode(fileKey: string, nodeId: string, version?: string) {
     const r = await this.get<{ nodes: Record<string, { document: FigmaNode } | null> }>(
-      `/v1/files/${fileKey}/nodes?ids=${encodeURIComponent(nodeId)}`,
+      `/v1/files/${fileKey}/nodes?ids=${encodeURIComponent(nodeId)}${version ? `&version=${encodeURIComponent(version)}` : ""}`,
     );
     const n = r.nodes[nodeId];
     if (!n) throw new Error(`Node ${nodeId} not found in file ${fileKey}`);
@@ -68,6 +78,11 @@ export class FigmaRestClient implements FigmaSource {
       `/v1/images/${fileKey}?ids=${encodeURIComponent(nodeIds.join(","))}&format=png&scale=${scale}`,
     );
     return r.images;
+  }
+
+  async getVersions(fileKey: string) {
+    const r = await this.get<{ versions: FileVersion[] }>(`/v1/files/${fileKey}/versions`);
+    return r.versions ?? [];
   }
 
   async getDevResources(fileKey: string, nodeIds: string[]) {
@@ -104,21 +119,31 @@ export class FigmaRestClient implements FigmaSource {
  */
 export class FixtureSource implements FigmaSource {
   private root: FigmaNode;
+  private versions: (FileVersion & { root: FigmaNode })[] = [];
   constructor(path: string) {
     const json = JSON.parse(readFileSync(path, "utf8"));
-    const docs = Object.values(json.nodes as Record<string, { document: FigmaNode }>).map((n) => n.document);
-    this.root = { id: "0:0", name: "fixture", type: "DOCUMENT", children: docs };
+    const toRoot = (nodes: Record<string, { document: FigmaNode }>): FigmaNode => ({
+      id: "0:0", name: "fixture", type: "DOCUMENT", children: Object.values(nodes).map((n) => n.document),
+    });
+    this.root = toRoot(json.nodes);
+    // Optional past versions: [{ id, label, created_at, nodes }], newest first.
+    for (const v of json.versions ?? []) this.versions.push({ ...v, description: v.description ?? null, root: toRoot(v.nodes) });
   }
-  async getNode(_fileKey: string, nodeId: string) {
+  async getNode(_fileKey: string, nodeId: string, version?: string) {
+    const root = version ? this.versions.find((v) => v.id === version)?.root : this.root;
+    if (!root) throw new Error(`Version ${version} not found in fixture`);
     let hit: FigmaNode | undefined;
     const visit = (n: FigmaNode) => {
       if (hit) return;
       if (n.id === nodeId) hit = n;
       else n.children?.forEach(visit);
     };
-    visit(this.root);
+    visit(root);
     if (!hit) throw new Error(`Node ${nodeId} not found in fixture`);
     return hit;
+  }
+  async getVersions() {
+    return this.versions.map(({ root: _root, ...v }) => v);
   }
   async getFile() {
     return this.root;

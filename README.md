@@ -224,8 +224,8 @@ flowchart LR
 ## Roadmap
 
 - [x] **v0.1**: read-only parser, 5 tools, KOR/ENG template, offline fixture mode
-- [x] **v0.2**: create Jira issues from the spec, link them to elements via Figma Dev Resources (visible in Dev Mode), duplicate guard
-- [ ] **v0.3**: element crop images from mockup badges; spec diff between versions
+- [ ] **v0.2**: element crop images from the number badges on the mockup; spec diff between versions
+- [x] **v0.3** *(shipped early)*: Jira adapter; link Jira issues to elements via Figma Dev Resources (visible in Dev Mode)
 - [ ] **v0.4**: Figma plugin "Sync" button that refreshes the Feedback Log from Jira (Jira → Figma, one way)
 - [ ] **v1.0**: spec change → Jira sub-task suggestions, Slack notifications
 

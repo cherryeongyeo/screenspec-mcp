@@ -6,6 +6,7 @@ import type { IssueTracker, JiraIssueRef } from "./jira/client.js";
 import { lintScreen } from "./spec/lint.js";
 import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.js";
 import { draftTicket } from "./spec/ticket.js";
+import { diffScreens } from "./spec/diff.js";
 import type { FigmaNode, ScreenSpec } from "./spec/types.js";
 
 export const VERSION = "0.2.0";
@@ -152,6 +153,50 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
         const screens = await loadScreens(t);
         const reports = screens.map((s) => lintScreen(s, cfg));
         return ok(reports.length === 1 ? reports[0] : reports);
+      } catch (e) {
+        return fail(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "diff_spec",
+    {
+      title: "Compare spec versions",
+      description:
+        "Compare a screen spec with an earlier Figma file version: header and overview changes, elements added / removed / renamed, and which PM policy or Design fields changed (before → after). Suggests a Change Log row and lists elements whose policy changed (their Jira tickets may need an update). Defaults to the most recent named version in Figma's version history.",
+      inputSchema: {
+        ...target,
+        version: z.string().optional().describe("Figma version id or its name (label). Default: most recent named version"),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ version, ...t }) => {
+      try {
+        const [current] = await loadScreens(t);
+        const { fileKey, nodeId } = resolve(t);
+        const versions = await source.getVersions(fileKey);
+        if (!versions.length) throw new Error("This file has no version history yet. Save a named version in Figma (File → Save to version history) and try again.");
+        const named = versions.filter((v) => v.label);
+        const pick = version
+          ? versions.find((v) => v.id === version || v.label === version)
+          : named[0] ?? versions[1] ?? versions[0];
+        if (!pick) throw new Error(`Version "${version}" not found. Named versions: ${named.slice(0, 10).map((v) => v.label).join(", ") || "none"}`);
+
+        let previous;
+        try {
+          const root = await source.getNode(fileKey, nodeId!, pick.id);
+          const docs = findScreenDocs(root, cfg).map((d) => parseScreen(d, cfg, fileKey || undefined));
+          previous = docs.find((d) => d.screenId === current.screenId) ?? docs.find((d) => d.nodeId === current.nodeId);
+        } catch { /* node did not exist in that version */ }
+        const comparedWith = { versionId: pick.id, label: pick.label, createdAt: pick.created_at, by: pick.user?.handle };
+        if (!previous) return ok({ comparedWith, screenId: current.screenId, note: "This screen spec did not exist in that version; everything is new." });
+
+        return ok({
+          comparedWith,
+          ...diffScreens(previous, current),
+          namedVersions: named.slice(0, 10).map((v) => ({ id: v.id, label: v.label, createdAt: v.created_at })),
+        });
       } catch (e) {
         return fail(e);
       }
