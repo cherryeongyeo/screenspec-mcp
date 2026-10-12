@@ -1,6 +1,7 @@
 // Live check against a real Figma file.
 // Usage: node scripts/live-test.mjs <figma file URL or key>
-// Reads FIGMA_TOKEN from .env, runs every tool, and writes live-test-output.json.
+// Reads FIGMA_TOKEN from .env, runs every read tool, saves mockup crops as live-mockup-*.png
+// and writes live-test-output.json.
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -22,6 +23,12 @@ const call = async (name, args) => {
   const r = await client.callTool({ name, arguments: args });
   const text = r.content?.[0]?.text ?? "";
   let data; try { data = JSON.parse(text); } catch { data = text; }
+  const img = r.content?.find((c) => c.type === "image");
+  if (img) {
+    const file = `live-mockup-${args.screenId ?? args.nodeId.replace(":", "-")}-${args.item}.png`;
+    writeFileSync(file, Buffer.from(img.data, "base64"));
+    console.log(`  saved ${file}`);
+  }
   out.calls.push({ name, args, ms: Date.now() - t0, isError: !!r.isError, data });
   console.log(`${r.isError ? "✗" : "✓"} ${name} ${JSON.stringify(args)} (${Date.now() - t0}ms)`);
   return r.isError ? null : data;
@@ -33,7 +40,8 @@ for (const s of screens) {
   const t = { fileKey, nodeId: s.nodeId };
   await call("get_screen_spec", t);
   await call("lint_spec", t);
-  await call("get_element", { ...t, item: 1 });
+  for (const item of [1, 2]) await call("get_element", { ...t, item });
+  await call("diff_spec", t);
   await call("draft_jira_ticket", { ...t, item: 1 });
 }
 const tpl = (list?.screens ?? []).find((s) => s.template);

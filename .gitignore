@@ -4,3 +4,4 @@ dist/
 .env
 .private/
 live-test-output.json
+live-mockup-*.png
