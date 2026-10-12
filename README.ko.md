@@ -133,9 +133,9 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 
 <table>
 <tr>
-<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-en.png" alt="채워진 샘플 정의서: Cart list"></td>
+<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-ko.png" alt="채워진 샘플 정의서: 장바구니 목록"></td>
 <td valign="top">
-<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-en.png" alt="컴포넌트: 번호 뱃지와 자동 상태 칩">
+<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-ko.png" alt="컴포넌트: 번호 뱃지와 자동 상태 칩">
 <br><br>
 <b>번호 뱃지</b>: 시안과 정의서의 요소 번호를 맞춰요.<br><br>
 <b>정의서 상태 (자동)</b>: 변수 컬렉션에 연결돼 있어요. 프레임의 <i>정의서 상태</i> 모드를 바꾸면(작성중 → 검토중 → 확정) 칩의 라벨과 색이 자동으로 바뀌어요.
