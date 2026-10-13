@@ -16,6 +16,7 @@
   .empty { padding: 12px; color: var(--sub); }
   button { margin-top: 12px; width: 100%; padding: 9px; border: 0; border-radius: 8px; background: var(--brand); color: #fff; font-weight: 600; cursor: pointer; }
   button:disabled { opacity: .45; cursor: default; }
+  .auto { display: flex; gap: 6px; align-items: center; margin-top: 10px; color: var(--sub); }
   #log { margin-top: 10px; white-space: pre-wrap; color: var(--sub); }
   #log .err { color: var(--err); }
 </style>
@@ -26,6 +27,7 @@
 <div class="status"><span id="dot" class="dot"></span><span id="state">Checking helper…</span></div>
 
 <ul id="docs"><li class="empty">…</li></ul>
+<label class="auto"><input type="checkbox" id="auto" checked> 열 때 자동 동기화 · Sync when opened</label>
 <button id="sync" disabled>동기화 · Sync</button>
 <div id="log"></div>
 
@@ -34,6 +36,7 @@
   const $ = (id) => document.getElementById(id);
   let docs = [];
   let helperOk = false;
+  let autoSync = true, gotDocs = false, autoDone = false;
 
   function setState(ok, html) {
     helperOk = ok;
@@ -48,6 +51,7 @@
       const h = await r.json();
       if (!h.jira) return setState(false, "Helper is running, but Jira isn't set up. Add JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN to <code>.env</code> and restart it.");
       setState(true, "Connected to the sync helper (v" + h.version + ")");
+      maybeAuto();
     } catch {
       setState(false, "Start the helper in a terminal: <code>npx screenspec-mcp sync</code><br>터미널에서 위 명령을 실행해 두세요.");
     }
@@ -75,7 +79,8 @@
   window.onmessage = (e) => {
     const msg = e.data.pluginMessage;
     if (!msg) return;
-    if (msg.type === "docs") { docs = msg.docs; render(); }
+    if (msg.type === "docs") { docs = msg.docs; gotDocs = true; render(); maybeAuto(); }
+    if (msg.type === "prefs") { autoSync = msg.autoSync; $("auto").checked = autoSync; maybeAuto(); }
     if (msg.type === "applied") { pending.get(msg.docId)?.(msg); pending.delete(msg.docId); }
   };
   const apply = (docId, rows, syncedAt) => new Promise((resolve) => {
@@ -83,7 +88,15 @@
     parent.postMessage({ pluginMessage: { type: "apply", docId, rows, syncedAt } }, "*");
   });
 
-  $("sync").onclick = async () => {
+  // Figma plugins only run while open, so the next best thing to "automatic" is syncing on open.
+  // Re-run it any time with ⌥⌘P (Run last plugin).
+  function maybeAuto() {
+    if (autoSync && !autoDone && helperOk && gotDocs && docs.length) { autoDone = true; runSync(); }
+  }
+  $("auto").onchange = () => { autoSync = $("auto").checked; parent.postMessage({ pluginMessage: { type: "setPrefs", autoSync } }, "*"); };
+
+  $("sync").onclick = () => runSync();
+  async function runSync() {
     $("sync").disabled = true;
     $("log").textContent = "";
     const chosen = [...document.querySelectorAll("#docs input:checked")].map((i) => docs.find((d) => d.id === i.dataset.id));
@@ -97,7 +110,8 @@
         const res = await apply(d.id, body.rows, body.syncedAt);
         if (res.error) throw new Error(res.error);
         const x = res.result;
-        log(`${d.screenId}: ${body.rows.length} issues · +${x.added.length} new, ${x.updated.length} updated` +
+        log(`${d.screenId}: ${body.rows.length} issue${body.rows.length === 1 ? "" : "s"} · +${x.added.length} new, ${x.updated.length} updated` +
+          (x.newComments.length ? ` · new comments: ${x.newComments.map((c) => `${c.key} (${c.count})`).join(", ")}` : "") +
           (x.kept.length ? ` · not in Jira: ${x.kept.join(", ")}` : ""));
         ok++;
       } catch (err) {
@@ -106,8 +120,9 @@
     }
     parent.postMessage({ pluginMessage: { type: "done", text: `Synced ${ok}/${chosen.length} screen spec(s) from Jira` } }, "*");
     render();
-  };
+  }
 
+  parent.postMessage({ pluginMessage: { type: "getPrefs" } }, "*");
   checkHelper();
   setInterval(() => { if (!helperOk) checkHelper(); }, 4000);
 </script>

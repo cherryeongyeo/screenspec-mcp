@@ -20,6 +20,8 @@ export interface SyncRow {
   lastComment?: string;
   /** "이개발 · 2026.09.24 · 댓글 2" */
   lastCommentMeta?: string;
+  /** Total comments on the issue; the plugin compares it with the table to mark new comments */
+  commentCount: number;
   /** "김기획 → 이개발" */
   flow: string;
   status: string;
@@ -117,6 +119,7 @@ export function toSyncRow(issue: JiraIssue, lang: Lang, browseUrl: (key: string)
     ...(text
       ? { lastComment: text, lastCommentMeta: [last?.author?.displayName, dateOf(last?.created), S.comments(total)].filter(Boolean).join(" · ") }
       : {}),
+    commentCount: total,
     flow: `${f.reporter?.displayName ?? S.unknown} → ${f.assignee?.displayName ?? S.unassigned}`,
     status,
     statusTone: statusTone(status, f.status?.statusCategory?.key),
@@ -148,10 +151,19 @@ export interface FeedbackChanges {
   updated: { key: string; fields: { field: string; figma: string; jira: string }[] }[];
   /** In the Figma table but not returned by Jira (deleted, moved, or label removed) */
   notInJira: string[];
+  /** Comments added in Jira since the table was last synced */
+  newComments: { key: string; count: number; latest?: string }[];
   unchanged: boolean;
 }
 
-interface FigmaFeedbackRow { jiraKey: string; type: string; summary: string; status: string; flow?: string; fixVersion?: string; lastComment?: string }
+interface FigmaFeedbackRow { jiraKey: string; type: string; summary: string; status: string; flow?: string; fixVersion?: string; lastComment?: string; lastCommentMeta?: string }
+
+/** Comment total from a meta line like "이개발 · 2026.09.24 · 댓글 2" or "Lee · 2026.09.24 · 2 comments"; 0 when there's none. */
+export function commentCountOf(meta?: string): number | undefined {
+  if (!meta) return 0;
+  const m = /댓글\s*(\d+)\s*$/.exec(meta) ?? /(\d+)\s+comments?\s*$/i.exec(meta);
+  return m ? Number(m[1]) : undefined;
+}
 
 /** What a Sync would change in the Figma Feedback Log. */
 export function compareFeedback(figma: FigmaFeedbackRow[], jira: SyncRow[]): FeedbackChanges {
@@ -171,5 +183,11 @@ export function compareFeedback(figma: FigmaFeedbackRow[], jira: SyncRow[]): Fee
     if (fields.length) updated.push({ key: j.jiraKey, fields });
   }
   const notInJira = figma.map((r) => r.jiraKey).filter((k) => !keys.has(k));
-  return { added, updated, notInJira, unchanged: !added.length && !updated.length };
+  const newComments: FeedbackChanges["newComments"] = [];
+  for (const j of jira) {
+    const f = inFigma.get(j.jiraKey);
+    const before = f && commentCountOf(f.lastComment ? f.lastCommentMeta : undefined);
+    if (before !== undefined && j.commentCount > before) newComments.push({ key: j.jiraKey, count: j.commentCount - before, latest: j.lastComment });
+  }
+  return { added, updated, notInJira, newComments, unchanged: !added.length && !updated.length };
 }

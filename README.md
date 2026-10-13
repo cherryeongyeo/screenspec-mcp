@@ -159,7 +159,7 @@ The Feedback Log in each spec is filled from Jira by a Figma plugin button (Jira
 2. In the Figma desktop app: **Plugins → Development → Import plugin from manifest…** and pick [`figma-plugin/manifest.json`](figma-plugin/manifest.json).
 3. Open the page with your specs, run **Screen Spec Sync** and press **Sync**. Select a spec first to sync just that one.
 
-Each issue labelled with the screen ID (or summarised `[C-02-1] …`) becomes a row: element, type, key with link, epic, summary, latest comment, reporter → assignee, status and fix version. Rows are updated in place, new issues are added, and rows Jira no longer returns are left alone and reported. The "Last synced" line is updated.
+Each issue labelled with the screen ID (or summarised `[C-02-1] …`) becomes a row: element, type, key with link, epic, summary, latest comment, reporter → assignee, status and fix version. Rows are updated in place, and a row whose issue got comments since the last sync is marked **"N new"** in red on its comment line until the next sync. New issues are added, and rows Jira no longer returns are left alone and reported. The "Last synced" line is updated.
 
 ## The Figma template
 

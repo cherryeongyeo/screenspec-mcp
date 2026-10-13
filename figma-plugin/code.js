@@ -6,7 +6,7 @@ var TONE = {
   red: ["#fdebeb", "#e53030"], blue: ["#ebf1fd", "#3a6ce8"], gray: ["#eef0f3", "#5a606e"],
   orange: ["#fdf2e6", "#e67814"], green: ["#e7f6f0", "#10966e"], neutral: ["#eeeeee", "#787878"],
 };
-var COLOR = { ink: "#1a1a1a", sub: "#777777", ph: "#969caa", link: "#0052cc" };
+var COLOR = { ink: "#1a1a1a", sub: "#777777", ph: "#969caa", link: "#0052cc", fresh: "#e53030" };
 var COLUMNS = {
   "요소": "element", "유형": "type", "Jira": "jira", "피드백 내용": "summary", "최근 댓글": "comment",
   "요청 → 담당": "flow", "상태": "status", "반영 버전": "fixVersion",
@@ -14,8 +14,8 @@ var COLUMNS = {
   "Requester → Owner": "flow", "Status": "status", "Fix version": "fixVersion",
 };
 var TEXT = {
-  ko: { noComment: "댓글 없음", synced: function (d) { return "최종 동기화 " + d + " · Jira 기준"; } },
-  en: { noComment: "No comments", synced: function (d) { return "Last synced " + d + " · from Jira"; } },
+  ko: { noComment: "댓글 없음", fresh: function (n) { return "새 댓글 " + n; }, synced: function (d) { return "최종 동기화 " + d + " · Jira 기준"; } },
+  en: { noComment: "No comments", fresh: function (n) { return n + " new"; }, synced: function (d) { return "Last synced " + d + " · from Jira"; } },
 };
 
 function rgb(hex) {
@@ -47,7 +47,7 @@ function findDocs() {
 }
 
 function docInfo(doc) {
-  var m = /^📄\s*(\S+)\s+(.*?)\s*·\s*(화면정의서|Screen Spec)\s*$/.exec(doc.name);
+  var m = /^📄\s*(\[[^\]]*\]|\S+)\s+(.*?)\s*·\s*(화면정의서|Screen Spec)\s*$/.exec(doc.name);
   var screenId = m ? m[1] : "";
   var table = doc.findOne(function (n) { return n.name === "feedback table"; });
   var keys = table ? table.children
@@ -145,7 +145,12 @@ function fillRow(row, columns, r, doc, lang) {
       case "jira": setLines(cell, r.epic ? [r.jiraKey + " ↗", r.epic] : [r.jiraKey + " ↗"], [{ color: COLOR.link, link: r.url }]); break;
       case "summary": setLines(cell, [r.summary], [{ color: COLOR.ink }]); break;
       case "comment":
-        if (r.lastComment) setLines(cell, ["“" + r.lastComment + "”", r.lastCommentMeta || ""].filter(Boolean), [{ color: COLOR.ink, size: 14 }]);
+        if (r.lastComment) {
+          var meta = r.lastCommentMeta || "";
+          if (r.newComments > 0) meta = S.fresh(r.newComments) + (meta ? " · " + meta : "");
+          setLines(cell, ["“" + r.lastComment + "”", meta].filter(Boolean),
+            [{ color: COLOR.ink, size: 14 }, { color: r.newComments > 0 ? COLOR.fresh : COLOR.sub, size: 12 }]);
+        }
         else setLines(cell, [S.noComment], [{ color: COLOR.ph, size: 14 }]);
         break;
       case "flow": setLines(cell, [r.flow], [{ color: COLOR.ink }]); break;
@@ -153,6 +158,17 @@ function fillRow(row, columns, r, doc, lang) {
       case "fixVersion": setLines(cell, [r.fixVersion || "—"], [{ color: r.fixVersion && r.fixVersion !== "—" ? COLOR.ink : COLOR.ph }]); break;
     }
   });
+}
+
+/** Comment total shown in a row's "latest comment" meta line ("… · 댓글 3" / "… · 3 comments"); 0 for "no comments". */
+function commentCountIn(row, columns) {
+  var i = columns.indexOf("comment");
+  if (i < 0 || !row.children[i]) return null;
+  var lines = textsIn(row.children[i]).map(function (t) { return t.characters; });
+  if (lines.length < 2) return 0;
+  var meta = lines[lines.length - 1];
+  var m = /댓글\s*(\d+)\s*$/.exec(meta) || /(\d+)\s+comments?\s*$/i.exec(meta);
+  return m ? Number(m[1]) : null;
 }
 
 function stamp(date) {
@@ -178,7 +194,7 @@ async function applyRows(doc, rows, syncedAt) {
   var byKey = {};
   dataRows.forEach(function (r) { byKey[r.name.replace(/^row\s*\/\s*/, "").trim()] = r; });
   var headIndex = table.children.findIndex(function (n) { return n.name === "head"; });
-  var added = [], updated = [];
+  var added = [], updated = [], fresh = [];
 
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
@@ -190,6 +206,10 @@ async function applyRows(doc, rows, syncedAt) {
       added.push(r.jiraKey);
     } else {
       updated.push(r.jiraKey);
+      // Comments added in Jira since the last sync: compare with the count already in the table.
+      var before = commentCountIn(node, columns);
+      var n = before === null ? 0 : Math.max(0, (r.commentCount || 0) - before);
+      if (n > 0) { r = Object.assign({}, r, { newComments: n }); fresh.push({ key: r.jiraKey, count: n }); }
     }
     table.insertChild(headIndex + 1 + i, node);
     fillRow(node, columns, r, doc, info.lang);
@@ -214,6 +234,7 @@ async function applyRows(doc, rows, syncedAt) {
     screenId: info.screenId,
     added: added,
     updated: updated,
+    newComments: fresh,
     kept: info.keys.filter(function (k) { return !returned[k]; }),
   };
 }
@@ -231,6 +252,11 @@ if (typeof __html__ !== "undefined") {
 
   figma.ui.onmessage = async function (msg) {
     if (msg.type === "refresh") postDocs();
+    if (msg.type === "getPrefs") {
+      var auto = await figma.clientStorage.getAsync("autoSync");
+      figma.ui.postMessage({ type: "prefs", autoSync: auto !== false });
+    }
+    if (msg.type === "setPrefs") await figma.clientStorage.setAsync("autoSync", !!msg.autoSync);
     if (msg.type === "apply") {
       try {
         var doc = await figma.getNodeByIdAsync(msg.docId);

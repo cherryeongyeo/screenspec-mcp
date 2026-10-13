@@ -42,7 +42,7 @@ describe("Jira → Feedback Log rows", () => {
     expect(toSyncRow(issue("DEMO-7"), "en", browse)).toEqual({
       element: "C-02-1", type: "Bug", typeTone: "red", jiraKey: "DEMO-7", url: browse("DEMO-7"),
       epic: "Epic: Cart", summary: "Item list implementation",
-      lastComment: "Disabled the checkbox.", lastCommentMeta: "Lee Dev · 2026.09.24 · 2 comments",
+      lastComment: "Disabled the checkbox.", lastCommentMeta: "Lee Dev · 2026.09.24 · 2 comments", commentCount: 2,
       flow: "Kim PM → Lee Dev", status: "In Progress", statusTone: "orange", fixVersion: "v1.2.0",
     });
   });
@@ -86,17 +86,28 @@ describe("JiraClient.searchFeedback", () => {
   });
 });
 
+describe("commentCountOf", () => {
+  it("reads the comment total from the meta line", async () => {
+    const { commentCountOf } = await import("../src/jira/feedback.js");
+    expect(commentCountOf("새 댓글 2 · 이개발 · 2026.09.24 · 댓글 3")).toBe(3);
+    expect(commentCountOf("Lee · 2026.09.24 · 1 comment")).toBe(1);
+    expect(commentCountOf(undefined)).toBe(0);
+    expect(commentCountOf("odd text")).toBeUndefined();
+  });
+});
+
 describe("compareFeedback", () => {
   const jira = [toSyncRow(issue("DEMO-7"), "en", browse), toSyncRow(issue("DEMO-9", { summary: "[C-02-2] Stepper" }), "en", browse)];
   it("reports new, changed and vanished rows", () => {
     const figma = [
-      { jiraKey: "DEMO-7", type: "Bug", summary: "Item list implementation", status: "To Do", flow: "Kim PM → Lee Dev", fixVersion: "v1.2.0", lastComment: "Disabled the checkbox." },
+      { jiraKey: "DEMO-7", type: "Bug", summary: "Item list implementation", status: "To Do", flow: "Kim PM → Lee Dev", fixVersion: "v1.2.0", lastComment: "Disabled the checkbox.", lastCommentMeta: "Lee Dev · 2026.09.20 · 1 comment" },
       { jiraKey: "DEMO-1", type: "Task", summary: "Old", status: "Done" },
     ];
     expect(compareFeedback(figma, jira)).toEqual({
       added: ["DEMO-9"],
       updated: [{ key: "DEMO-7", fields: [{ field: "status", figma: "To Do", jira: "In Progress" }] }],
       notInJira: ["DEMO-1"],
+      newComments: [{ key: "DEMO-7", count: 1, latest: "Disabled the checkbox." }],
       unchanged: false,
     });
   });

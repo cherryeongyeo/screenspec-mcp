@@ -7,7 +7,7 @@
   "editorType": ["figma"],
   "documentAccess": "dynamic-page",
   "networkAccess": {
-    "allowedDomains": ["http://localhost:3917", "http://127.0.0.1:3917"],
+    "allowedDomains": ["http://localhost:3917"],
     "reasoning": "Reads Jira issues through the screenspec-mcp sync helper that the user runs on their own computer (npx screenspec-mcp sync). Nothing is sent anywhere else."
   }
 }
