@@ -170,7 +170,7 @@ A ready-made template in **Korean and English**: a blank spec with a mockup area
 <tr>
 <td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-en.png?v=2" alt="Blank screen spec template"></td>
 <td valign="top">
-<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-en.png?v=2" alt="Components: number badge, spec row, status chip and change log row">
+<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-en.png?v=3" alt="Components: number badge, spec row, status chip and change log row">
 <br><br>
 <b>spec/badge</b>: the element number, on the mockup and on the element card.<br><br>
 <b>spec/row</b>: one spec line. Switch <i>Filled</i> from Empty to Done and the text turns black.<br><br>

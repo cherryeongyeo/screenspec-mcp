@@ -208,9 +208,17 @@ const statusVariant = (name, label, i, bound) => {
   if (bound) { t.fills = boundPaint(statusVars.vFg, "#ffffff"); t.setBoundVariable("characters", statusVars.vLabel); }
   return c;
 };
+// With variables: the default variant follows the section's mode; the other variants pin a mode
+// (same as the original design). Without variables (free plan): one fixed-color variant per status.
 const statusComps = [];
-if (statusVars) statusComps.push(statusVariant(L.status.variant, L.status.modes[0], 0, true));
-L.status.modes.forEach((m, i) => statusComps.push(statusVariant(m, m, i, false)));
+if (statusVars) {
+  statusComps.push(statusVariant(L.status.variant, L.status.modes[0], 0, true));
+  L.status.modes.slice(1).forEach((m, j) => {
+    const c = statusVariant(m, m, j + 1, true);
+    c.setExplicitVariableModeForCollection(statusVars.col, statusVars.modeIds[j + 1]);
+    statusComps.push(c);
+  });
+} else L.status.modes.forEach((m, i) => statusComps.push(statusVariant(m, m, i, false)));
 const statusSet = figma.combineAsVariants(statusComps, statusHolder);
 statusSet.name = L.status.comp;
 statusSet.layoutMode = "HORIZONTAL"; statusSet.itemSpacing = 20;

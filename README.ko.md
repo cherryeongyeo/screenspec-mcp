@@ -170,7 +170,7 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 <tr>
 <td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-ko.png?v=2" alt="빈 화면정의서 양식"></td>
 <td valign="top">
-<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-ko.png?v=2" alt="컴포넌트: 번호 뱃지, 정의서 행, 상태 칩, 변경 이력 행">
+<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-ko.png?v=3" alt="컴포넌트: 번호 뱃지, 정의서 행, 상태 칩, 변경 이력 행">
 <br><br>
 <b>spec/badge</b>: 요소 번호. 시안과 요소 카드에 같이 써요.<br><br>
 <b>spec/row</b>: 정의서 한 줄. <i>작성</i>을 미작성에서 완료로 바꾸면 글자가 검정이 돼요.<br><br>
