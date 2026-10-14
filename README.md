@@ -10,7 +10,7 @@
 ![node](https://img.shields.io/node/v/screenspec-mcp?color=777777)
 [![MCP](https://img.shields.io/badge/Model_Context_Protocol-server-d628a0)](https://modelcontextprotocol.io)
 
-![Screen spec in Figma: the C-02 Cart list sample with its mockup and number badges](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-en.png)
+![Screen spec in Figma: the C-02 Cart list sample with its mockup and number badges](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-en.png?v=2)
 
 `screenspec-mcp` is an [MCP](https://modelcontextprotocol.io) server that reads **screen spec** (화면정의서) frames in Figma. It turns them into structured specs, hand-off lint reports and Jira ticket drafts, so a developer can open Figma and have everything they need to build.
 
@@ -168,9 +168,9 @@ A ready-made template in **Korean and English**: a blank spec with a mockup area
 
 <table>
 <tr>
-<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-en.png" alt="Blank screen spec template"></td>
+<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-en.png?v=2" alt="Blank screen spec template"></td>
 <td valign="top">
-<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-en.png" alt="Components: number badge, spec row, status chip and change log row">
+<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-en.png?v=2" alt="Components: number badge, spec row, status chip and change log row">
 <br><br>
 <b>spec/badge</b>: the element number, on the mockup and on the element card.<br><br>
 <b>spec/row</b>: one spec line. Switch <i>Filled</i> from Empty to Done and the text turns black.<br><br>
@@ -185,7 +185,7 @@ A ready-made template in **Korean and English**: a blank spec with a mockup area
 <details>
 <summary>Korean version</summary>
 
-![화면정의서 양식 · KOR](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-ko.png)
+![화면정의서 양식 · KOR](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-ko.png?v=2)
 
 </details>
 

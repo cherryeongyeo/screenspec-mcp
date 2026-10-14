@@ -10,7 +10,7 @@
 ![node](https://img.shields.io/node/v/screenspec-mcp?color=777777)
 [![MCP](https://img.shields.io/badge/Model_Context_Protocol-server-d628a0)](https://modelcontextprotocol.io)
 
-![피그마 화면정의서: 시안과 번호 뱃지가 붙은 C-02 장바구니 목록 샘플](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-ko.png)
+![피그마 화면정의서: 시안과 번호 뱃지가 붙은 C-02 장바구니 목록 샘플](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-ko.png?v=2)
 
 `screenspec-mcp`는 피그마의 **화면정의서** 프레임을 읽는 [MCP](https://modelcontextprotocol.io) 서버예요. 정의서를 구조화된 데이터, 전달 전 점검(lint) 리포트, 지라 티켓 초안으로 바꿔줘요. 개발자가 피그마만 열어도 개발에 필요한 내용을 모두 볼 수 있게 하는 게 목표예요.
 
@@ -168,9 +168,9 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 
 <table>
 <tr>
-<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-ko.png" alt="빈 화면정의서 양식"></td>
+<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-ko.png?v=2" alt="빈 화면정의서 양식"></td>
 <td valign="top">
-<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-ko.png" alt="컴포넌트: 번호 뱃지, 정의서 행, 상태 칩, 변경 이력 행">
+<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-ko.png?v=2" alt="컴포넌트: 번호 뱃지, 정의서 행, 상태 칩, 변경 이력 행">
 <br><br>
 <b>spec/badge</b>: 요소 번호. 시안과 요소 카드에 같이 써요.<br><br>
 <b>spec/row</b>: 정의서 한 줄. <i>작성</i>을 미작성에서 완료로 바꾸면 글자가 검정이 돼요.<br><br>
