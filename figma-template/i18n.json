@@ -1,49 +1,74 @@
 {
   "ko": {
+    "lang": "ko",
     "section": "화면정의서 양식 · KOR",
     "marker": "화면정의서",
     "idPlaceholder": "[화면ID]",
-    "mock": {
-      "name": "[화면ID] 화면 시안 영역",
-      "title": "화면 시안 배치 영역",
-      "body": "디자이너가 최종 시안을 배치하고, PM Spec의 요소 번호와 같은 번호 뱃지(①②③…)를 시안 위에 표기합니다.\n• 시안 프레임 이름: [화면ID] … 시안 (예: C-02 장바구니 목록 시안)\n• 뱃지 중심을 요소의 왼쪽 위 모서리에 놓으면 MCP가 요소 영역을 자동으로 잘라냅니다.\n• 영역을 정확히 지정하려면 요소 위에 area / 번호 레이어(투명 사각형)를 둡니다.\n상태별 화면(Default · Empty · Loading · Error 등)은 오른쪽에 나란히 추가합니다."
-    },
-    "components": "컴포넌트 (복제해서 사용)",
-    "badgeMock": "badge / 시안용",
-    "badgeItem": "badge / 요소 카드용",
-    "statusProp": "상태",
-    "statuses": [
-      [
-        "작성중",
-        "blue"
-      ],
-      [
-        "검토중",
-        "orange"
-      ],
-      [
-        "확정",
-        "green"
-      ]
-    ],
     "titlePlaceholder": "화면명",
-    "summaryPlaceholder": "이 화면을 한 문장으로 설명합니다. (예: 사용자가 담은 상품을 확인하고 결제로 넘어가는 화면)",
-    "ownerPlaceholder": "@담당자",
-    "guide": {
-      "title": "작성 순서 및 역할",
-      "flow": [
-        "① PM Spec · 기획자",
-        "② Design Spec · 디자이너",
-        "③ 검토 · PO",
-        "④ 개발 · 개발자"
-      ],
-      "body": "• PM은 “무엇이 필요하고 어떤 의도로 동작하는지”만 정의합니다. px · 컬러값 · 폰트 크기 같은 디자인 수치는 쓰지 않습니다.\n• Design은 PM이 정의한 요소 번호·순서를 그대로 따라 오른쪽 Design 칸에 Visual Spec을 채웁니다.\n• 수치는 디자인 토큰명 + 값으로 표기합니다. (예: spacing/6 20px, Color/text/primary #1A1A1A)\n• 요소 번호는 화면 시안의 번호 뱃지와 1:1로 일치시킵니다.\n• 회색 가이드 문구는 실제 내용으로 교체하고, 변경 시 하단 Change Log에 기록합니다.\n• 레이어 이름(row / 기능, ITEM / 1 / 요소명 등)은 MCP가 읽는 키이므로 바꾸지 않습니다."
+    "summaryPlaceholder": "이 화면을 한 문장으로 설명합니다.",
+    "mock": {
+      "name": "시안 배치 영역",
+      "title": "최종 시안 배치",
+      "suffix": "시안"
     },
-    "pmHeader": "① PM Spec · 기능 및 정책 정의",
-    "pmBy": "작성: 기획자",
+    "components": {
+      "title": "Components",
+      "desc": "아래 원본을 수정하면 모든 화면정의서에 한 번에 반영됩니다.",
+      "frame": "🧩 Components · KOR"
+    },
+    "badge": {
+      "name": "spec/badge",
+      "prop": "번호",
+      "desc": "요소 번호 배지. 시안에서는 배지 중심을 요소의 왼쪽 위 모서리에 둡니다. 번호는 요소 카드와 같아야 합니다."
+    },
+    "row": {
+      "name": "spec/row",
+      "label": "항목",
+      "value": "내용",
+      "prop": "작성",
+      "values": [
+        "미작성",
+        "완료"
+      ],
+      "desc": "정의서 한 줄. 작성을 '완료'로 바꾸면 내용이 검정으로 바뀌고, MCP는 '미작성' 행을 빈 칸으로 봅니다."
+    },
+    "changelogRow": {
+      "name": "spec/changelog-row",
+      "props": [
+        "버전",
+        "날짜",
+        "역할",
+        "작성자",
+        "변경 내용"
+      ],
+      "desc": "Change Log 한 줄. ⌘D로 복제해서 추가합니다."
+    },
+    "status": {
+      "collection": "정의서 상태",
+      "comp": "Status Chip",
+      "variant": "정의서 상태 (자동)",
+      "prop": "Property 1",
+      "modes": [
+        "작성중",
+        "검토중",
+        "확정"
+      ],
+      "desc": "섹션의 '정의서 상태' 모드를 바꾸면 라벨·색·섹션 배경이 함께 바뀝니다. 인스턴스를 직접 수정하지 마세요.",
+      "caption": "Status Chip / 정의서 상태 · 섹션 선택 → 오른쪽 패널 Layer의 “정의서 상태” 모드로 전환"
+    },
+    "logToggle": {
+      "collection": "로그 표시",
+      "modes": [
+        "펼침",
+        "접힘"
+      ],
+      "variable": "feedback/visible"
+    },
     "overview": {
-      "layer": "개요",
-      "title": "화면 개요"
+      "layer": "화면 개요",
+      "table": "개요 table",
+      "title": "화면 개요",
+      "note": "PM 작성"
     },
     "overviewRows": [
       [
@@ -52,13 +77,22 @@
       ],
       [
         "진입 경로",
-        "어느 화면 / 어떤 동작으로 진입하는지 (예: 상단 GNB 아이콘 → 장바구니 클릭)"
+        "어느 화면 / 어떤 동작으로 진입하는지 (예: 상단 메뉴 → 장바구니 클릭)"
+      ],
+      [
+        "화면 설명",
+        "화면 구성과 주요 영역을 간단히"
+      ],
+      [
+        "화면 흐름 / 이벤트",
+        "이 화면에서 일어나는 주요 흐름과 이벤트"
       ]
     ],
     "items": {
       "layer": "요소별 정의",
-      "title": "요소별 정의 — 왼쪽은 PM, 오른쪽은 Design이 작성",
-      "note": "요소 개수만큼 카드를 복제해서 사용합니다.",
+      "title": "요소별 정의",
+      "note": "카드를 ⌘D로 복제해서 요소를 추가합니다",
+      "prefix": "요소",
       "namePlaceholder": "요소명",
       "pmHead": "PM · 무엇이 필요하고 어떻게 동작하는가",
       "designHead": "Design · 어떻게 보이는가"
@@ -66,61 +100,61 @@
     "pmRows": [
       [
         "기능",
-        "이 요소가 제공하는 기능과 사용 목적"
+        "이 요소가 하는 일 한 줄 (예: 패널을 닫는다)"
       ],
       [
         "콘텐츠",
-        "노출 문구 · 데이터 · 노출 조건 (예: 로그인 시에만 노출)"
+        "노출 문구 · 데이터 · 표시 형식 (예: YYYY.MM.DD · 총 N개)"
       ],
       [
-        "Interaction",
-        "클릭/탭/입력 시 어떻게 동작하는지, 이동 화면"
+        "동작",
+        "탭 / 클릭 시 결과 · 이동 화면 (예: 탭 → 상세(C-03) 이동)"
       ],
       [
-        "State",
-        "존재하는 상태 (Default / Empty / Error / Disabled …)"
+        "상태",
+        "상태 종류와 조건 (예: 활성 — 메뉴가 열려 있는 동안)"
       ],
       [
-        "Policy",
-        "입력 제한, 권한, 정렬 기준 등 정책"
+        "정책",
+        "노출 · 정렬 · 제한 규칙"
       ],
       [
-        "Exception",
+        "예외",
         "예외 상황과 처리 방식"
       ]
     ],
     "designRows": [
       [
-        "Layout",
-        "크기 · 여백 · 정렬 · Grid (spacing 토큰)"
+        "크기",
+        "너비 × 높이 · 고정 / 가변 (예: 높이 50px 고정)"
       ],
       [
-        "Typography",
-        "Font / Size / Weight / Line Height"
+        "간격",
+        "padding · gap · 주변 요소와 거리 (spacing 토큰 + 값)"
       ],
       [
-        "Color",
-        "Text · Background · Border (토큰명 + HEX)"
+        "표면",
+        "배경 · 테두리 · radius · 그림자 (토큰 + HEX)"
       ],
       [
-        "Component",
-        "사용 컴포넌트 / Variant명"
+        "텍스트",
+        "대상 · 텍스트 스타일 · 색 (예: 날짜 Caption/13 · Color/text/tertiary #777777)"
       ],
       [
-        "State Visual",
-        "Default · Hover · Active · Focus · Disabled · Loading"
+        "아이콘 · 에셋",
+        "아이콘명 · 크기 · 색"
       ],
       [
-        "Interaction Visual",
-        "Transition · Animation · Tooltip · Toast"
+        "상태",
+        "기본 대비 바뀌는 것만 (예: 활성 — 배경 Color/bg/secondary #F5F5F5)"
       ],
       [
-        "Responsive",
-        "Desktop / Tablet / Mobile 변화"
+        "모션",
+        "전환 · 애니메이션 · 토스트 (해당 시)"
       ],
       [
-        "Asset",
-        "Icon · Image · Illustration · Lottie"
+        "컴포넌트",
+        "사용 컴포넌트 / Variant"
       ]
     ],
     "feedback": {
@@ -144,7 +178,7 @@
       "exampleRowName": "row / 예시",
       "example": {
         "element": [
-          "ITEM 1",
+          "[화면ID]-1",
           "요소명"
         ],
         "type": "작업",
@@ -152,16 +186,15 @@
           "PROJ-000 ↗",
           "에픽: 에픽명"
         ],
-        "summary": "선택 상태와 기본 상태가 잘 구분되지 않음. 선택 상태의 강조 대비 조정 요청",
+        "summary": "선택된 상태와 기본 상태가 잘 구분되지 않음. 선택 상태의 강조 대비 조정 요청",
         "comment": [
           "“강조 테두리 2px로 조정한 시안 공유드릴게요.”",
-          "Design · YYYY.MM.DD · 댓글 3"
+          "Design · 2026.09.28 · 댓글 3"
         ],
         "flow": "QA → Design",
         "status": "진행중",
         "version": [
-          "—",
-          "반영 시 Change Log 버전 기입"
+          "—"
         ]
       },
       "exampleTag": "↑ 예시 데이터입니다. 실제 사용 시 Jira 티켓 데이터로 대체됩니다.",
@@ -220,12 +253,13 @@
         ]
       ],
       "legendNote": "※ 상태는 Jira 프로젝트의 상태명을 그대로 표시",
-      "synced": "최종 동기화 YYYY.MM.DD HH:mm · Jira 기준",
+      "synced": "최종 동기화 YYYY.MM.DD HH:mm",
       "noComment": "댓글 없음"
     },
     "changeLog": {
       "title": "Change Log",
       "layer": "변경 이력",
+      "note": "행을 ⌘D로 복제해서 추가합니다",
       "cols": [
         "버전",
         "날짜",
@@ -250,21 +284,64 @@
         ]
       ]
     },
+    "guide": {
+      "frame": "📘 작성 가이드 · KOR",
+      "title": "작성 가이드",
+      "editHead": "편집 방법 — 텍스트만 바꾸면 되도록 만들었습니다",
+      "edit": [
+        [
+          "요소 추가",
+          "요소 카드를 선택하고 ⌘D로 복제 → 제목과 번호만 수정"
+        ],
+        [
+          "내용 입력",
+          "텍스트를 더블클릭해 바로 입력 (또는 오른쪽 패널 “내용”)"
+        ],
+        [
+          "작성 완료 표시",
+          "행 선택 → 오른쪽 패널 “작성”을 완료로 변경 (회색 → 검정)"
+        ],
+        [
+          "행 추가·삭제",
+          "행을 복제하거나 지우면 Auto layout으로 자동 정렬"
+        ],
+        [
+          "배지 번호",
+          "배지 선택 → 오른쪽 패널 “번호” 수정"
+        ],
+        [
+          "정의서 상태",
+          "섹션 선택 → 오른쪽 패널 “정의서 상태” 모드를 작성중 / 검토중 / 확정으로 변경"
+        ],
+        [
+          "시안",
+          "시안 프레임 이름은 “[화면ID] 화면명 · 시안”. 배지 중심을 요소의 왼쪽 위 모서리에 두면 MCP가 요소를 잘라냅니다"
+        ],
+        [
+          "스타일 변경",
+          "Components 영역의 원본만 수정하면 전체 반영"
+        ]
+      ],
+      "rulesHead": "작성 원칙",
+      "rules": [
+        "• 작성 순서: PM Spec(기획자) → Design Spec(디자이너) → 검토(PO) → 개발",
+        "• PM은 무엇이 필요하고 어떻게 동작하는지만 씁니다. px · 컬러값 · 폰트 크기는 쓰지 않습니다.",
+        "• Design은 같은 카드의 오른쪽 칸에 토큰명 + 값으로 씁니다. (예: Color/text/primary #1A1A1A)",
+        "• 해당 없는 항목은 “—”를 입력하고 완료로 바꿉니다. 변경 시 Change Log에 기록합니다.",
+        "• Feedback Log는 Jira에서 자동 동기화되므로 Figma에서 수정하지 않습니다."
+      ]
+    },
     "sample": {
       "id": "C-02",
       "title": "장바구니 목록",
       "version": "v1.2",
       "status": "검토중",
       "summary": "담아둔 상품을 확인하고 수량을 바꾸거나 주문으로 넘어가는 화면",
-      "owners": [
-        "PM @김기획",
-        "Design @박디자인",
-        "DEV @이개발",
-        "QA @최품질"
-      ],
       "overview": [
         "사용자가 담아둔 상품을 확인하고 결제할 상품을 고른다",
-        "상단 GNB 장바구니 아이콘 클릭 / 상품 상세 → ‘장바구니 담기’ 후 토스트의 ‘바로가기’"
+        "상단 GNB 장바구니 아이콘 클릭 / 상품 상세 → ‘장바구니 담기’ 후 토스트의 ‘바로가기’",
+        "판매자별 상품 리스트 · 품절 상품 그룹 · 하단 결제 금액과 ‘주문하기’ 버튼",
+        null
       ],
       "items": [
         {
@@ -278,14 +355,14 @@
             "가격이 바뀐 상품은 ‘가격 변동’ 배지와 이전 가격을 함께 표시. 목록 API 실패 시 재시도 버튼 노출"
           ],
           "design": [
-            "리스트 폭 FILL · 행 높이 112 · 좌우 padding spacing/6 20px",
-            "Body/M 16 · Medium · 24 / Caption 13 · Regular · 18",
-            "Color/text/primary #1A1A1A · Color/border/subtle #EEF0F3",
-            "CartItem / State=Default, Soldout",
-            "Default · Selected · Disabled(품절)",
+            "리스트 폭 FILL · 행 높이 112 고정",
+            "좌우 padding spacing/6 20px · 행 구분선 1px",
+            "배경 Color/bg/white #FFFFFF · 구분선 Color/border/subtle #EEF0F3",
+            "상품명 Body/M 16 Medium · Color/text/primary #1A1A1A / 옵션 Caption 13 · Color/text/tertiary #777777",
+            "Icon/check-16 · Icon/close-16",
+            "선택 — 체크박스 Color/brand #2A6049 / 품절 — 행 opacity 40%",
             null,
-            null,
-            "Icon/check-16 · Icon/close-16"
+            "CartItem / State=Default, Soldout"
           ]
         },
         {
@@ -351,7 +428,7 @@
           "v1.1.0"
         ]
       ],
-      "synced": "최종 동기화 2026.10.12 10:30 · Jira 기준",
+      "synced": "최종 동기화 2026.10.12 10:30",
       "changeLog": [
         [
           "v1.0",
@@ -376,55 +453,120 @@
         ]
       ]
     },
-    "statusCollection": "정의서 상태",
-    "statusComp": "Status Chip / 정의서 상태 (자동)",
-    "statusDesc": "섹션(또는 프레임)의 \"정의서 상태\" 모드를 바꾸면 라벨·색이 자동 변경됨. 인스턴스를 직접 수정하지 말 것."
+    "legacyPlaceholders": [
+      "@name",
+      "@owner",
+      "@담당자",
+      "@이름",
+      "Component / variant used",
+      "Copy · data · display conditions (e.g. shown only when signed in)",
+      "Default · Hover · Active · Focus · Disabled · Loading",
+      "Describe this screen in one sentence. (e.g. Where users review items in their cart and move on to checkout)",
+      "Desktop / Tablet / Mobile changes",
+      "Desktop / Tablet / Mobile 변화",
+      "Edge cases and how they are handled",
+      "Element name",
+      "Font / Size / Weight / Line Height",
+      "Icon · Image · Illustration · Lottie",
+      "Rules such as input limits, permissions, sort order",
+      "Screen name",
+      "Size · spacing · alignment · grid (spacing tokens)",
+      "States that exist (Default / Empty / Error / Disabled …)",
+      "Text · Background · Border (token + HEX)",
+      "Text · Background · Border (토큰명 + HEX)",
+      "Transition · Animation · Tooltip · Toast",
+      "What happens on click / tap / input, and where it leads",
+      "What the user does on this screen",
+      "What this element does and why it exists",
+      "Which screen / action leads here (e.g. Top nav icon → Cart)",
+      "YYYY-MM-DD",
+      "[Screen ID]",
+      "[화면ID]",
+      "노출 문구 · 데이터 · 노출 조건 (예: 로그인 시에만 노출)",
+      "사용 컴포넌트 / Variant명",
+      "어느 화면 / 어떤 동작으로 진입하는지 (예: 상단 GNB 아이콘 → 장바구니 클릭)",
+      "예외 상황과 처리 방식",
+      "요소명",
+      "이 요소가 제공하는 기능과 사용 목적",
+      "이 화면에서 사용자가 무엇을 하는지",
+      "이 화면을 한 문장으로 설명합니다. (예: 사용자가 담은 상품을 확인하고 결제로 넘어가는 화면)",
+      "입력 제한, 권한, 정렬 기준 등 정책",
+      "존재하는 상태 (Default / Empty / Error / Disabled …)",
+      "크기 · 여백 · 정렬 · Grid (spacing 토큰)",
+      "클릭/탭/입력 시 어떻게 동작하는지, 이동 화면",
+      "화면명"
+    ]
   },
   "en": {
+    "lang": "en",
     "section": "Screen Spec Template · ENG",
     "marker": "Screen Spec",
     "idPlaceholder": "[Screen ID]",
-    "mock": {
-      "name": "[Screen ID] Mockup area",
-      "title": "Place the mockup here",
-      "body": "The designer places the final mockup and marks each element with the same number badge (①②③…) used in the PM Spec.\n• Name the mockup frame [Screen ID] … Mockup (e.g. C-02 Cart list · Mockup).\n• Put the badge's center on the element's top-left corner and the MCP server crops that element automatically.\n• For an exact region, add a transparent rectangle named area / <number> over the element.\nAdd state screens (Default · Empty · Loading · Error, etc.) side by side to the right."
-    },
-    "components": "Components (duplicate to use)",
-    "badgeMock": "badge / mockup",
-    "badgeItem": "badge / element card",
-    "statusProp": "Status",
-    "statuses": [
-      [
-        "Draft",
-        "blue"
-      ],
-      [
-        "In review",
-        "orange"
-      ],
-      [
-        "Final",
-        "green"
-      ]
-    ],
     "titlePlaceholder": "Screen name",
-    "summaryPlaceholder": "Describe this screen in one sentence. (e.g. Where users review items in their cart and move on to checkout)",
-    "ownerPlaceholder": "@owner",
-    "guide": {
-      "title": "Workflow & roles",
-      "flow": [
-        "① PM Spec · PM",
-        "② Design Spec · Designer",
-        "③ Review · PO",
-        "④ Build · Developer"
-      ],
-      "body": "• PM defines only what is needed and how it should behave. No pixel values, colors or font sizes.\n• Design follows the PM's element numbers and order, and fills in the Visual Spec in the right-hand Design column.\n• Write values as design token + value. (e.g. spacing/6 20px, Color/text/primary #1A1A1A)\n• Element numbers match the number badges on the mockup one-to-one.\n• Replace the grey guide text with real content, and record every change in the Change Log below.\n• Layer names (row / Function, ITEM / 1 / Element name, …) are keys read by the MCP server. Don't rename them."
+    "summaryPlaceholder": "Describe this screen in one sentence.",
+    "mock": {
+      "name": "Mockup area",
+      "title": "Place the final mockup",
+      "suffix": "Mockup"
     },
-    "pmHeader": "① PM Spec · Features & policy",
-    "pmBy": "Written by: PM",
+    "components": {
+      "title": "Components",
+      "desc": "Edit the originals below and every screen spec updates at once.",
+      "frame": "🧩 Components · ENG"
+    },
+    "badge": {
+      "name": "spec/badge",
+      "prop": "No",
+      "desc": "Element number badge. On the mockup, put the badge's center on the element's top-left corner. The number must match the element card."
+    },
+    "row": {
+      "name": "spec/row",
+      "label": "Label",
+      "value": "Value",
+      "prop": "Filled",
+      "values": [
+        "Empty",
+        "Done"
+      ],
+      "desc": "One spec line. Switch Filled to 'Done' and the value turns black; the MCP server treats 'Empty' rows as unfilled."
+    },
+    "changelogRow": {
+      "name": "spec/changelog-row",
+      "props": [
+        "Version",
+        "Date",
+        "Role",
+        "Author",
+        "Change"
+      ],
+      "desc": "One Change Log line. Duplicate with ⌘D to add."
+    },
+    "status": {
+      "collection": "Spec Status",
+      "comp": "Status Chip",
+      "variant": "Spec status (auto)",
+      "prop": "Property 1",
+      "modes": [
+        "Draft",
+        "In review",
+        "Final"
+      ],
+      "desc": "Switch the section's 'Spec Status' mode and the label, colors and section background change together. Don't edit the instance.",
+      "caption": "Status Chip / Spec Status · select the section → switch the “Spec Status” mode in the right panel (Layer)"
+    },
+    "logToggle": {
+      "collection": "Log display",
+      "modes": [
+        "Expanded",
+        "Collapsed"
+      ],
+      "variable": "feedback/visible"
+    },
     "overview": {
-      "layer": "Overview",
-      "title": "Screen overview"
+      "layer": "Screen overview",
+      "table": "Overview table",
+      "title": "Screen overview",
+      "note": "Written by PM"
     },
     "overviewRows": [
       [
@@ -433,13 +575,22 @@
       ],
       [
         "Entry point",
-        "Which screen / action leads here (e.g. Top nav icon → Cart)"
+        "Which screen / action leads here (e.g. top menu → Cart)"
+      ],
+      [
+        "Description",
+        "Layout and main areas, briefly"
+      ],
+      [
+        "Flow / Events",
+        "Main flows and events on this screen"
       ]
     ],
     "items": {
       "layer": "Elements",
-      "title": "Elements — PM writes the left, Design writes the right",
-      "note": "Duplicate one card per element.",
+      "title": "Elements",
+      "note": "Duplicate a card with ⌘D to add an element",
+      "prefix": "Element",
       "namePlaceholder": "Element name",
       "pmHead": "PM · What is needed and how it behaves",
       "designHead": "Design · How it looks"
@@ -447,61 +598,61 @@
     "pmRows": [
       [
         "Function",
-        "What this element does and why it exists"
+        "What this element does, in one line (e.g. closes the panel)"
       ],
       [
         "Content",
-        "Copy · data · display conditions (e.g. shown only when signed in)"
+        "Copy · data · format (e.g. YYYY.MM.DD · N items)"
       ],
       [
         "Interaction",
-        "What happens on click / tap / input, and where it leads"
+        "Result of tap / click · target screen (e.g. tap → Detail (C-03))"
       ],
       [
         "State",
-        "States that exist (Default / Empty / Error / Disabled …)"
+        "States and when they apply (e.g. Active — while the menu is open)"
       ],
       [
         "Policy",
-        "Rules such as input limits, permissions, sort order"
+        "Visibility · sorting · limits"
       ],
       [
         "Exception",
-        "Edge cases and how they are handled"
+        "Edge cases and how they're handled"
       ]
     ],
     "designRows": [
       [
-        "Layout",
-        "Size · spacing · alignment · grid (spacing tokens)"
+        "Size",
+        "Width × height · fixed / flexible (e.g. height 50px fixed)"
       ],
       [
-        "Typography",
-        "Font / Size / Weight / Line Height"
+        "Spacing",
+        "Padding · gap · distance to neighbours (spacing token + value)"
       ],
       [
-        "Color",
-        "Text · Background · Border (token + HEX)"
+        "Surface",
+        "Background · border · radius · shadow (token + HEX)"
+      ],
+      [
+        "Text",
+        "Target · text style · color (e.g. date Caption/13 · Color/text/tertiary #777777)"
+      ],
+      [
+        "Icon · Asset",
+        "Icon name · size · color"
+      ],
+      [
+        "State",
+        "Only what changes from default (e.g. Active — bg Color/bg/secondary #F5F5F5)"
+      ],
+      [
+        "Motion",
+        "Transition · animation · toast (if any)"
       ],
       [
         "Component",
         "Component / variant used"
-      ],
-      [
-        "State Visual",
-        "Default · Hover · Active · Focus · Disabled · Loading"
-      ],
-      [
-        "Interaction Visual",
-        "Transition · Animation · Tooltip · Toast"
-      ],
-      [
-        "Responsive",
-        "Desktop / Tablet / Mobile changes"
-      ],
-      [
-        "Asset",
-        "Icon · Image · Illustration · Lottie"
       ]
     ],
     "feedback": {
@@ -525,7 +676,7 @@
       "exampleRowName": "row / Example",
       "example": {
         "element": [
-          "ITEM 1",
+          "[Screen ID]-1",
           "Element name"
         ],
         "type": "Task",
@@ -533,16 +684,15 @@
           "PROJ-000 ↗",
           "Epic: Epic name"
         ],
-        "summary": "Selected and default states look too similar. Please increase the contrast of the selected state",
+        "summary": "Selected and default states look too similar. Please raise the contrast of the selected state",
         "comment": [
           "“I'll share a version with a 2px highlight border.”",
-          "Design · YYYY.MM.DD · 3 comments"
+          "Design · 2026.09.28 · 3 comments"
         ],
         "flow": "QA → Design",
         "status": "In Progress",
         "version": [
-          "—",
-          "Add the Change Log version once shipped"
+          "—"
         ]
       },
       "exampleTag": "↑ Example data. Replaced by Jira issues when in use.",
@@ -601,18 +751,19 @@
         ]
       ],
       "legendNote": "※ Status names are shown exactly as in your Jira project",
-      "synced": "Last synced YYYY.MM.DD HH:mm · from Jira",
+      "synced": "Last synced YYYY.MM.DD HH:mm",
       "noComment": "No comments"
     },
     "changeLog": {
       "title": "Change Log",
       "layer": "Change history",
+      "note": "Duplicate a row with ⌘D to add",
       "cols": [
         "Version",
         "Date",
         "Role",
         "Author",
-        "Changes"
+        "Change"
       ],
       "rows": [
         [
@@ -627,8 +778,55 @@
           "YYYY-MM-DD",
           "Design",
           "@name",
-          "Visual Spec added"
+          "Visual spec added"
         ]
+      ]
+    },
+    "guide": {
+      "frame": "📘 Writing guide · ENG",
+      "title": "Writing guide",
+      "editHead": "How to edit — you only change text",
+      "edit": [
+        [
+          "Add an element",
+          "Select an element card, duplicate with ⌘D → change the title and number"
+        ],
+        [
+          "Enter content",
+          "Double-click a text to type (or use “Value” in the right panel)"
+        ],
+        [
+          "Mark as done",
+          "Select a row → set “Filled” to Done in the right panel (grey → black)"
+        ],
+        [
+          "Add / remove rows",
+          "Duplicate or delete a row; auto layout keeps the order"
+        ],
+        [
+          "Badge number",
+          "Select the badge → change “No” in the right panel"
+        ],
+        [
+          "Spec status",
+          "Select the section → set the “Spec Status” mode to Draft / In review / Final"
+        ],
+        [
+          "Mockup",
+          "Name the mockup frame “[Screen ID] Screen name · Mockup”. Put a badge's center on the element's top-left corner and the MCP server crops that element"
+        ],
+        [
+          "Change styles",
+          "Edit the originals in Components and every spec updates"
+        ]
+      ],
+      "rulesHead": "Principles",
+      "rules": [
+        "• Order: PM spec (planner) → Design spec (designer) → Review (PO) → Development",
+        "• PM writes only what is needed and how it behaves. No px, color values or font sizes.",
+        "• Design writes in the right-hand column of the same card, as token + value. (e.g. Color/text/primary #1A1A1A)",
+        "• If a line doesn't apply, enter “—” and mark it Done. Record every change in the Change Log.",
+        "• The Feedback Log is synced from Jira. Don't edit it in Figma."
       ]
     },
     "sample": {
@@ -637,15 +835,11 @@
       "version": "v1.2",
       "status": "In review",
       "summary": "Where users review items in their cart, change quantities and move on to checkout",
-      "owners": [
-        "PM @Jamie",
-        "Design @Sam",
-        "DEV @Alex",
-        "QA @Riley"
-      ],
       "overview": [
         "The user reviews saved items and picks what to pay for",
-        "Top nav cart icon / Product detail → ‘Add to cart’ → ‘Go to cart’ in the toast"
+        "Top nav cart icon / Product detail → ‘Add to cart’ → ‘Go to cart’ in the toast",
+        "Items grouped by seller · sold-out group · total and ‘Check out’ button at the bottom",
+        null
       ],
       "items": [
         {
@@ -659,14 +853,14 @@
             "If a price changed, show a ‘Price changed’ badge with the old price. If the list API fails, show a retry button"
           ],
           "design": [
-            "List width FILL · row height 112 · horizontal padding spacing/6 20px",
-            "Body/M 16 · Medium · 24 / Caption 13 · Regular · 18",
-            "Color/text/primary #1A1A1A · Color/border/subtle #EEF0F3",
-            "CartItem / State=Default, Soldout",
-            "Default · Selected · Disabled (sold out)",
+            "List width FILL · row height 112 fixed",
+            "Horizontal padding spacing/6 20px · 1px row divider",
+            "Background Color/bg/white #FFFFFF · divider Color/border/subtle #EEF0F3",
+            "Name Body/M 16 Medium · Color/text/primary #1A1A1A / option Caption 13 · Color/text/tertiary #777777",
+            "Icon/check-16 · Icon/close-16",
+            "Selected — checkbox Color/brand #2A6049 / Sold out — row opacity 40%",
             null,
-            null,
-            "Icon/check-16 · Icon/close-16"
+            "CartItem / State=Default, Soldout"
           ]
         },
         {
@@ -732,7 +926,7 @@
           "v1.1.0"
         ]
       ],
-      "synced": "Last synced 2026.10.12 10:30 · from Jira",
+      "synced": "Last synced 2026.10.12 10:30",
       "changeLog": [
         [
           "v1.0",
@@ -757,8 +951,48 @@
         ]
       ]
     },
-    "statusCollection": "Spec Status",
-    "statusComp": "Status Chip / Spec status (auto)",
-    "statusDesc": "Change the \"Spec Status\" variable mode on the section or frame and the label and colors update automatically. Don't edit instances directly."
+    "legacyPlaceholders": [
+      "@name",
+      "@owner",
+      "@담당자",
+      "@이름",
+      "Component / variant used",
+      "Copy · data · display conditions (e.g. shown only when signed in)",
+      "Default · Hover · Active · Focus · Disabled · Loading",
+      "Describe this screen in one sentence. (e.g. Where users review items in their cart and move on to checkout)",
+      "Desktop / Tablet / Mobile changes",
+      "Desktop / Tablet / Mobile 변화",
+      "Edge cases and how they are handled",
+      "Element name",
+      "Font / Size / Weight / Line Height",
+      "Icon · Image · Illustration · Lottie",
+      "Rules such as input limits, permissions, sort order",
+      "Screen name",
+      "Size · spacing · alignment · grid (spacing tokens)",
+      "States that exist (Default / Empty / Error / Disabled …)",
+      "Text · Background · Border (token + HEX)",
+      "Text · Background · Border (토큰명 + HEX)",
+      "Transition · Animation · Tooltip · Toast",
+      "What happens on click / tap / input, and where it leads",
+      "What the user does on this screen",
+      "What this element does and why it exists",
+      "Which screen / action leads here (e.g. Top nav icon → Cart)",
+      "YYYY-MM-DD",
+      "[Screen ID]",
+      "[화면ID]",
+      "노출 문구 · 데이터 · 노출 조건 (예: 로그인 시에만 노출)",
+      "사용 컴포넌트 / Variant명",
+      "어느 화면 / 어떤 동작으로 진입하는지 (예: 상단 GNB 아이콘 → 장바구니 클릭)",
+      "예외 상황과 처리 방식",
+      "요소명",
+      "이 요소가 제공하는 기능과 사용 목적",
+      "이 화면에서 사용자가 무엇을 하는지",
+      "이 화면을 한 문장으로 설명합니다. (예: 사용자가 담은 상품을 확인하고 결제로 넘어가는 화면)",
+      "입력 제한, 권한, 정렬 기준 등 정책",
+      "존재하는 상태 (Default / Empty / Error / Disabled …)",
+      "크기 · 여백 · 정렬 · Grid (spacing 토큰)",
+      "클릭/탭/입력 시 어떻게 동작하는지, 이동 화면",
+      "화면명"
+    ]
   }
 }

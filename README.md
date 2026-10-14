@@ -10,7 +10,7 @@
 ![node](https://img.shields.io/node/v/screenspec-mcp?color=777777)
 [![MCP](https://img.shields.io/badge/Model_Context_Protocol-server-d628a0)](https://modelcontextprotocol.io)
 
-![Screen spec template in Figma: mockup area, components, a blank spec and a filled sample](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-en.png)
+![Screen spec in Figma: the C-02 Cart list sample with its mockup and number badges](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-en.png)
 
 `screenspec-mcp` is an [MCP](https://modelcontextprotocol.io) server that reads **screen spec** (화면정의서) frames in Figma. It turns them into structured specs, hand-off lint reports and Jira ticket drafts, so a developer can open Figma and have everything they need to build.
 
@@ -157,27 +157,29 @@ The Feedback Log in each spec is filled from Jira by a Figma plugin button (Jira
    npx screenspec-mcp sync      # http://127.0.0.1:3917, only answers Figma
    ```
 2. In the Figma desktop app: **Plugins → Development → Import plugin from manifest…** and pick [`figma-plugin/manifest.json`](figma-plugin/manifest.json).
+   To start it automatically at every login (macOS), run this once in the folder with your `.env`: `npx screenspec-mcp sync --install` (remove with `--uninstall`).
 3. Open the page with your specs, run **Screen Spec Sync** and press **Sync**. Select a spec first to sync just that one.
 
 Each issue labelled with the screen ID (or summarised `[C-02-1] …`) becomes a row: element, type, key with link, epic, summary, latest comment, reporter → assignee, status and fix version. Rows are updated in place, and a row whose issue got comments since the last sync is marked **"N new"** in red on its comment line until the next sync. New issues are added, and rows Jira no longer returns are left alone and reported. The "Last synced" line is updated.
 
 ## The Figma template
 
-A ready-made template in **Korean and English**, with a blank spec, a filled sample and reusable components.
+A ready-made template in **Korean and English**: a blank spec with a mockup area, a filled sample (C-02 Cart list), reusable components and a writing guide. Each screen lives in its own section, and the section's status mode colors it.
 
 <table>
 <tr>
-<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-en.png" alt="Filled sample spec: Cart list"></td>
+<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-en.png" alt="Blank screen spec template"></td>
 <td valign="top">
-<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-en.png" alt="Components: number badges and the auto status chip">
+<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-en.png" alt="Components: number badge, spec row, status chip and change log row">
 <br><br>
-<b>Number badge</b>: matches the element number on the mockup and in the spec.<br><br>
-<b>Spec status (auto)</b>: bound to a variable collection. Change the <i>Spec Status</i> mode on a frame (Draft → In review → Final) and the chip's label and colors follow.
+<b>spec/badge</b>: the element number, on the mockup and on the element card.<br><br>
+<b>spec/row</b>: one spec line. Switch <i>Filled</i> from Empty to Done and the text turns black.<br><br>
+<b>Status Chip</b>: bound to a variable collection. Change the <i>Spec Status</i> mode on the section (Draft → In review → Final) and the chip and section background follow.
 </td>
 </tr>
 </table>
 
-- **Generate it in any Figma file:** `node scripts/render-template.mjs en` (or `ko`) prints a Figma Plugin API script. Run it with the Figma MCP `use_figma` tool or a plugin console. On a free Figma plan, the status chip falls back to component variants.
+- **Generate it in any Figma file:** `node scripts/render-template.mjs en` (or `ko`) prints a Figma Plugin API script; pass `'{"x":0,"y":0}'` to choose where it goes. Run it with the Figma MCP `use_figma` tool or a plugin console. On a free Figma plan, the status chip falls back to component variants.
 - **Localize it:** copy and wording live in [`figma-template/i18n.json`](figma-template/i18n.json). Add a language block to add a language.
 
 <details>
@@ -194,17 +196,19 @@ The parser follows layer names, not visual layout, so designers can restyle free
 | Layer name | Meaning |
 |---|---|
 | `📄 <ID> <title> · 화면정의서` / `· Screen Spec` | A screen spec document (markers configurable) |
-| `Doc Header` → `chip / [화면ID]`, `chip / v1.0`, instance `상태` / `Status` | Screen ID, version, status |
-| `개요` / `Overview` → `row / <label>` | Screen overview rows (purpose, entry point) |
-| `ITEM / <n> / <name>` | One element card. `n` matches the badge on the mockup |
-| `PM column` / `Design column` → `row / <label>` | Fields. The first text is the label, the rest is the value |
-| `feedback table` → `head`, `row / <JIRA-KEY>` → `cell n` | Feedback log synced from Jira |
-| `변경 이력` / `Change history` → `row` | Change log: version, date, role, author, change |
-| `<ID> … Mockup` / `<ID> … 시안` (frame) | The mockup for that screen, e.g. `C-02 Cart list · Mockup` |
-| `badge…` (instance) on the mockup | Number badge. Put its **center on the element's top-left corner** and `get_element` crops that element |
+| `Doc Header` → `id` → `Status Chip`, `<ID>`, `v1.0` | Status, screen ID and version; then the title and one-line summary |
+| `화면 개요` / `Screen overview` → `개요 table` / `Overview table` → `spec/row` | Screen overview lines (purpose, entry point, description, flow) |
+| `요소 / <ID>-<n> <name>` / `Element / <ID>-<n> <name>` | One element card. `n` matches the badge on the mockup |
+| `PM` / `Design` → `spec/row` | Fields. Each row's first text is the label, the second the value. Variant `작성=미작성` / `Filled=Empty` counts as unfilled |
+| `feedback table` → `head`, `row / <JIRA-KEY>` → `cell / <column>` | Feedback log synced from Jira; `last-synced` holds the sync time |
+| `변경 이력` / `Change history` → `spec/changelog-row` | Change log: version, date, role, author, change |
+| `<ID> … · 시안` / `<ID> … · Mockup` (frame) | The mockup for that screen, e.g. `C-02 Cart list · Mockup` |
+| `spec/badge` (instance) on the mockup | Number badge. Put its **center on the element's top-left corner** and `get_element` crops that element |
 | `area / <n>` (optional) | Exact region for element `n`, e.g. a transparent rectangle. Wins over the badge position |
 
-Values still equal to the template's guide text count as **unfilled**. That's how `lint_spec` measures completeness.
+Older specs built with the previous template (`ITEM / n / name`, `row / <label>` frames, `chip / …`) are still read.
+
+Rows still marked unfilled, or still showing the template's guide text, count as **unfilled**. That's how `lint_spec` measures completeness.
 
 ## Configuration: public core, private settings
 

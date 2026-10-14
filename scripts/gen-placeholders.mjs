@@ -3,7 +3,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 const i18n = JSON.parse(readFileSync(new URL("../figma-template/i18n.json", import.meta.url), "utf8"));
 const set = new Set();
 for (const L of Object.values(i18n)) {
-  [L.idPlaceholder, L.titlePlaceholder, L.summaryPlaceholder, L.ownerPlaceholder, L.items.namePlaceholder].forEach((v) => set.add(v));
+  [L.idPlaceholder, L.titlePlaceholder, L.summaryPlaceholder, L.items.namePlaceholder].forEach((v) => set.add(v));
+  (L.legacyPlaceholders ?? []).forEach((v) => set.add(v)); // older template versions
   [...L.overviewRows, ...L.pmRows, ...L.designRows].forEach(([, ph]) => set.add(ph));
   L.changeLog.rows.forEach((r) => { set.add(r[1]); set.add(r[3]); });
 }

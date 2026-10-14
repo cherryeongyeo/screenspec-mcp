@@ -10,7 +10,7 @@
 ![node](https://img.shields.io/node/v/screenspec-mcp?color=777777)
 [![MCP](https://img.shields.io/badge/Model_Context_Protocol-server-d628a0)](https://modelcontextprotocol.io)
 
-![피그마 화면정의서 양식: 시안 영역, 컴포넌트, 빈 양식, 채워진 샘플](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-ko.png)
+![피그마 화면정의서: 시안과 번호 뱃지가 붙은 C-02 장바구니 목록 샘플](https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/overview-ko.png)
 
 `screenspec-mcp`는 피그마의 **화면정의서** 프레임을 읽는 [MCP](https://modelcontextprotocol.io) 서버예요. 정의서를 구조화된 데이터, 전달 전 점검(lint) 리포트, 지라 티켓 초안으로 바꿔줘요. 개발자가 피그마만 열어도 개발에 필요한 내용을 모두 볼 수 있게 하는 게 목표예요.
 
@@ -157,27 +157,29 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
    npx screenspec-mcp sync      # http://127.0.0.1:3917, 피그마 요청에만 응답해요
    ```
 2. 피그마 데스크톱 앱에서 **Plugins → Development → Import plugin from manifest…**를 누르고 [`figma-plugin/manifest.json`](figma-plugin/manifest.json)을 골라요.
+   맥에 로그인할 때마다 자동으로 켜지게 하려면 `.env`가 있는 폴더에서 `npx screenspec-mcp sync --install`을 한 번 실행해요(해제는 `--uninstall`).
 3. 정의서가 있는 페이지에서 **Screen Spec Sync**를 실행하고 **동기화**를 눌러요. 정의서 하나만 선택하면 그것만 동기화해요.
 
 화면ID 레이블이 붙었거나 제목이 `[C-02-1] …`로 시작하는 이슈가 한 행이 돼요. 요소, 유형, 이슈 키(링크), 에픽, 내용, 최근 댓글, 요청자 → 담당자, 상태, 반영 버전을 채워요. 있던 행은 그 자리에서 갱신하고, 지난 동기화 이후 댓글이 새로 달린 행은 댓글 칸에 빨간 **"새 댓글 N"** 표시가 붙어요(다음 동기화 때 사라져요).  새 이슈는 추가하고, 지라에서 더 이상 안 나오는 행은 지우지 않고 알려줘요. "최종 동기화" 시간도 바뀌어요.
 
 ## 피그마 양식
 
-**한국어와 영어** 양식을 제공해요. 빈 양식, 채워진 샘플, 재사용 컴포넌트가 들어 있어요.
+**한국어와 영어** 양식을 제공해요. 시안 영역이 있는 빈 양식, 채워진 샘플(C-02 장바구니 목록), 재사용 컴포넌트, 작성 가이드가 들어 있어요. 화면마다 섹션 하나를 쓰고, 섹션의 상태 모드에 따라 섹션 색이 바뀌어요.
 
 <table>
 <tr>
-<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-ko.png" alt="채워진 샘플 정의서: 장바구니 목록"></td>
+<td width="62%"><img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/sample-ko.png" alt="빈 화면정의서 양식"></td>
 <td valign="top">
-<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-ko.png" alt="컴포넌트: 번호 뱃지와 자동 상태 칩">
+<img src="https://raw.githubusercontent.com/cherryeongyeo/screenspec-mcp/main/docs/images/components-ko.png" alt="컴포넌트: 번호 뱃지, 정의서 행, 상태 칩, 변경 이력 행">
 <br><br>
-<b>번호 뱃지</b>: 시안과 정의서의 요소 번호를 맞춰요.<br><br>
-<b>정의서 상태 (자동)</b>: 변수 컬렉션에 연결돼 있어요. 프레임의 <i>정의서 상태</i> 모드를 바꾸면(작성중 → 검토중 → 확정) 칩의 라벨과 색이 자동으로 바뀌어요.
+<b>spec/badge</b>: 요소 번호. 시안과 요소 카드에 같이 써요.<br><br>
+<b>spec/row</b>: 정의서 한 줄. <i>작성</i>을 미작성에서 완료로 바꾸면 글자가 검정이 돼요.<br><br>
+<b>Status Chip</b>: 변수 컬렉션에 연결돼 있어요. 섹션의 <i>정의서 상태</i> 모드를 바꾸면(작성중 → 검토중 → 확정) 칩과 섹션 배경이 함께 바뀌어요.
 </td>
 </tr>
 </table>
 
-- **아무 피그마 파일에서나 만들 수 있어요.** `node scripts/render-template.mjs ko`(또는 `en`)를 실행하면 Figma Plugin API 스크립트가 나와요. Figma MCP의 `use_figma` 도구나 플러그인 콘솔에서 실행하면 돼요. 무료 플랜에서는 상태 칩이 컴포넌트 variant 방식으로 자동 전환돼요.
+- **아무 피그마 파일에서나 만들 수 있어요.** `node scripts/render-template.mjs ko`(또는 `en`)를 실행하면 Figma Plugin API 스크립트가 나와요. 위치는 `'{"x":0,"y":0}'`처럼 넘기면 돼요. Figma MCP의 `use_figma` 도구나 플러그인 콘솔에서 실행하면 돼요. 무료 플랜에서는 상태 칩이 컴포넌트 variant 방식으로 자동 전환돼요.
 - **다른 언어로 바꿀 수 있어요.** 문구는 [`figma-template/i18n.json`](figma-template/i18n.json)에 모여 있어요. 언어 블록을 하나 추가하면 돼요.
 
 ### 레이어 이름이 곧 약속이에요
@@ -187,17 +189,19 @@ labels:   C-02          ← 나중에 Feedback Log가 이 티켓을 찾는 데 �
 | 레이어 이름 | 의미 |
 |---|---|
 | `📄 <ID> <제목> · 화면정의서` / `· Screen Spec` | 화면정의서 문서 (표시 문구는 설정으로 바꿀 수 있어요) |
-| `Doc Header` → `chip / [화면ID]`, `chip / v1.0`, 인스턴스 `상태` / `Status` | 화면ID, 버전, 상태 |
-| `개요` / `Overview` → `row / <항목>` | 화면 개요 (화면 목적, 진입 경로) |
-| `ITEM / <n> / <요소명>` | 요소 카드. `n`은 시안의 뱃지 번호와 같아요 |
-| `PM column` / `Design column` → `row / <항목>` | 항목. 첫 텍스트가 항목명, 나머지가 내용이에요 |
-| `feedback table` → `head`, `row / <지라 키>` → `cell n` | 지라에서 동기화한 피드백 로그 |
-| `변경 이력` / `Change history` → `row` | 변경 이력: 버전, 날짜, 역할, 작성자, 변경 내용 |
-| `<ID> … 시안` / `<ID> … Mockup` (프레임) | 그 화면의 시안. 예: `C-02 장바구니 목록 시안` |
-| 시안 위 `badge…` 인스턴스 | 번호 뱃지. **뱃지 중심을 요소의 왼쪽 위 모서리**에 놓으면 `get_element`가 그 요소를 잘라내요 |
+| `Doc Header` → `id` → `Status Chip`, `<ID>`, `v1.0` | 상태, 화면ID, 버전. 그 아래 제목과 한 줄 설명 |
+| `화면 개요` / `Screen overview` → `개요 table` / `Overview table` → `spec/row` | 화면 개요 (화면 목적, 진입 경로, 화면 설명, 화면 흐름) |
+| `요소 / <ID>-<n> <요소명>` / `Element / <ID>-<n> <name>` | 요소 카드. `n`은 시안의 뱃지 번호와 같아요 |
+| `PM` / `Design` → `spec/row` | 항목. 행의 첫 텍스트가 항목명, 두 번째가 내용이에요. `작성=미작성` / `Filled=Empty`이면 미작성으로 봐요 |
+| `feedback table` → `head`, `row / <지라 키>` → `cell / <열 이름>` | 지라에서 동기화한 피드백 로그. `last-synced`에 동기화 시간이 있어요 |
+| `변경 이력` / `Change history` → `spec/changelog-row` | 변경 이력: 버전, 날짜, 역할, 작성자, 변경 내용 |
+| `<ID> … · 시안` / `<ID> … · Mockup` (프레임) | 그 화면의 시안. 예: `C-02 장바구니 목록 · 시안` |
+| 시안 위 `spec/badge` 인스턴스 | 번호 뱃지. **뱃지 중심을 요소의 왼쪽 위 모서리**에 놓으면 `get_element`가 그 요소를 잘라내요 |
 | `area / <n>` (선택) | 요소 `n`의 정확한 영역(예: 투명 사각형). 뱃지 위치보다 우선해요 |
 
-내용이 양식의 회색 가이드 문구와 같으면 **미작성**으로 봐요. `lint_spec`은 이 기준으로 작성률을 계산해요.
+이전 양식으로 만든 정의서(`ITEM / n / 요소명`, `row / <항목>` 프레임, `chip / …`)도 그대로 읽어요.
+
+`미작성`으로 표시돼 있거나 내용이 양식의 회색 가이드 문구 그대로면 **미작성**으로 봐요. `lint_spec`은 이 기준으로 작성률을 계산해요.
 
 ## 설정: 코어는 공개, 팀 설정은 비공개
 

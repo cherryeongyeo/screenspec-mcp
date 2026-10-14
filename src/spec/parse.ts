@@ -47,15 +47,30 @@ const stripArrow = (s: string) => s.replace(/\s*↗\s*$/, "").trim();
 
 // ---------- section parsers ----------
 
-/** `row / <label>` frames: first text = label, last text = value. */
+/** A `spec/row` instance whose 작성 / Filled variant says it hasn't been written yet. */
+function markedUnfilled(row: FigmaNode, cfg: Config): boolean {
+  return Object.values(row.componentProperties ?? {}).some(
+    (p) => p.type === "VARIANT" && cfg.unfilledVariants.includes(String(p.value)),
+  );
+}
+
+/** `spec/row`, `spec/changelog-row` … */
+const isRowInstance = (n: FigmaNode) => n.type === "INSTANCE" && /\brow\b/i.test(n.name);
+
+/**
+ * Spec lines in a container. Two layouts:
+ * - `row / <label>` frames (first text = label, the rest = value)
+ * - `spec/row` instances (first text = label, the rest = value; variant 작성=미작성 means unfilled)
+ */
 function parseRows(container: FigmaNode | undefined, cfg: Config): Field[] {
   return kids(container)
-    .filter((c) => /^row\s*\/\s*/.test(c.name))
+    .filter((c) => /^row\s*\/\s*/.test(c.name) || isRowInstance(c))
     .map((row) => {
-      const label = row.name.replace(/^row\s*\/\s*/, "").trim();
       const t = texts(row);
+      const named = /^row\s*\/\s*/.test(row.name);
+      const label = named ? row.name.replace(/^row\s*\/\s*/, "").trim() : (t[0] ?? "");
       const value = t.length > 1 ? t.slice(1).join("\n") : "";
-      return { label, value, filled: isFilled(value, cfg) };
+      return { label, value, filled: isFilled(value, cfg) && !markedUnfilled(row, cfg) };
     });
 }
 
@@ -64,21 +79,31 @@ export function isFilled(value: string, cfg: Config): boolean {
   return v.length > 0 && !cfg.placeholders.includes(v);
 }
 
+/** Element cards: `ITEM / 1 / name` or `요소 / C-02-1 name` (`Element / C-02-1 name`). */
+function itemHeader(n: FigmaNode, screenId: string): { no: number; name: string } | undefined {
+  const old = /^ITEM\s*\/\s*(\d+)\s*(?:\/\s*(.*))?$/.exec(n.name);
+  if (old) return { no: Number(old[1]), name: old[2]?.trim() ?? "" };
+  if (n.type !== "FRAME" && n.type !== "COMPONENT") return undefined;
+  const m = /^(?:요소|Element)\s*\/\s*(\[[^\]]*\]\S*|\S+)\s*(.*)$/.exec(n.name);
+  if (!m) return undefined;
+  const no = refNumber(m[1], screenId) ?? Number(/-(\d+)$/.exec(m[1])?.[1]);
+  return Number.isFinite(no) && no > 0 ? { no, name: m[2].trim() } : undefined;
+}
+
 function parseItems(doc: FigmaNode, screenId: string, cfg: Config): SpecItem[] {
   const items: SpecItem[] = [];
   walk(doc, (n) => {
-    const m = /^ITEM\s*\/\s*(\d+)/.exec(n.name);
-    if (!m) return;
-    const no = Number(m[1]);
-    const titleBar = find(n, byName("TitleBar"));
-    const name = directTexts(titleBar)[0] ?? n.name.split("/").pop()!.trim();
+    const h = itemHeader(n, screenId);
+    if (!h) return;
+    const bar = find(n, byName("TitleBar", "header"));
+    const name = directTexts(bar)[0] ?? h.name;
     items.push({
-      no,
-      ref: `${screenId}-${no}`,
+      no: h.no,
+      ref: `${screenId}-${h.no}`,
       name,
       nodeId: n.id,
-      pm: parseRows(find(n, byName("PM column")), cfg),
-      design: parseRows(find(n, byName("Design column")), cfg),
+      pm: parseRows(find(n, byName("PM column", "PM")), cfg),
+      design: parseRows(find(n, byName("Design column", "Design")), cfg),
     });
   });
   return items;
@@ -120,7 +145,7 @@ function parseFeedback(doc: FigmaNode, cfg: Config): FeedbackRow[] {
 function parseChangeLog(doc: FigmaNode, cfg: Config): ChangeLogRow[] {
   const log = find(doc, byName("변경 이력", "Change history")) ?? find(doc, byName("Change Log"));
   return kids(log)
-    .filter((r) => r.name === "row" || r.name.startsWith("row /"))
+    .filter((r) => r.name === "row" || r.name.startsWith("row /") || isRowInstance(r))
     .map((r) => {
       const [version = "", date = "", role = "", author = "", change = ""] = texts(r);
       return { version, date, role, author, change };
@@ -139,12 +164,14 @@ function statusModeConflict(doc: FigmaNode, header: FigmaNode | undefined): bool
   return Object.entries(own).some(([col, mode]) => col in frame && frame[col] !== mode);
 }
 
+/** The chip's label (variable-driven chips show the status as text); else its variant value. */
 function parseStatus(header: FigmaNode | undefined): string {
   const inst = findStatusChip(header);
   if (!inst) return "";
+  const label = (texts(inst)[0] ?? "").replace(/^[●•]\s*/, "");
+  if (label) return label;
   const variant = Object.values(inst.componentProperties ?? {}).find((p) => p.type === "VARIANT");
-  if (variant) return String(variant.value);
-  return (texts(inst)[0] ?? "").replace(/^[●•]\s*/, "");
+  return variant ? String(variant.value) : "";
 }
 
 // ---------- public API ----------
@@ -174,9 +201,13 @@ export function parseScreen(doc: FigmaNode, cfg: Config, fileKey?: string): Scre
   const header = find(doc, byName("Doc Header"));
   const idChip = find(header, (n) => n.name.startsWith("chip / [") || n.name === "chip / id");
   const verChip = find(header, (n) => /^chip\s*\/\s*v\d/i.test(n.name));
-  const fromName = /^\W*\s*(\S+)\s+(.+?)\s*·/.exec(doc.name);
+  const fromName = /^\W*\s*(\[[^\]]*\]|\S+)\s+(.+?)\s*·/.exec(doc.name);
+  // New layout: an `id` frame with the status chip, then plain texts "[화면ID]" and "v1.0"
+  const idTexts = idChip ? [] : directTexts(find(header, byName("id")));
+  const idText = idTexts.find((t) => !/^v\d/i.test(t));
+  const verText = idTexts.find((t) => /^v\d/i.test(t));
 
-  const screenId = texts(idChip)[0] ?? fromName?.[1] ?? "";
+  const screenId = texts(idChip)[0] ?? idText ?? fromName?.[1] ?? "";
   const [title = fromName?.[2] ?? "", summary = ""] = directTexts(header);
   const owners = kids(find(header, byName("owners"))).map((c) => {
     const [role = "", name = ""] = (texts(c)[0] ?? "").split(/\s+(?=@)|\s+/, 2);
@@ -191,14 +222,14 @@ export function parseScreen(doc: FigmaNode, cfg: Config, fileKey?: string): Scre
     screenId,
     title,
     summary: isFilled(summary, cfg) ? summary : "",
-    version: texts(verChip)[0] ?? "",
+    version: texts(verChip)[0] ?? verText ?? "",
     status: parseStatus(header),
     statusModeConflict: statusModeConflict(doc, header) || undefined,
     owners,
     nodeId: doc.id,
     figmaUrl: figmaUrl(fileKey, doc.id),
     isTemplate: !isFilled(screenId, cfg),
-    overview: parseRows(find(doc, byName("개요", "Overview")), cfg),
+    overview: parseRows(find(doc, byName("개요 table", "Overview table")) ?? find(doc, byName("개요", "Overview")), cfg),
     items: parseItems(doc, screenId, cfg).sort((a, b) => a.no - b.no),
     feedback: parseFeedback(doc, cfg),
     feedbackLastSynced: syncedText && syncedText !== "last-synced" ? syncedText : undefined,

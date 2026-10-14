@@ -64,12 +64,18 @@ function docInfo(doc) {
   };
 }
 
-/** "C-02-1" → element name from the "ITEM / 1 / 상품 리스트" card, if any. */
+/** "C-02-1" → element name from its card: "요소 / C-02-1 상품 리스트" (or the older "ITEM / 1 / 상품 리스트"). */
 function itemName(doc, ref) {
   var no = /-(\d+)$/.exec(ref || "");
   if (!no) return "";
-  var card = doc.findOne(function (n) { return new RegExp("^ITEM\\s*/\\s*" + no[1] + "\\s*/").test(n.name); });
-  return card ? card.name.replace(/^ITEM\s*\/\s*\d+\s*\/\s*/, "").trim() : "";
+  var card = doc.findOne(function (n) {
+    if (n.type !== "FRAME") return false;
+    var m = /^(?:요소|Element)\s*\/\s*(\[[^\]]*\]\S*|\S+)\s+(.*)$/.exec(n.name);
+    if (m) return m[1] === ref;
+    return new RegExp("^ITEM\\s*/\\s*" + no[1] + "\\s*/").test(n.name);
+  });
+  if (!card) return "";
+  return card.name.replace(/^(?:요소|Element)\s*\/\s*\S+\s+/, "").replace(/^ITEM\s*\/\s*\d+\s*\/\s*/, "").trim();
 }
 
 // ---------- writing ----------

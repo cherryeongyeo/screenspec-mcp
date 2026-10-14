@@ -13,6 +13,8 @@ export interface Config {
   scanDepth: number;
   /** Values that count as "not written yet" (template guide text) */
   placeholders: string[];
+  /** Variant values on `spec/row` instances that mean "not written yet" (작성=미작성, Filled=Empty) */
+  unfilledVariants: string[];
   feedback: {
     /** Jira statuses treated as closed when collecting open feedback */
     doneStatuses: string[];
@@ -93,6 +95,7 @@ export const DEFAULT_CONFIG: Config = {
   screenFrameMarker: ["화면정의서", "Screen Spec"],
   scanDepth: 4,
   placeholders: DEFAULT_PLACEHOLDERS,
+  unfilledVariants: ["미작성", "Empty"],
   feedback: {
     doneStatuses: ["종료", "검수완료", "Done", "Closed", "Approved"],
     columns: {
@@ -122,10 +125,10 @@ export const DEFAULT_CONFIG: Config = {
     labels: [],
     sections: {
       background: ["기능", "Function"],
-      scope: ["콘텐츠", "Content", "Interaction"],
-      policy: ["Policy"],
-      states: ["State"],
-      exceptions: ["Exception"],
+      scope: ["콘텐츠", "동작", "Content", "Interaction"],
+      policy: ["정책", "Policy"],
+      states: ["상태", "State"],
+      exceptions: ["예외", "Exception"],
     },
   },
 };

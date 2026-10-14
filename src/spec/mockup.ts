@@ -25,7 +25,8 @@ export interface ElementRegion {
 }
 
 const MOCKUP_MARKERS = ["시안", "Mockup", "mockup"];
-const isBadge = (n: FigmaNode) => n.type === "INSTANCE" && /^badge\b/i.test(n.name);
+/** "badge / 시안용", "spec/badge", "spec/badge 3" … */
+const isBadge = (n: FigmaNode) => n.type === "INSTANCE" && /(^|\/)\s*badge\b/i.test(n.name);
 const areaNo = (n: FigmaNode) => {
   const m = /^area\s*\/\s*(\d+)\s*$/i.exec(n.name);
   return m ? Number(m[1]) : undefined;
