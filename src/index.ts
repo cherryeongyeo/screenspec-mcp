@@ -6,6 +6,7 @@ import { FigmaRestClient, FixtureSource, type FigmaSource } from "./figma/client
 import { JiraClient } from "./jira/client.js";
 import { createServer, VERSION } from "./server.js";
 import { createSyncServer, DEFAULT_SYNC_PORT } from "./sync-server.js";
+import { installAutostart, uninstallAutostart } from "./autostart.js";
 
 /** Read KEY=value lines from ./.env without overriding variables that are already set. */
 function loadDotEnv(path = ".env") {
@@ -28,6 +29,15 @@ if (process.argv[2] === "sync") {
   // Local helper for the Figma plugin's Sync button (Jira → Feedback Log).
   const i = process.argv.indexOf("--port");
   const port = Number(i > 0 ? process.argv[i + 1] : process.env.SCREENSPEC_SYNC_PORT ?? DEFAULT_SYNC_PORT);
+  if (process.argv.includes("--install")) {
+    if (!jira) console.error("Warning: Jira isn't configured in this folder's .env yet. Add it, then run --install again.");
+    try { installAutostart(port); } catch (e) { console.error(e instanceof Error ? e.message : e); process.exit(1); }
+    process.exit(0);
+  }
+  if (process.argv.includes("--uninstall")) {
+    uninstallAutostart();
+    process.exit(0);
+  }
   const server = createSyncServer({ source: jira, version: VERSION, projectKey: cfg.ticket.projectKey });
   server.listen(port, "127.0.0.1", () => {
     console.error(`screenspec-mcp sync helper on http://127.0.0.1:${port}`);

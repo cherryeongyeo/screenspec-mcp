@@ -184,3 +184,14 @@ describe("get_jira_feedback tool", () => {
     expect(data.rows[0].element).toBe("M-07-1");
   });
 });
+
+describe("sync --install", () => {
+  it("writes a launchd agent that runs the helper from the project folder", async () => {
+    const { launchAgentPlist, LABEL } = await import("../src/autostart.js");
+    const xml = launchAgentPlist({ node: "/usr/local/bin/node", script: "/Users/me/screenspec-mcp/dist/index.js", cwd: "/Users/me/screenspec-mcp", port: 3917, logDir: "/Users/me/Library/Logs" });
+    expect(xml).toContain(`<string>${LABEL}</string>`);
+    expect(xml).toContain("<string>/Users/me/screenspec-mcp/dist/index.js</string>\n    <string>sync</string>");
+    expect(xml).toContain("<key>WorkingDirectory</key><string>/Users/me/screenspec-mcp</string>");
+    expect(xml).toContain("<key>RunAtLoad</key><true/>");
+  });
+});
