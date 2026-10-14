@@ -193,6 +193,12 @@ export function findScreenDocs(root: FigmaNode, cfg: Config): FigmaNode[] {
   return out;
 }
 
+/** "📄 [화면ID] 화면명 · 화면정의서" → ["[화면ID]", "화면명"]; the ID may be bracketed and contain spaces. */
+export function nameParts(name: string): [string, string, string] | undefined {
+  const m = /^[^\p{L}\p{N}[]*(\[[^\]]*\]|\S+)\s+(.+?)\s*·/u.exec(name);
+  return m ? [m[0], m[1], m[2]] : undefined;
+}
+
 export function figmaUrl(fileKey: string | undefined, nodeId: string) {
   return fileKey ? `https://www.figma.com/design/${fileKey}?node-id=${nodeId.replace(":", "-")}` : undefined;
 }
@@ -201,7 +207,7 @@ export function parseScreen(doc: FigmaNode, cfg: Config, fileKey?: string): Scre
   const header = find(doc, byName("Doc Header"));
   const idChip = find(header, (n) => n.name.startsWith("chip / [") || n.name === "chip / id");
   const verChip = find(header, (n) => /^chip\s*\/\s*v\d/i.test(n.name));
-  const fromName = /^\W*\s*(\[[^\]]*\]|\S+)\s+(.+?)\s*·/.exec(doc.name);
+  const fromName = nameParts(doc.name);
   // New layout: an `id` frame with the status chip, then plain texts "[화면ID]" and "v1.0"
   const idTexts = idChip ? [] : directTexts(find(header, byName("id")));
   const idText = idTexts.find((t) => !/^v\d/i.test(t));

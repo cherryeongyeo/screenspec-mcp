@@ -6,7 +6,7 @@ import type { IssueTracker, JiraIssueRef } from "./jira/client.js";
 import { lintMockup, lintScreen } from "./spec/lint.js";
 import { findBadges, findMockups, nearestMockups, pad, regionFor, type ElementRegion } from "./spec/mockup.js";
 import { cropPng } from "./figma/crop.js";
-import { figmaUrl, findScreenDocs, parseScreen, refNumber } from "./spec/parse.js";
+import { figmaUrl, findScreenDocs, nameParts, parseScreen, refNumber } from "./spec/parse.js";
 import { detectLang, draftTicket } from "./spec/ticket.js";
 import { compareFeedback, type FeedbackSource } from "./jira/feedback.js";
 import { diffScreens } from "./spec/diff.js";
@@ -112,7 +112,7 @@ export function createServer(source: FigmaSource, cfg: Config, tracker?: IssueTr
               const s = parseScreen(n, cfg, fileKey || undefined);
               out.push({ screenId: s.screenId, title: s.title, version: s.version, status: s.status, nodeId: n.id, page: pg, url: s.figmaUrl, template: s.isTemplate });
             } else {
-              const m = /^\W*\s*(\S+)\s+(.+?)\s*·/.exec(n.name);
+              const m = nameParts(n.name);
               out.push({ screenId: m?.[1] ?? "", title: m?.[2] ?? n.name, nodeId: n.id, page: pg, url: figmaUrl(fileKey || undefined, n.id), template: cfg.placeholders.includes(m?.[1] ?? "") });
             }
             return;

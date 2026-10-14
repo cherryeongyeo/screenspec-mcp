@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_CONFIG as cfg } from "../src/config.js";
 import { lintScreen } from "../src/spec/lint.js";
 import { findBadges, regionFor } from "../src/spec/mockup.js";
-import { findScreenDocs, parseScreen } from "../src/spec/parse.js";
+import { findScreenDocs, nameParts, parseScreen } from "../src/spec/parse.js";
 import { draftTicket } from "../src/spec/ticket.js";
 import { cartMockup, specDoc } from "./fixtures/new-layout.js";
 
@@ -61,6 +61,14 @@ describe("current template layout (spec/row instances)", () => {
     expect(en).toMatchObject({ screenId: "C-02", status: "In review", version: "v1.2" });
     expect(en.items[0].pm.map((f) => f.label)).toContain("Policy");
     expect(draftTicket(en, en.items[0], cfg).summary).toMatch(/^\[C-02-1\] Item list/);
+  });
+});
+
+describe("screen ID from the frame name", () => {
+  it("keeps bracketed template IDs, with or without spaces", () => {
+    expect(nameParts("📄 [화면ID] 화면명 · 화면정의서")?.slice(1)).toEqual(["[화면ID]", "화면명"]);
+    expect(nameParts("📄 [Screen ID] Screen name · Screen Spec")?.slice(1)).toEqual(["[Screen ID]", "Screen name"]);
+    expect(nameParts("📄 C-02 Cart list · Screen Spec")?.slice(1)).toEqual(["C-02", "Cart list"]);
   });
 });
 
