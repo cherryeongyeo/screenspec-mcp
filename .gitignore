@@ -5,3 +5,6 @@ dist/
 .private/
 live-test-output.json
 live-mockup-*.png
+.run-live.mjs
+live-file.json
+live-nodes.json

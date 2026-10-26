@@ -331,7 +331,8 @@ function buildDoc(S) {
     const ds = AL(body, "V", { name: "Design", stroke: K.line, sw: [0, 0, 0, 1] }); ds.layoutSizingHorizontal = "FILL";
     L.pmRows.forEach(([label, ph], i) => rowInstance(pm, label, it.pm[i] ?? null, ph));
     L.designRows.forEach(([label, ph], i) => rowInstance(ds, label, it.design[i] ?? null, ph));
-    pm.layoutSizingVertical = "FILL";
+    // both columns hug their rows; only the shorter one stretches, so deleting rows shrinks the card
+    (pm.height < ds.height ? pm : ds).layoutSizingVertical = "FILL";
     lastRowNoLine(ds);
   });
 
